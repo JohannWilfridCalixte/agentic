@@ -1,0 +1,73 @@
+# Workflow State Template
+# Tracks progress through spec-to-pr workflow
+# Location: {story_path}/workflow-state.yaml
+
+workflow: spec-to-pr
+version: "1.0.0"
+
+# Workflow configuration
+mode: "interactive" # or "auto"
+input_type: "user" # or "file" or "github_issue"
+input_source: null # path, URL, or issue number
+
+# Story identification
+epic_id: "" # EPIC-####
+epic_name: "" # kebab-case-name
+story_id: "" # US-####
+story_path: "" # documentation/task/{epic_id}-EPIC-{epic_name}/US-{story_id}
+
+# Timing
+started_at: "" # ISO timestamp
+updated_at: "" # ISO timestamp
+completed_at: null # ISO timestamp when done
+
+# Progress tracking
+status: "pending" # pending | in_progress | completed | failed | escalated
+current_step: 0
+steps_completed: []
+# Example:
+#   - step: 1
+#     name: "input-detection"
+#     completed_at: "2024-01-15T10:00:00Z"
+#     output: null
+#   - step: 2
+#     name: "pm-spec"
+#     completed_at: "2024-01-15T10:15:00Z"
+#     output: "documentation/task/.../spec.md"
+
+# Review loop tracking
+review_iterations: 0
+max_review_iterations: 3
+review_loop:
+  status: null # null | in_progress | passed | escalated
+  rounds: []
+  # Example:
+  #   - iteration: 1
+  #     qa_issues: 3
+  #     security_issues: 1
+  #     fixed: 4
+  #   - iteration: 2
+  #     qa_issues: 0
+  #     security_issues: 0
+  #     fixed: 0
+
+# Artifacts created
+artifacts:
+  spec: null
+  technical_context: null
+  security_context: null
+  technical_plan: null
+  implementation_log: null
+  qa_reviews: []
+  security_reviews: []
+  decision_log: null # auto mode only
+
+# PR flags (set by review loop if escalated)
+pr_flags:
+  is_draft: false
+  title_prefix: ""
+  unresolved_issues: []
+
+# Final output
+pr_url: null
+pr_number: null

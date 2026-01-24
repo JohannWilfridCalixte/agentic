@@ -1,0 +1,31 @@
+---
+description: Agentic framework - agent prompts and scripts
+globs: **/*
+alwaysApply: false
+---
+
+# Agentic Framework
+
+Load agents with: `@.agentic/agents/{agent}.md`
+Load skills with: `@.claude/skills/{skill}/SKILL.md`
+
+## Skills
+
+- typescript-engineer - Types, error handling, code style
+- typescript-imports - Import ordering and grouping
+- observability - Logging, tracing, instrumentation
+
+## Agents
+
+- cpo, cto, pm - Leadership roles
+- architect-context, architect-plan - Architecture
+- editor - Code implementation
+- qa, security-qa - Quality assurance
+- security-context - Security analysis
+- dx - Developer experience
+
+## Scripts
+
+Located in `.agentic/scripts/`:
+- sync-to-github.sh, sync-from-github.sh, sync-all.sh
+- create-pr.sh, resolve-parent.sh

@@ -1,0 +1,32 @@
+## Agentic Framework
+
+Agents in `.agentic/agents/` - load with `@.agentic/agents/{agent}.md`
+Skills in `.claude/skills/` - auto-loaded by Claude Code
+Scripts in `.agentic/scripts/`
+
+### Skills
+
+- `typescript-engineer` - Types, error handling, code style
+- `typescript-imports` - Import ordering and grouping
+- `observability` - Logging, tracing, instrumentation
+
+### Agents
+
+- `cpo` - Chief Product Officer
+- `cto` - Chief Technology Officer
+- `pm` - Product Manager
+- `architect-context` - Context analysis
+- `architect-plan` - Technical planning
+- `editor` - Code implementation
+- `qa` - Quality assurance
+- `security-context` - Security context analysis
+- `security-qa` - Security QA
+- `dx` - Developer experience
+
+### Scripts
+
+- `sync-to-github.sh` - Push markdown to GitHub issue
+- `sync-from-github.sh` - Pull GitHub issue to markdown
+- `sync-all.sh` - Sync all documentation files
+- `create-pr.sh` - Create pull request
+- `resolve-parent.sh` - Resolve parent issue
