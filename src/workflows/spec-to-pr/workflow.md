@@ -45,27 +45,44 @@ You are the **main agent** orchestrating this workflow. You:
 - Make technical decisions (that's Architect)
 - Make security decisions (that's Security)
 - Write implementation code (that's Editor)
+- Gather codebase context (that's Architect)
+- Review code quality (that's QA)
+
+### MANDATORY DELEGATION RULE
+
+**You MUST delegate agent work using the `Task` tool. You MUST NOT perform agent work yourself.**
+
+This is non-negotiable. When a step says "invoke PM/Architect/Security/Editor/QA agent", you:
+1. Use the `Task` tool to spawn a subagent
+2. Pass the subagent prompt from the step file (which tells the subagent to read its own instructions)
+3. Wait for the subagent result
+4. Validate the output exists
+5. Update workflow state
+
+**You NEVER:**
+- Write specs yourself (delegate to PM subagent)
+- Explore the codebase yourself (delegate to Architect subagent)
+- Create threat models yourself (delegate to Security subagent)
+- Write technical plans yourself (delegate to Architect subagent)
+- Write or edit code yourself (delegate to Editor subagent)
+- Review code yourself (delegate to QA/Security QA subagent)
+
+If you catch yourself doing agent work instead of delegating, STOP and use the Task tool.
 
 ## SUBAGENT INVOCATION
 
-**Claude Code:** Use the Task tool to delegate to subagents:
-```
-Task(subagent_type="pm", prompt="Create product specification for: {input}")
-Task(subagent_type="architect", prompt="Gather technical context for: {spec_summary}")
-Task(subagent_type="security", prompt="Create threat model for: {spec_summary}")
-Task(subagent_type="editor", prompt="Implement tasks: {task_list}")
-Task(subagent_type="qa", prompt="Review implementation. Iteration: {n}")
-Task(subagent_type="security-qa", prompt="Security review. Iteration: {n}")
-```
+Subagent instructions live in `.{ide-folder}/agents/`. Each subagent reads its own file for detailed instructions, output formats, and quality gates.
 
-**Cursor:** Load agents inline using @-mentions:
+Always use `general-purpose` subagent type with the Task tool:
+
 ```
-@.claude/agents/pm.md
-@.claude/agents/architect.md
-@.claude/agents/security.md
-@.claude/agents/editor.md
-@.claude/agents/qa.md
-@.claude/agents/security-qa.md
+Task(subagent_type="general-purpose", prompt="You are the PM agent. {ide-invoke-prefix}{ide-folder}/agents/pm.md for your full instructions. Create product specification. ...")
+Task(subagent_type="general-purpose", prompt="You are the Architect agent. {ide-invoke-prefix}{ide-folder}/agents/architect.md for your full instructions. Execute Phase 1: Context Gathering. ...")
+Task(subagent_type="general-purpose", prompt="You are the Security agent. {ide-invoke-prefix}{ide-folder}/agents/security.md for your full instructions. Create security addendum. ...")
+Task(subagent_type="general-purpose", prompt="You are the Architect agent. {ide-invoke-prefix}{ide-folder}/agents/architect.md for your full instructions. Execute Phase 2: Technical Planning. ...")
+Task(subagent_type="general-purpose", prompt="You are the Editor agent. {ide-invoke-prefix}{ide-folder}/agents/editor.md for your full instructions. Implement the technical plan. ...")
+Task(subagent_type="general-purpose", prompt="You are the QA agent. {ide-invoke-prefix}{ide-folder}/agents/qa.md for your full instructions. Review implementation. ...")
+Task(subagent_type="general-purpose", prompt="You are the Security QA agent. {ide-invoke-prefix}{ide-folder}/agents/security-qa.md for your full instructions. Security review. ...")
 ```
 
 ---

@@ -39,34 +39,34 @@ agents:
   pm:
     role: "Product Manager"
     decides: ["product scope", "acceptance criteria", "priority", "user value"]
-    prompt: "@.claude/agents/pm.md"
+    prompt: "{ide-invoke-prefix}{ide-folder}/agents/pm.md"
 
   architect:
     role: "Technical Architect"
     decides: ["technical approach", "architecture", "implementation strategy", "tech stack"]
     prompts:
-      context: "@.claude/agents/architect.md"
-      plan: "@.claude/agents/architect.md"
+      context: "{ide-invoke-prefix}{ide-folder}/agents/architect.md"
+      plan: "{ide-invoke-prefix}{ide-folder}/agents/architect.md"
 
   security:
     role: "Security Architect"
     decides: ["security requirements", "threat model", "compliance"]
-    prompt: "@.claude/agents/security.md"
+    prompt: "{ide-invoke-prefix}{ide-folder}/agents/security.md"
 
   editor:
     role: "Implementation"
     decides: ["code structure", "test approach"]
-    prompt: "@.claude/agents/editor.md"
+    prompt: "{ide-invoke-prefix}{ide-folder}/agents/editor.md"
 
   qa:
     role: "Quality Assurance"
     decides: ["test coverage", "quality gates"]
-    prompt: "@.claude/agents/qa.md"
+    prompt: "{ide-invoke-prefix}{ide-folder}/agents/qa.md"
 
   security_qa:
     role: "Security Review"
     decides: ["security compliance", "vulnerability assessment"]
-    prompt: "@.claude/agents/security-qa.md"
+    prompt: "{ide-invoke-prefix}{ide-folder}/agents/security-qa.md"
 
 # Output paths (relative to project root)
 paths:

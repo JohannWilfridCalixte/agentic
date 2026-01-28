@@ -44,22 +44,22 @@ agents:
   architect:
     role: "Technical Architect"
     decides: ["technical approach", "architecture", "implementation strategy"]
-    prompt: "@.claude/agents/architect.md"
+    prompt: "{ide-invoke-prefix}{ide-folder}/agents/architect.md"
 
   editor:
     role: "Implementation"
     decides: ["code structure", "test approach"]
-    prompt: "@.claude/agents/editor.md"
+    prompt: "{ide-invoke-prefix}{ide-folder}/agents/editor.md"
 
   qa:
     role: "Quality Assurance"
     decides: ["test coverage", "quality gates"]
-    prompt: "@.claude/agents/qa.md"
+    prompt: "{ide-invoke-prefix}{ide-folder}/agents/qa.md"
 
   security_qa:
     role: "Security Review"
     decides: ["security compliance", "vulnerability assessment"]
-    prompt: "@.claude/agents/security-qa.md"
+    prompt: "{ide-invoke-prefix}{ide-folder}/agents/security-qa.md"
 
 paths:
   base: "documentation/task/{epic_id}-EPIC-{epic_name}"
