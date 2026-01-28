@@ -29,10 +29,9 @@ bunx @JohannWilfridCalixte/agentic@alpha init --ide cursor
 
 ## What It Does
 
-1. Creates `.agentic/` with agents, scripts and workflows
-2. Creates `.claude/` with agents, subagents, skills and commands
-3. Creates `.cursor/` with agents, subagents, skills and commands
-4. Sets up `CLAUDE.md` and/or `.cursor/rules/agentic.mdc`
+1. Creates `.claude/` and/or `.cursor/` with agents, skills, commands, workflows, scripts
+2. Template-processes all files for the target IDE (paths, invocation syntax)
+3. Sets up `CLAUDE.md` and/or `.cursor/rules/agentic.mdc`
 
 ## Usage
 
@@ -49,7 +48,7 @@ bunx @JohannWilfridCalixte/agentic@alpha init --ide cursor
 
 ### Agents
 
-Strategic agents defining team roles (copied to `.agentic/agents/`, `.claude/agents/`, `.cursor/agents/`):
+Strategic agents defining team roles:
 
 | Agent | Role |
 |-------|------|
@@ -60,7 +59,7 @@ Strategic agents defining team roles (copied to `.agentic/agents/`, `.claude/age
 
 ### Subagents
 
-Specialized agents invoked by workflows (copied to `.claude/agents/`, `.cursor/agents/`):
+Specialized agents invoked by workflows:
 
 | Subagent | Role |
 |----------|------|
@@ -73,7 +72,7 @@ Specialized agents invoked by workflows (copied to `.claude/agents/`, `.cursor/a
 
 ### Skills
 
-19 reusable skill definitions (copied to `.claude/skills/`, `.cursor/skills/`):
+19 reusable skill definitions:
 
 | Skill | Purpose |
 |-------|---------|
@@ -100,7 +99,7 @@ Specialized agents invoked by workflows (copied to `.claude/agents/`, `.cursor/a
 
 ### Scripts
 
-Shell scripts in `.agentic/scripts/`:
+Shell scripts:
 
 | Script | Purpose |
 |--------|---------|
@@ -122,21 +121,21 @@ agentic help                                # Show help
 
 ```
 your-project/
-├── .agentic/
-│   ├── agents/          # Strategic agents (cpo, cto, dx, team-and-workflow)
-│   ├── scripts/         # Shell scripts
-│   └── workflows/       # Multi-step workflow definitions
-├── .claude/
-│   ├── agents/          # All agents + subagents
-│   ├── skills/          # Skill definitions
-│   └── commands/        # Slash commands (agentic:*)
-├── .cursor/
-│   ├── agents/          # All agents + subagents
-│   ├── skills/          # Skill definitions
-│   ├── commands/        # Slash commands
+├── .claude/                 # if --ide claude or both
+│   ├── agents/              # All agents + subagents
+│   ├── skills/              # Skill definitions
+│   ├── commands/            # Slash commands (agentic:*)
+│   ├── workflows/           # Multi-step workflow definitions
+│   └── scripts/             # Shell scripts
+├── .cursor/                 # if --ide cursor or both
+│   ├── agents/              # All agents + subagents
+│   ├── skills/              # Skill definitions
+│   ├── commands/            # Slash commands
+│   ├── workflows/           # Multi-step workflow definitions
+│   ├── scripts/             # Shell scripts
 │   └── rules/
-│       └── agentic.mdc  # Cursor rules
-└── CLAUDE.md            # Claude Code config
+│       └── agentic.mdc      # Cursor rules
+├── CLAUDE.md                # Claude Code config (if claude)
 ```
 
 ## Development
