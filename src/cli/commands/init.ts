@@ -13,7 +13,7 @@ import {
   TEMPLATES_DIR,
   WORKFLOWS_DIR,
 } from '../paths';
-import { copyDir } from '../utils';
+import { copyAndProcess } from '../utils';
 
 interface InitError {
   readonly code: 'READ_TEMPLATE_FAILED' | 'WRITE_FILE_FAILED' | 'COPY_FAILED';
@@ -91,170 +91,52 @@ function makeScriptsExecutable(scriptsDir: string): void {
 
 export async function init(ide: IDE = 'both'): Promise<Result<void, InitError>> {
   const projectRoot = process.cwd();
-  const agenticDir = join(projectRoot, '.agentic');
+  const ides: ('claude' | 'cursor')[] =
+    ide === 'both' ? ['claude', 'cursor'] : [ide];
 
   console.log('Initializing agentic...\n');
 
-  if (!existsSync(agenticDir)) {
-    mkdirSync(agenticDir, { recursive: true });
-  }
+  for (const targetIde of ides) {
+    const ideDir = join(projectRoot, `.${targetIde}`);
+    if (!existsSync(ideDir)) mkdirSync(ideDir, { recursive: true });
 
-  const destinationAgents = join(agenticDir, 'agents');
-  const agentsCopyResult = await copyDir(AGENTS_DIR, destinationAgents);
-  if (isErr(agentsCopyResult)) {
-    return Err({
-      code: 'COPY_FAILED' as const,
-      message: 'Failed to copy agents',
-      cause: agentsCopyResult.data,
-    });
-  }
-  console.log('  Copied agents to .agentic/agents/');
+    const copies: [string, string][] = [
+      [AGENTS_DIR, join(ideDir, 'agents')],
+      [SUBAGENTS_DIR, join(ideDir, 'agents')],
+      [SKILLS_DIR, join(ideDir, 'skills')],
+      [COMMANDS_DIR, join(ideDir, 'commands')],
+      [WORKFLOWS_DIR, join(ideDir, 'workflows')],
+      [SCRIPTS_DIR, join(ideDir, 'scripts')],
+    ];
 
-  const destinationScripts = join(agenticDir, 'scripts');
-  const scriptsCopyResult = await copyDir(SCRIPTS_DIR, destinationScripts);
-  if (isErr(scriptsCopyResult)) {
-    return Err({
-      code: 'COPY_FAILED' as const,
-      message: 'Failed to copy scripts',
-      cause: scriptsCopyResult.data,
-    });
-  }
-  console.log('  Copied scripts to .agentic/scripts/');
-
-  // Copy workflows to .agentic/workflows
-  const destinationWorkflows = join(agenticDir, 'workflows');
-  const workflowsCopyResult = await copyDir(WORKFLOWS_DIR, destinationWorkflows);
-  if (isErr(workflowsCopyResult)) {
-    return Err({
-      code: 'COPY_FAILED' as const,
-      message: 'Failed to copy workflows',
-      cause: workflowsCopyResult.data,
-    });
-  }
-  console.log('  Copied workflows to .agentic/workflows/');
-
-  const claudeDir = join(projectRoot, '.claude');
-  if (!existsSync(claudeDir)) {
-    mkdirSync(claudeDir, { recursive: true });
-  }
-
-  // Copy skills to .claude/skills
-  const destinationSkills = join(claudeDir, 'skills');
-  const skillsCopyResult = await copyDir(SKILLS_DIR, destinationSkills);
-  if (isErr(skillsCopyResult)) {
-    return Err({
-      code: 'COPY_FAILED' as const,
-      message: 'Failed to copy skills',
-      cause: skillsCopyResult.data,
-    });
-  }
-  console.log('  Copied skills to .claude/skills/');
-
-  // Copy agents + subagents to .claude/agents
-  const destinationClaudeAgents = join(claudeDir, 'agents');
-  const claudeAgentsCopyResult = await copyDir(AGENTS_DIR, destinationClaudeAgents);
-  if (isErr(claudeAgentsCopyResult)) {
-    return Err({
-      code: 'COPY_FAILED' as const,
-      message: 'Failed to copy agents to claude',
-      cause: claudeAgentsCopyResult.data,
-    });
-  }
-  const claudeSubagentsCopyResult = await copyDir(SUBAGENTS_DIR, destinationClaudeAgents);
-  if (isErr(claudeSubagentsCopyResult)) {
-    return Err({
-      code: 'COPY_FAILED' as const,
-      message: 'Failed to copy subagents to claude',
-      cause: claudeSubagentsCopyResult.data,
-    });
-  }
-  console.log('  Copied agents to .claude/agents/');
-
-  // Copy commands to .claude/commands
-  const destinationClaudeCommands = join(claudeDir, 'commands');
-  const claudeCommandsCopyResult = await copyDir(COMMANDS_DIR, destinationClaudeCommands);
-  if (isErr(claudeCommandsCopyResult)) {
-    return Err({
-      code: 'COPY_FAILED' as const,
-      message: 'Failed to copy commands to claude',
-      cause: claudeCommandsCopyResult.data,
-    });
-  }
-  console.log('  Copied commands to .claude/commands/');
-
-  const cursorDir = join(projectRoot, '.cursor');
-  if (!existsSync(cursorDir)) {
-    mkdirSync(cursorDir, { recursive: true });
-  }
-
-  // Copy skills to .cursor/skills
-  const destinationCursorSkills = join(cursorDir, 'skills');
-  const cursorSkillsCopyResult = await copyDir(SKILLS_DIR, destinationCursorSkills);
-  if (isErr(cursorSkillsCopyResult)) {
-    return Err({
-      code: 'COPY_FAILED' as const,
-      message: 'Failed to copy skills to cursor',
-      cause: cursorSkillsCopyResult.data,
-    });
-  }
-  console.log('  Copied skills to .cursor/skills/');
-
-  // Copy agents + subagents to .cursor/agents
-  const destinationCursorAgents = join(cursorDir, 'agents');
-  const cursorAgentsCopyResult = await copyDir(AGENTS_DIR, destinationCursorAgents);
-  if (isErr(cursorAgentsCopyResult)) {
-    return Err({
-      code: 'COPY_FAILED' as const,
-      message: 'Failed to copy agents to cursor',
-      cause: cursorAgentsCopyResult.data,
-    });
-  }
-  const cursorSubagentsCopyResult = await copyDir(SUBAGENTS_DIR, destinationCursorAgents);
-  if (isErr(cursorSubagentsCopyResult)) {
-    return Err({
-      code: 'COPY_FAILED' as const,
-      message: 'Failed to copy subagents to cursor',
-      cause: cursorSubagentsCopyResult.data,
-    });
-  }
-  console.log('  Copied agents to .cursor/agents/');
-
-  // Copy commands to .cursor/commands (Cursor command format)
-  const destinationCommands = join(cursorDir, 'commands');
-  const commandsCopyResult = await copyDir(COMMANDS_DIR, destinationCommands);
-  if (isErr(commandsCopyResult)) {
-    return Err({
-      code: 'COPY_FAILED' as const,
-      message: 'Failed to copy commands',
-      cause: commandsCopyResult.data,
-    });
-  }
-  console.log('  Copied commands to .cursor/commands/');
-
-  makeScriptsExecutable(destinationScripts);
-
-  if (ide === 'claude' || ide === 'both') {
-    const claudeResult = await setupClaude(projectRoot);
-    if (isErr(claudeResult)) {
-      return claudeResult;
+    for (const [src, dest] of copies) {
+      const result = await copyAndProcess(src, dest, targetIde);
+      if (isErr(result)) {
+        return Err({ code: 'COPY_FAILED' as const, message: `Failed to copy to .${targetIde}/`, cause: result.data });
+      }
     }
-  }
 
-  if (ide === 'cursor' || ide === 'both') {
-    const cursorResult = await setupCursor(projectRoot);
-    if (isErr(cursorResult)) {
-      return cursorResult;
+    console.log(`  Copied to .${targetIde}/agents/, skills/, commands/, workflows/, scripts/`);
+
+    makeScriptsExecutable(join(ideDir, 'scripts'));
+
+    if (targetIde === 'claude') {
+      const r = await setupClaude(projectRoot);
+      if (isErr(r)) return r;
+    }
+    if (targetIde === 'cursor') {
+      const r = await setupCursor(projectRoot);
+      if (isErr(r)) return r;
     }
   }
 
   console.log('\nDone!');
-  console.log('  Agents: .claude/agents/, .cursor/agents/');
-  console.log('  Workflows: .agentic/workflows/');
-  console.log('  Skills: .claude/skills/, .cursor/skills/');
-  console.log('  Commands: .claude/commands/, .cursor/commands/');
+  for (const targetIde of ides) {
+    console.log(`  .${targetIde}/: agents/, skills/, commands/, workflows/, scripts/`);
+  }
   console.log('\nUsage:');
-  console.log('  /agentic:quick-spec-and-implement [--auto] [input]  Spec-to-PR (interactive/auto)');
-  console.log('  /agentic:auto-implement [input]                     Autonomous implementation');
+  console.log('  /agentic:quick-spec-and-implement [--auto] [input]');
+  console.log('  /agentic:auto-implement [input]');
 
   return Ok(undefined);
 }
