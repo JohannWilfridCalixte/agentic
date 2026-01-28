@@ -1,21 +1,19 @@
 # Step 7: Review Loop
 
-## EXECUTION RULES
+---
 
-- 🔄 Loop through QA and Security reviews until clean or max iterations
-- 🎯 Editor fixes issues between review rounds
-- 📊 Track severity: Blocker > Major > Minor > Nit
-- 🛑 Exit when: (no blockers AND no majors) OR (max iterations + escalation)
-- ✅ Output: Clean code OR flagged PR with unresolved issues
+## ORCHESTRATOR ACTION
+
+**You MUST delegate all reviews and fixes using the Task tool. Do NOT review or fix code yourself.**
+
+Loop through QA and Security reviews until clean or max iterations (3).
 
 ---
 
 ## LOOP CONFIGURATION
 
-From `workflow.yaml`:
 ```yaml
 max_iterations: 3
-
 severity_handling:
   blocker: must_fix, blocks_pr
   major: should_fix, blocks_pr
@@ -27,14 +25,8 @@ severity_handling:
 
 ## REVIEW LOOP SEQUENCE
 
-### 7.1 Initialize Loop State
+### 7.1 Initialize Loop
 
-**Read current state from workflow-state.yaml:**
-```yaml
-review_iterations: {current_count}
-```
-
-**If first iteration:**
 ```yaml
 review_loop:
   iteration: 1
@@ -42,392 +34,131 @@ review_loop:
   rounds: []
 ```
 
-### 7.2 Invoke QA Agent
+### 7.2 Delegate QA Review
 
-**Claude Code (Subagent):**
 ```
-Task(subagent_type="qa", prompt="Review implementation against acceptance criteria.
+Task(subagent_type="general-purpose", prompt="
+You are the QA agent. {ide-invoke-prefix}{ide-folder}/agents/qa.md for your full instructions.
+
+Review the implementation.
+
+Workflow mode: {workflow_mode}
 Iteration: {iteration}
 Story ID: {story_id}
+Story path: {story_path}
 Spec: {story_path}/spec.md
 Technical Plan: {story_path}/technical-plan.md
 Implementation Log: {story_path}/implementation-log.md
-Output to: {story_path}/qa-{iteration}.md")
+Output to: {story_path}/qa-{iteration}.md
+")
 ```
 
-**Cursor (Inline Agent):**
+Validate: `{story_path}/qa-{iteration}.md` exists with verdict.
+
+### 7.3 Delegate Security QA Review
+
 ```
-@.claude/agents/qa.md
-```
+Task(subagent_type="general-purpose", prompt="
+You are the Security QA agent. {ide-invoke-prefix}{ide-folder}/agents/security-qa.md for your full instructions.
 
-**Provide context:**
-- `spec.md` - acceptance criteria to verify
-- `technical-plan.md` - implementation expectations
-- `implementation-log.md` - what was done
-- Code changes from editor
+Security review of the implementation.
 
-**QA Agent Task:**
-Review implementation against:
-1. All acceptance criteria (AC-01, AC-02, ...)
-2. Technical plan tasks (TASK-01, TASK-02, ...)
-3. Coding standards from skills
-4. RETRO-001 reference validation scenarios
-
-**QA Output Format:**
-```markdown
----
-Review: QA-{iteration_number}
-Reviewer: QA Agent
-Timestamp: {ISO}
-Story: {story_id}
----
-
-# QA Review - Round {iteration}
-
-## Summary
-
-| Severity | Count |
-|----------|-------|
-| Blocker | {n} |
-| Major | {n} |
-| Minor | {n} |
-| Nit | {n} |
-
-**Verdict:** {PASS | CHANGES_REQUESTED | BLOCKED}
-
-## Traceability Matrix
-
-| AC | Status | Test Location | Notes |
-|----|--------|---------------|-------|
-| AC-01 | ✅ Pass | `src/...test.ts:42` | |
-| AC-02 | ❌ Fail | - | Missing test coverage |
-
-## Issues
-
-### BLOCKER
-
-#### QA-{iter}-B01: {Issue title}
-**Location:** `{file}:{line}`
-**Description:** {What's wrong}
-**Expected:** {What should happen}
-**Actual:** {What happens}
-**Fix Required:** {Specific fix needed}
-
-### MAJOR
-
-#### QA-{iter}-M01: {Issue title}
-...
-
-### MINOR
-
-#### QA-{iter}-m01: {Issue title}
-...
-
-### NIT
-
-#### QA-{iter}-n01: {Issue title}
-...
-
-## Reference Validation Results
-
-| Scenario | Expected | Actual | Status |
-|----------|----------|--------|--------|
-| {name} | {expected} | {actual} | ✅/❌ |
-```
-
-**Save to:** `{story_path}/qa-{iteration}.md`
-
-### 7.3 Invoke Security QA Agent
-
-**Claude Code (Subagent):**
-```
-Task(subagent_type="security-qa", prompt="Security review of implementation.
+Workflow mode: {workflow_mode}
 Iteration: {iteration}
 Story ID: {story_id}
+Story path: {story_path}
 Security Addendum: {story_path}/security-addendum.md
 Spec: {story_path}/spec.md
-Output to: {story_path}/security-{iteration}.md")
+Output to: {story_path}/security-{iteration}.md
+")
 ```
 
-**Cursor (Inline Agent):**
-```
-@.claude/agents/security-qa.md
-```
+Validate: `{story_path}/security-{iteration}.md` exists with verdict.
 
-**Provide context:**
-- `security-addendum.md` - security requirements
-- Code changes from editor
-- Previous security reviews if any
+### 7.4 Aggregate Results
 
-**Security QA Output Format:**
-```markdown
----
-Review: SEC-{iteration_number}
-Reviewer: Security QA Agent
-Timestamp: {ISO}
-Story: {story_id}
----
+Read both review files. Collect all issues:
 
-# Security Review - Round {iteration}
-
-## Summary
-
-| Severity | Count |
-|----------|-------|
-| Blocker | {n} |
-| Major | {n} |
-| Minor | {n} |
-| Nit | {n} |
-
-**Verdict:** {PASS | CHANGES_REQUESTED | BLOCKED}
-
-## Security Requirements Verification
-
-| SEC-REQ | Status | Evidence |
-|---------|--------|----------|
-| SEC-REQ-01 | ✅ | {evidence} |
-| SEC-REQ-02 | ❌ | {what's missing} |
-
-## OWASP Coverage
-
-| Category | Status | Notes |
-|----------|--------|-------|
-| Injection | ✅ | Input sanitization in place |
-| Broken Auth | ⚠️ | See M01 |
-| ...
-
-## Issues
-
-### BLOCKER
-
-#### SEC-{iter}-B01: {Issue title}
-**Category:** {OWASP category}
-**Location:** `{file}:{line}`
-**Vulnerability:** {Description}
-**Impact:** {What could happen}
-**Fix Required:** {Specific remediation}
-
-...
-```
-
-**Save to:** `{story_path}/security-{iteration}.md`
-
-### 7.4 Aggregate Review Results
-
-**Collect all issues:**
 ```yaml
 review_round:
   iteration: {n}
-  qa_review: "{story_path}/qa-{n}.md"
-  security_review: "{story_path}/security-{n}.md"
-
   totals:
     blocker: {sum}
     major: {sum}
     minor: {sum}
     nit: {sum}
-
-  issues_to_fix:
-    - id: "QA-{n}-B01"
-      severity: blocker
-      source: qa
-      title: "{title}"
-    - id: "SEC-{n}-M01"
-      severity: major
-      source: security
-      title: "{title}"
-    ...
-
   verdict: "PASS" | "FIX_REQUIRED" | "BLOCKED"
 ```
 
 ### 7.5 Check Exit Conditions
 
-**Exit Condition 1: Clean**
+**Clean exit:**
+
 ```
 IF blocker_count == 0 AND major_count == 0:
-  → EXIT LOOP → Proceed to Step 8 (Create PR)
+  → EXIT → Proceed to Step 8
 ```
 
-**Exit Condition 2: Max Iterations with Escalation**
+**Max iterations with escalation:**
+
 ```
-IF iteration >= max_iterations AND (blocker_count > 0 OR major_count > 0):
-  → ESCALATION REQUIRED
+IF iteration >= max_iterations AND (blockers > 0 OR majors > 0):
+  → ESCALATION
 ```
 
-**Continue Condition:**
+**Continue:**
+
 ```
-IF (blocker_count > 0 OR major_count > 0) AND iteration < max_iterations:
-  → CONTINUE TO FIX PHASE
+IF (blockers > 0 OR majors > 0) AND iteration < max_iterations:
+  → FIX PHASE
 ```
 
-### 7.6 Fix Phase (If Issues Found)
+### 7.6 Delegate Fix Phase
 
-**Filter issues to fix:**
-- ALL blockers (must fix)
-- ALL majors (should fix)
-- Minors: fix if time permits
-- Nits: defer to future
-
-**Claude Code (Subagent):**
 ```
-Task(subagent_type="editor", prompt="Fix review issues.
+Task(subagent_type="general-purpose", prompt="
+You are the Editor agent. {ide-invoke-prefix}{ide-folder}/agents/editor.md for your full instructions (Fix Phase section).
+
+Fix review issues.
+
+Workflow mode: {workflow_mode}
 Iteration: {iteration}
+Story ID: {story_id}
+Story path: {story_path}
 Issues to fix:
-{issue_list}
+{blocker and major issues list}
 
 Priority: Blockers first, then Majors.
-Update implementation-log.md with fixes.
-Run tests to verify.")
+Update implementation-log.md.
+Run tests to verify.
+Decision log: {story_path}/decision-log.md
+")
 ```
 
-**Cursor (Inline Agent):**
-```
-@.claude/agents/editor.md
-```
+Validate: fixes applied, tests pass.
 
-**Editor Fix Task:**
-```markdown
-## Issues to Address
+### 7.7 Loop
 
-Priority order: Blockers first, then Majors.
+Update iteration count, go to 7.2.
 
-### Blockers (MUST FIX)
-{List of blocker issues with full context}
+### 7.8 Handle Escalation
 
-### Majors (SHOULD FIX)
-{List of major issues with full context}
+**Interactive mode:** Present unresolved issues, ask user how to proceed.
 
-### Minors (MAY FIX - if time permits)
-{List of minor issues}
+**Auto mode:** Log escalation decision in `decision-log.md`, set draft PR flags.
 
-## Instructions
-
-1. Fix each blocker issue
-2. Fix each major issue
-3. Run tests to verify fixes don4. Update implementation-log.md with fixes made
-5. Do NOT introduce new issues while fixing
-
-## Evidence Required
-
-For each fix, document:
-- Issue ID addressed
-- What was changed
-- Test command and result
-```
-
-**Editor Output:**
-Append to `implementation-log.md`:
-```markdown
-## Review Fix Round {iteration}
-
-### Issues Addressed
-
-| Issue ID | Status | Change Made |
-|----------|--------|-------------|
-| QA-1-B01 | ✅ Fixed | Added null check at line 42 |
-| SEC-1-M01 | ✅ Fixed | Parameterized SQL query |
-
-### Tests Run
-\`\`\`
-$ npm test
-...
-All tests passed
-\`\`\`
-
-### Files Changed
-- `src/api/handler.ts` - null check, SQL fix
-- `src/api/handler.test.ts` - added test case
-```
-
-### 7.7 Loop Continuation
-
-**Update workflow-state.yaml:**
-```yaml
-review_iterations: {iteration + 1}
-
-review_loop:
-  rounds:
-    - iteration: 1
-      qa_issues: {count}
-      security_issues: {count}
-      fixed: {count}
-    - iteration: 2
-      ...
-```
-
-**Go to 7.2** (next QA review)
-
-### 7.8 Handle Escalation (Max Iterations Reached)
-
-**If max iterations reached with unresolved issues:**
-
-*Interactive mode:*
-```
-⚠️ Review Loop: Max iterations ({max}) reached
-
-**Unresolved Issues:**
-- Blockers: {count}
-- Majors: {count}
-
-**Options:**
-[1] Continue fixing (add {n} more iterations)
-[2] Create draft PR with issues flagged
-[3] Abort workflow
-
-What would you like to do?
-```
-Wait for user decision.
-
-*Auto mode:*
-**Log escalation decision:**
-```markdown
-### DEC-{N}: Review Loop Escalation
-
-**Step**: review-loop
-**Agent**: Orchestrator
-**Timestamp**: {ISO}
-
-**Context**:
-Max review iterations ({max}) reached with {blocker_count} blockers and {major_count} majors unresolved.
-
-**Options Considered**:
-1. Continue fixing indefinitely (risk: infinite loop)
-2. Create draft PR with issues flagged (chosen)
-3. Abort workflow (too aggressive)
-
-**Decision**: Create draft PR with issues flagged
-
-**Confidence**: 85%
-
-**Rationale**:
-- Human review needed for complex issues
-- Progress captured in PR for visibility
-- Not losing work done so far
-
-**Trade-offs Accepted**:
-- PR will need human intervention before merge
-- Unresolved issues remain in codebase temporarily
-
-**Reversibility**: Easy (PR can be updated or closed)
-```
-
-**Set flags for Step 8:**
 ```yaml
 pr_flags:
   is_draft: true
-  unresolved_issues:
-    - {issue_id}: {title}
-    ...
+  unresolved_issues: [{issue_id}: {title}, ...]
 ```
 
 ---
 
 ## STEP COMPLETION
 
-### On Clean Exit
+### Clean Exit
 
-**Update workflow-state.yaml:**
 ```yaml
 review_loop:
   status: "passed"
@@ -444,21 +175,8 @@ steps_completed:
 current_step: 8
 ```
 
-**Output:**
-```
-✅ Review loop complete
+### Escalated Exit
 
-🔄 Iterations: {n}
-✅ QA: Passed
-✅ Security: Passed
-📝 Deferred: {minor_count} minor, {nit_count} nits
-
-Proceeding to create PR...
-```
-
-### On Escalated Exit
-
-**Update workflow-state.yaml:**
 ```yaml
 review_loop:
   status: "escalated"
@@ -478,19 +196,8 @@ steps_completed:
 current_step: 8
 ```
 
-**Output:**
-```
-⚠️ Review loop escalated
-
-🔄 Iterations: {max} (maximum reached)
-❌ Unresolved: {blocker_count} blockers, {major_count} majors
-📝 Deferred: {minor_count} minor, {nit_count} nits
-
-Creating draft PR for human review...
-```
-
 ---
 
 ## NEXT STEP
 
-Load and execute: `step-08-create-pr.md`
+Load `step-08-create-pr.md`

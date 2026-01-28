@@ -1,134 +1,52 @@
 # Step 4: Security Context
 
-## EXECUTION RULES
-
-- 🎯 Invoke Security agent for threat modeling and security requirements
-- 📋 Security decides all security-related questions
-- 🚫 Orchestrator does NOT make security decisions
-- ✅ Output: `security-addendum.md`
-
 ---
 
-## AGENT HANDOFF
+## ORCHESTRATOR ACTION
 
-**Load Security Context Agent:**
+**You MUST delegate this step using the Task tool. Do NOT create the threat model yourself.**
+
+The Security subagent will read its own instructions from `.{ide-folder}/agents/security.md`.
+
+### Delegate
+
 ```
-@.claude/agents/security.md
-```
+Task(subagent_type="general-purpose", prompt="
+You are the Security agent. {ide-invoke-prefix}{ide-folder}/agents/security.md for your full instructions.
 
-**Provide context:**
-- `spec.md` - product requirements with security implications
-- `technical-context.md` - technical landscape
-- `workflow_mode` - interactive or auto
+Create security addendum with threat model and security requirements.
 
----
-
-## SECURITY CONTEXT TASK
-
-### Threat Modeling
-
-Analyze story for:
-1. **Assets** - what needs protection
-2. **Actors** - who interacts with the system
-3. **Trust boundaries** - where security enforcement happens
-4. **Attack vectors** - potential threats
-
-### Security Document Sections
-
-**Required output in `security-addendum.md`:**
-
-```markdown
----
-Epic ID: {epic_id}
+Workflow mode: {workflow_mode}
 Story ID: {story_id}
-Document: Security Addendum
-Status: Draft
-Owner: Security
-Created: {ISO_timestamp}
----
+Story path: {story_path}
+Spec: {story_path}/spec.md
+Technical Context: {story_path}/technical-context.md
+Output to: {story_path}/security-addendum.md
+Decision log: {story_path}/decision-log.md
 
-# Security Addendum - {story_id}
-
-## Security Objectives
-- Confidentiality: {requirements}
-- Integrity: {requirements}
-- Availability: {requirements}
-
-## Assets / Actors / Trust Boundaries
-
-### Assets
-| Asset | Sensitivity | Protection Required |
-|-------|-------------|---------------------|
-| {asset} | {High/Med/Low} | {protection} |
-
-### Actors
-| Actor | Trust Level | Permissions |
-|-------|-------------|-------------|
-| {actor} | {level} | {permissions} |
-
-### Trust Boundaries
-{Diagram or description of trust boundaries}
-
-## Multi-Tenancy Isolation (MANDATORY)
-
-> Required for all multi-tenant systems.
-
-| Concern | Requirement | Implementation |
-|---------|-------------|----------------|
-| Data isolation | {requirement} | {how} |
-| Resource isolation | {requirement} | {how} |
-| Tenant context | {requirement} | {how} |
-
-## Security Requirements
-
-### SEC-REQ-01: {Requirement title}
-**Category**: {Auth | Input Validation | Data Protection | ...}
-**Priority**: {Critical | High | Medium}
-**Description**: {Detailed requirement}
-**Verification**: {How to verify compliance}
-
-### SEC-REQ-02: {Requirement title}
-...
-
-## OWASP Top 10 Mapping
-
-| OWASP Category | Applicable | Mitigation |
-|----------------|------------|------------|
-| A01: Broken Access Control | {Yes/No} | {mitigation} |
-| A02: Cryptographic Failures | {Yes/No} | {mitigation} |
-| A03: Injection | {Yes/No} | {mitigation} |
-| A04: Insecure Design | {Yes/No} | {mitigation} |
-| A05: Security Misconfiguration | {Yes/No} | {mitigation} |
-| A06: Vulnerable Components | {Yes/No} | {mitigation} |
-| A07: Auth Failures | {Yes/No} | {mitigation} |
-| A08: Data Integrity Failures | {Yes/No} | {mitigation} |
-| A09: Logging Failures | {Yes/No} | {mitigation} |
-| A10: SSRF | {Yes/No} | {mitigation} |
-
-## GDPR / Compliance Constraints
-{If applicable}
-
-## Security Verification Matrix
-
-| SEC-REQ | Test Type | Test Location | Pass Criteria |
-|---------|-----------|---------------|---------------|
-| SEC-REQ-01 | {unit/integration/manual} | {path} | {criteria} |
+{If auto mode: IMPORTANT: Do NOT ask user questions. Log all decisions in decision-log.md.}
+")
 ```
 
-### Auto Mode Decisions
+### Inputs to provide
 
-**Security decisions follow same pattern:**
-- Log decision with context
-- Include security-specific rationale
-- Note compliance implications in trade-offs
+- `spec.md` — product requirements with security implications
+- `technical-context.md` — technical landscape
+- `workflow_mode`: interactive or auto
+
+### Validate output
+
+After the subagent completes, verify:
+- `{story_path}/security-addendum.md` exists and is non-empty
+- Contains SEC-REQ-* requirements
+- Contains OWASP assessment
 
 ---
 
 ## STEP COMPLETION
 
-**Write to:** `{story_path}/security-addendum.md`
+Update `workflow-state.yaml`:
 
-**Update workflow-state.yaml:**
 ```yaml
 artifacts:
   security_context: "{story_path}/security-addendum.md"
