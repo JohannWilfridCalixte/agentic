@@ -1,13 +1,12 @@
 # Step 5: Review Loop
 
-## EXECUTION RULES
+---
 
-- Loop through QA and Security reviews until clean or max iterations
-- Editor fixes issues between review rounds
-- Track severity: Blocker > Major > Minor > Nit
-- Exit when: (no blockers AND no majors) OR (max iterations + escalation)
-- NEVER ask user - escalate via draft PR if max iterations reached
-- Output: clean code OR flagged PR with unresolved issues
+## ORCHESTRATOR ACTION
+
+**You MUST delegate all reviews and fixes using the Task tool. Do NOT review or fix code yourself.**
+
+Loop through QA and Security reviews until clean or max iterations (3).
 
 ---
 
@@ -35,45 +34,50 @@ review_loop:
   rounds: []
 ```
 
-### 5.2 Invoke QA Agent
+### 5.2 Delegate QA Review
 
-**Claude Code:**
 ```
-Task(subagent_type="qa", prompt="Review implementation.
+Task(subagent_type="general-purpose", prompt="
+You are the QA agent. {ide-invoke-prefix}{ide-folder}/agents/qa.md for your full instructions.
+
+Review the implementation.
+
 Workflow: auto-implement (autonomous)
 Iteration: {iteration}
 Story ID: {story_id}
+Story path: {story_path}
 Technical Plan: {story_path}/technical-plan.md
 {If exists: Spec: {story_path}/spec.md}
 Implementation Log: {story_path}/implementation-log.md
-Output to: {story_path}/qa-{iteration}.md")
+Output to: {story_path}/qa-{iteration}.md
+")
 ```
 
-**Cursor:** `@.claude/agents/qa.md`
+Validate: `{story_path}/qa-{iteration}.md` exists with verdict.
 
-**QA Output:** `{story_path}/qa-{iteration}.md`
+### 5.3 Delegate Security QA Review
 
-Format: Summary (severity counts, verdict), Traceability Matrix, Issues by severity.
-
-### 5.3 Invoke Security QA Agent
-
-**Claude Code:**
 ```
-Task(subagent_type="security-qa", prompt="Security review.
+Task(subagent_type="general-purpose", prompt="
+You are the Security QA agent. {ide-invoke-prefix}{ide-folder}/agents/security-qa.md for your full instructions.
+
+Security review of the implementation.
+
 Workflow: auto-implement (autonomous)
 Iteration: {iteration}
 Story ID: {story_id}
+Story path: {story_path}
 {If exists: Spec: {story_path}/spec.md}
-Output to: {story_path}/security-{iteration}.md")
+Output to: {story_path}/security-{iteration}.md
+")
 ```
 
-**Cursor:** `@.claude/agents/security-qa.md`
-
-**Security QA Output:** `{story_path}/security-{iteration}.md`
+Validate: `{story_path}/security-{iteration}.md` exists with verdict.
 
 ### 5.4 Aggregate Results
 
-Collect all issues from both reviews:
+Read both review files. Collect all issues:
+
 ```yaml
 review_round:
   iteration: {n}
@@ -88,42 +92,49 @@ review_round:
 ### 5.5 Check Exit Conditions
 
 **Clean exit:**
+
 ```
 IF blocker_count == 0 AND major_count == 0:
   → EXIT → Proceed to Step 6
 ```
 
 **Max iterations with escalation:**
+
 ```
 IF iteration >= max_iterations AND (blockers > 0 OR majors > 0):
   → ESCALATION: draft PR with issues flagged
 ```
 
 **Continue:**
+
 ```
 IF (blockers > 0 OR majors > 0) AND iteration < max_iterations:
   → FIX PHASE
 ```
 
-### 5.6 Fix Phase
+### 5.6 Delegate Fix Phase
 
-**Claude Code:**
 ```
-Task(subagent_type="editor", prompt="Fix review issues.
+Task(subagent_type="general-purpose", prompt="
+You are the Editor agent. {ide-invoke-prefix}{ide-folder}/agents/editor.md for your full instructions (Fix Phase section).
+
+Fix review issues.
+
 Workflow: auto-implement (autonomous)
 Iteration: {iteration}
+Story ID: {story_id}
+Story path: {story_path}
 Issues to fix:
 {blocker and major issues list}
 
 Priority: Blockers first, then Majors.
 Update implementation-log.md.
 Run tests to verify.
-Decision log: {story_path}/decision-log.md")
+Decision log: {story_path}/decision-log.md
+")
 ```
 
-**Cursor:** `@.claude/agents/editor.md`
-
-Append fix details to `implementation-log.md`.
+Validate: fixes applied, tests pass.
 
 ### 5.7 Loop
 
@@ -142,16 +153,14 @@ Log escalation decision in `decision-log.md`:
 **Context**: Max iterations ({max}) reached with {blocker_count} blockers, {major_count} majors unresolved.
 
 **Decision**: Create draft PR with issues flagged
-
 **Confidence**: 85%
-
 **Rationale**: Human review needed. Progress captured in PR.
-
 **Trade-offs**: PR needs human intervention before merge.
 **Reversibility**: Easy
 ```
 
 Set flags:
+
 ```yaml
 pr_flags:
   is_draft: true
