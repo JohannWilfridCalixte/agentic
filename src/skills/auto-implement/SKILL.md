@@ -27,11 +27,17 @@ Autonomously implement from spec/PRD/plan to PR. No user interaction - decisions
 
 ## Agent References
 
-Load agents inline using:
-- `@.claude/agents/architect.md` - Context gathering + planning
-- `@.claude/agents/editor.md` - Implementation
-- `@.claude/agents/qa.md` - QA review
-- `@.claude/agents/security-qa.md` - Security review
+Each subagent reads its own instructions from `.{ide-folder}/agents/{agent}.md`.
+
+Invoke: `Task(subagent_type="general-purpose", prompt="You are the {Agent} agent. {ide-invoke-prefix}{ide-folder}/agents/{agent}.md for your full instructions. ...")`
+
+Available agents: `architect`, `editor`, `qa`, `security-qa`
+
+## Mandatory Delegation
+
+**You MUST delegate all agent work using the Task tool. NEVER do agent work inline.**
+
+You are the orchestrator. You classify input, manage state, validate outputs, and delegate. You do NOT gather context, write plans, implement code, or review.
 
 ## Execution Protocol
 
@@ -46,25 +52,19 @@ Load agents inline using:
 
 ### Step 2: Architect Context (if route includes it)
 
-Load: `@.claude/agents/architect.md`
-
-Task: Analyze codebase for relevant code, patterns, constraints, dependencies.
+**Delegate via Task tool** → Architect subagent (Phase 1: Context Gathering)
 
 Output: `{story_path}/technical-context.md`
 
 ### Step 3: Architect Plan (product/mixed only)
 
-Load: `@.claude/agents/architect.md`
-
-Task: Create implementation plan with tasks, verification matrix, editor brief.
+**Delegate via Task tool** → Architect subagent (Phase 2: Technical Planning)
 
 Output: `{story_path}/technical-plan.md`
 
 ### Step 4: Editor Implement
 
-Load: `@.claude/agents/editor.md`
-
-Task: Implement code per technical plan. Execute tasks in order, write tests, run suite.
+**Delegate via Task tool** → Editor subagent
 
 Output: `{story_path}/implementation-log.md` + code changes
 
@@ -72,18 +72,14 @@ Output: `{story_path}/implementation-log.md` + code changes
 
 Max 3 iterations. Each iteration:
 
-**5a. QA Review** - `@.claude/agents/qa.md`
-Output: `{story_path}/qa-{n}.md`
+**5a.** **Delegate via Task tool** → QA subagent → `{story_path}/qa-{n}.md`
 
-**5b. Security Review** - `@.claude/agents/security-qa.md`
-Output: `{story_path}/security-{n}.md`
+**5b.** **Delegate via Task tool** → Security QA subagent → `{story_path}/security-{n}.md`
 
 **5c. Exit conditions:**
 - No blockers AND no majors → PR
-- Issues found → Editor fixes, loop
+- Issues found → Delegate fix to Editor subagent, loop
 - Max iterations → Escalate to draft PR
-
-**5d. Fix Phase** - `@.claude/agents/editor.md`
 
 ### Step 6: Create PR
 

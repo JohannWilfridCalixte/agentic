@@ -25,14 +25,17 @@ Transform a product idea into a merged PR through structured agent collaboration
 
 ## Agent References
 
-Load agents inline using:
-- `@.claude/agents/pm.md` - Product Manager
-- `@.claude/agents/architect.md` - Technical context gathering
-- `@.claude/agents/architect.md` - Technical planning
-- `@.claude/agents/security.md` - Security threat modeling
-- `@.claude/agents/editor.md` - Implementation
-- `@.claude/agents/qa.md` - QA review
-- `@.claude/agents/security-qa.md` - Security review
+Each subagent reads its own instructions from `.{ide-folder}/agents/{agent}.md`.
+
+Invoke: `Task(subagent_type="general-purpose", prompt="You are the {Agent} agent. {ide-invoke-prefix}{ide-folder}/agents/{agent}.md for your full instructions. ...")`
+
+Available agents: `pm`, `architect`, `security`, `editor`, `qa`, `security-qa`
+
+## Mandatory Delegation
+
+**You MUST delegate all agent work using the Task tool. NEVER do agent work inline.**
+
+You are the orchestrator. You parse input, manage state, validate outputs, and delegate. You do NOT write specs, gather context, create plans, implement code, or review.
 
 ## Execution Protocol
 
@@ -46,7 +49,7 @@ Load agents inline using:
 
 ### Step 2: PM Spec
 
-Load: `@.claude/agents/pm.md`
+Load: `{ide-invoke-prefix}{ide-folder}/agents/pm.md`
 
 Task: Create/refine product specification with:
 - Problem statement
@@ -60,7 +63,7 @@ Output: `{story_path}/spec.md`
 
 ### Step 3: Architect Context
 
-Load: `@.claude/agents/architect.md`
+Load: `{ide-invoke-prefix}{ide-folder}/agents/architect.md`
 
 Task: Analyze codebase for:
 - Relevant code locations
@@ -72,7 +75,7 @@ Output: `{story_path}/technical-context.md`
 
 ### Step 4: Security Context
 
-Load: `@.claude/agents/security.md`
+Load: `{ide-invoke-prefix}{ide-folder}/agents/security.md`
 
 Task: Create threat model with:
 - Assets, threats, mitigations
@@ -83,7 +86,7 @@ Output: `{story_path}/security-addendum.md`
 
 ### Step 5: Technical Plan
 
-Load: `@.claude/agents/architect.md`
+Load: `{ide-invoke-prefix}{ide-folder}/agents/architect.md`
 
 Task: Create implementation plan with:
 - Tasks (TASK-01, TASK-02, ...)
@@ -94,7 +97,7 @@ Output: `{story_path}/technical-plan.md`
 
 ### Step 6: Implementation
 
-Load: `@.claude/agents/editor.md`
+Load: `{ide-invoke-prefix}{ide-folder}/agents/editor.md`
 
 Task: Implement code per technical plan:
 - Execute tasks in order
@@ -109,7 +112,7 @@ Output: `{story_path}/implementation-log.md` + code changes
 Max 3 iterations. Each iteration:
 
 **7a. QA Review**
-Load: `@.claude/agents/qa.md`
+Load: `{ide-invoke-prefix}{ide-folder}/agents/qa.md`
 
 Review against:
 - Acceptance criteria
@@ -119,7 +122,7 @@ Review against:
 Output: `{story_path}/qa-{n}.md`
 
 **7b. Security Review**
-Load: `@.claude/agents/security-qa.md`
+Load: `{ide-invoke-prefix}{ide-folder}/agents/security-qa.md`
 
 Review for:
 - Security requirements
@@ -134,7 +137,7 @@ Output: `{story_path}/security-{n}.md`
 - Max iterations → Escalate
 
 **7d. Fix Phase**
-Load: `@.claude/agents/editor.md`
+Load: `{ide-invoke-prefix}{ide-folder}/agents/editor.md`
 
 Fix blocker and major issues, then return to 7a.
 

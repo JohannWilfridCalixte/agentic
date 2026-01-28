@@ -56,35 +56,37 @@ If auto mode, create `decision-log.md`.
 
 ### Step 3: Delegate to Subagents
 
-Use the Task tool to delegate to specialized subagents:
+**You MUST use the Task tool for all agent work. NEVER do agent work inline.**
+
+Each subagent reads its own instructions from `.{ide-folder}/agents/{agent}.md`.
 
 **PM Spec (Step 2):**
 ```
-Task(subagent_type="pm", prompt="Create product specification for: {input}")
+Task(subagent_type="general-purpose", prompt="You are the PM agent. {ide-invoke-prefix}{ide-folder}/agents/pm.md. Create product specification. ...")
 ```
 Output: `spec.md`
 
 **Architect Context (Step 3):**
 ```
-Task(subagent_type="architect", prompt="Gather technical context for spec: {spec_summary}")
+Task(subagent_type="general-purpose", prompt="You are the Architect agent. {ide-invoke-prefix}{ide-folder}/agents/architect.md. Execute Phase 1: Context Gathering. ...")
 ```
 Output: `technical-context.md`
 
 **Security Context (Step 4):**
 ```
-Task(subagent_type="security", prompt="Create threat model and security requirements for: {spec_summary}")
+Task(subagent_type="general-purpose", prompt="You are the Security agent. {ide-invoke-prefix}{ide-folder}/agents/security.md. Create security addendum. ...")
 ```
 Output: `security-addendum.md`
 
 **Technical Plan (Step 5):**
 ```
-Task(subagent_type="architect", prompt="Create implementation plan based on context: {context_summary}")
+Task(subagent_type="general-purpose", prompt="You are the Architect agent. {ide-invoke-prefix}{ide-folder}/agents/architect.md. Execute Phase 2: Technical Planning. ...")
 ```
 Output: `technical-plan.md`
 
 **Implementation (Step 6):**
 ```
-Task(subagent_type="editor", prompt="Implement technical plan. Tasks: {task_list}")
+Task(subagent_type="general-purpose", prompt="You are the Editor agent. {ide-invoke-prefix}{ide-folder}/agents/editor.md. Implement the technical plan. ...")
 ```
 Output: `implementation-log.md` + code changes
 
@@ -94,13 +96,13 @@ Max 3 iterations. Each iteration:
 
 1. **QA Review:**
 ```
-Task(subagent_type="qa", prompt="Review implementation against ACs. Iteration: {n}")
+Task(subagent_type="general-purpose", prompt="You are the QA agent. {ide-invoke-prefix}{ide-folder}/agents/qa.md. Review implementation. Iteration: {n}")
 ```
 Output: `qa-{n}.md`
 
 2. **Security Review:**
 ```
-Task(subagent_type="security-qa", prompt="Security review of implementation. Iteration: {n}")
+Task(subagent_type="general-purpose", prompt="You are the Security QA agent. {ide-invoke-prefix}{ide-folder}/agents/security-qa.md. Security review. Iteration: {n}")
 ```
 Output: `security-{n}.md`
 
@@ -111,7 +113,7 @@ Output: `security-{n}.md`
 
 4. **Fix Phase (if needed):**
 ```
-Task(subagent_type="editor", prompt="Fix review issues: {issue_list}")
+Task(subagent_type="general-purpose", prompt="You are the Editor agent. {ide-invoke-prefix}{ide-folder}/agents/editor.md. Fix review issues: {issue_list}")
 ```
 
 ### Step 5: Create PR

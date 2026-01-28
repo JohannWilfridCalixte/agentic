@@ -64,21 +64,25 @@ Editor → Review Loop → PR
 
 ### Step 4: Delegate to Subagents
 
+**You MUST use the Task tool for all agent work. NEVER do agent work inline.**
+
+Each subagent reads its own instructions from `.{ide-folder}/agents/{agent}.md`.
+
 **Architect Context:**
 ```
-Task(subagent_type="architect", prompt="Gather technical context for: {input_summary}")
+Task(subagent_type="general-purpose", prompt="You are the Architect agent. {ide-invoke-prefix}{ide-folder}/agents/architect.md for your full instructions. Execute Phase 1: Context Gathering. ...")
 ```
 Output: `technical-context.md`
 
 **Architect Plan (product/mixed only):**
 ```
-Task(subagent_type="architect", prompt="Create implementation plan from: {input + context}")
+Task(subagent_type="general-purpose", prompt="You are the Architect agent. {ide-invoke-prefix}{ide-folder}/agents/architect.md for your full instructions. Execute Phase 2: Technical Planning. ...")
 ```
 Output: `technical-plan.md`
 
 **Editor:**
 ```
-Task(subagent_type="editor", prompt="Implement tasks: {task_list}")
+Task(subagent_type="general-purpose", prompt="You are the Editor agent. {ide-invoke-prefix}{ide-folder}/agents/editor.md for your full instructions. Implement the technical plan. ...")
 ```
 Output: `implementation-log.md` + code changes
 
@@ -88,12 +92,12 @@ Max 3 iterations. Each iteration:
 
 1. **QA Review:**
 ```
-Task(subagent_type="qa", prompt="Review implementation. Iteration: {n}")
+Task(subagent_type="general-purpose", prompt="You are the QA agent. {ide-invoke-prefix}{ide-folder}/agents/qa.md for your full instructions. Review implementation. Iteration: {n}")
 ```
 
 2. **Security Review:**
 ```
-Task(subagent_type="security-qa", prompt="Security review. Iteration: {n}")
+Task(subagent_type="general-purpose", prompt="You are the Security QA agent. {ide-invoke-prefix}{ide-folder}/agents/security-qa.md for your full instructions. Security review. Iteration: {n}")
 ```
 
 3. **Exit conditions:**
