@@ -64,14 +64,14 @@ Required sections:
 - CHANGES_REQUESTED: Has majors or blockers
 - BLOCKED: Critical issues preventing progress
 
-## Cursor
+## Skills
 
-When used in Cursor, load the following skills:
-- @.claude/skills/qa
-- @.claude/skills/typescript-engineer
-- @.claude/skills/typescript-imports
-- @.claude/skills/clean-architecture
-- @.claude/skills/observability
-- @.claude/skills/dx
-- @.claude/skills/ux-patterns
-- @.claude/skills/context7
+Load the following skills:
+- {ide-invoke-prefix}{ide-folder}/skills/qa
+- {ide-invoke-prefix}{ide-folder}/skills/typescript-engineer
+- {ide-invoke-prefix}{ide-folder}/skills/typescript-imports
+- {ide-invoke-prefix}{ide-folder}/skills/clean-architecture
+- {ide-invoke-prefix}{ide-folder}/skills/observability
+- {ide-invoke-prefix}{ide-folder}/skills/dx
+- {ide-invoke-prefix}{ide-folder}/skills/ux-patterns
+- {ide-invoke-prefix}{ide-folder}/skills/context7

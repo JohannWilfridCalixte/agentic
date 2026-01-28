@@ -68,8 +68,8 @@ Assess each relevant category:
 - CHANGES_REQUESTED: Security issues found
 - BLOCKED: Critical vulnerability
 
-## Cursor
+## Skills
 
-When used in Cursor, load the following skills:
-- @.claude/skills/security-qa
-- @.claude/skills/context7
+Load the following skills:
+- {ide-invoke-prefix}{ide-folder}/skills/security-qa
+- {ide-invoke-prefix}{ide-folder}/skills/context7
