@@ -1,13 +1,13 @@
 ---
 description: Agentic framework - agent prompts and scripts
 globs: **/*
-alwaysApply: false
+alwaysApply: true
 ---
 
 # Agentic Framework
 
-Load agents with: `@.agentic/agents/{agent}.md`
-Load skills with: `@.claude/skills/{skill}/SKILL.md`
+Load agents with: `@.cursor/agents/{agent}.md`
+Load skills with: `@.cursor/skills/{skill}/SKILL.md`
 
 ## Skills
 
@@ -26,6 +26,6 @@ Load skills with: `@.claude/skills/{skill}/SKILL.md`
 
 ## Scripts
 
-Located in `.agentic/scripts/`:
+Located in `.cursor/scripts/`:
 - sync-to-github.sh, sync-from-github.sh, sync-all.sh
 - create-pr.sh, resolve-parent.sh

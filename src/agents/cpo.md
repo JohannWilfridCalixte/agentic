@@ -2,7 +2,7 @@
 
 ## Team and Workflow
 
-@.agentic/agents/team-and-workflow.md
+{ide-invoke-prefix}{ide-folder}/agents/team-and-workflow.md
 
 ## Role & Identity
 

@@ -1,8 +1,8 @@
 ## Agentic Framework
 
-Agents in `.agentic/agents/` - load with `@.agentic/agents/{agent}.md`
+Agents in `.claude/agents/` - load with `Read .claude/agents/{agent}.md`
 Skills in `.claude/skills/` - auto-loaded by Claude Code
-Scripts in `.agentic/scripts/`
+Scripts in `.claude/scripts/`
 
 ### Skills
 
