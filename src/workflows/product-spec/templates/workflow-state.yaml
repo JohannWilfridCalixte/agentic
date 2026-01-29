@@ -1,0 +1,45 @@
+# Workflow State Template
+# Tracks progress through product-spec workflow
+# Location: documentation/product/specs/workflow-state.yaml
+
+workflow: product-spec
+version: "1.0.0"
+
+# Workflow configuration
+mode: "interactive" # or "auto"
+input_type: "user" # or "file"
+input_source: null # path or null
+
+# Topic identification
+topic: "" # kebab-case topic slug
+output_path: "documentation/product/specs"
+
+# Timing
+started_at: "" # ISO timestamp
+updated_at: "" # ISO timestamp
+completed_at: null # ISO timestamp when done
+
+# Progress tracking
+status: "pending" # pending | in_progress | completed | failed
+current_step: 0
+steps_completed: []
+# Example:
+#   - step: 1
+#     name: "input-detection"
+#     completed_at: "2024-01-15T10:00:00Z"
+#     output: null
+#   - step: 2
+#     name: "product-discovery"
+#     completed_at: "2024-01-15T10:30:00Z"
+#     output: "documentation/product/specs/discovery-auth-flow.md"
+
+# Artifacts created
+artifacts:
+  discovery: null # discovery-{topic}.md
+  spec: null # spec-{topic}.md
+  decision_log: null # auto mode only
+
+# Validation flags
+validation:
+  discovery_complete: false
+  required_sections_present: false
