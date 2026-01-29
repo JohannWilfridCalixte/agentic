@@ -1,18 +1,18 @@
-type MatchCallback<TData, TReason> = {
+interface MatchCallbacks<TData, TReason> {
   readonly Ok: (data: TData) => void | Promise<void>;
   readonly Err: (err: TReason) => void | Promise<void>;
-};
+}
 
 export interface Ok<TData = unknown> {
   readonly _type: 'Ok';
   readonly data: TData;
-  readonly match: (callback: MatchCallback<TData, never>) => void | Promise<void>;
+  readonly match: (callbacks: MatchCallbacks<TData, never>) => void | Promise<void>;
 }
 
 export interface Err<TReason = 'unknown'> {
   readonly _type: 'Err';
   readonly data: TReason;
-  readonly match: (callback: MatchCallback<never, TReason>) => void | Promise<void>;
+  readonly match: (callbacks: MatchCallbacks<never, TReason>) => void | Promise<void>;
 }
 
 export type Result<TSuccessData = unknown, TErrorReason = 'unknown'> =
@@ -23,8 +23,8 @@ export function Ok<TData = unknown>(data: TData): Ok<TData> {
   return {
     _type: 'Ok' as const,
     data,
-    match: async (callback: MatchCallback<TData, never>) => {
-      const result = callback.Ok(data);
+    match: async (callbacks: MatchCallbacks<TData, never>) => {
+      const result = callbacks.Ok(data);
       if (result instanceof Promise) {
         await result;
       }
@@ -36,8 +36,8 @@ export function Err<TReason = 'unknown'>(data: TReason): Err<TReason> {
   return {
     _type: 'Err' as const,
     data,
-    match: async (callback: MatchCallback<never, TReason>) => {
-      const result = callback.Err(data);
+    match: async (callbacks: MatchCallbacks<never, TReason>) => {
+      const result = callbacks.Err(data);
       if (result instanceof Promise) {
         await result;
       }
@@ -51,20 +51,20 @@ export function Result(): never {
 
 Result.match = async <TData, TReason, TResult>(
   result: Result<TData, TReason>,
-  callback: {
+  callbacks: {
     readonly Ok: (data: TData) => undefined | Promise<TResult>;
     readonly Err: (err: TReason) => undefined | Promise<TResult>;
   },
 ) => {
   if (isOk(result)) {
-    const callbackResult = callback.Ok(result.data);
+    const callbackResult = callbacks.Ok(result.data);
     if (callbackResult instanceof Promise) {
       await callbackResult;
     }
     return callbackResult;
   }
 
-  const callbackResult = callback.Err(result.data);
+  const callbackResult = callbacks.Err(result.data);
   if (callbackResult instanceof Promise) {
     await callbackResult;
   }
@@ -83,11 +83,14 @@ export function isErr<R extends Result<unknown, unknown>>(
   return result._type === 'Err';
 }
 
-const isThenable = (value: unknown): value is Promise<unknown> =>
-  value !== null &&
-  typeof value === 'object' &&
-  'then' in value &&
-  typeof (value as { readonly then: unknown }).then === 'function';
+function isThenable(value: unknown): value is Promise<unknown> {
+  return (
+    value !== null &&
+    typeof value === 'object' &&
+    'then' in value &&
+    typeof (value as { readonly then: unknown }).then === 'function'
+  );
+}
 
 export function tryResult<TData, TError = Error>(callback: () => TData): Result<TData, TError>;
 export function tryResult<TData, TError = Error>(

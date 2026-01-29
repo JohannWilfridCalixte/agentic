@@ -1,0 +1,76 @@
+import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
+import { existsSync, mkdirSync, rmSync } from 'node:fs';
+import { join } from 'node:path';
+import { isOk } from '../../../lib/monads';
+import { init } from './index';
+
+const TEST_DIR = join(import.meta.dir, '../../../../.tmp/test-init');
+
+describe('init', () => {
+  const originalCwd = process.cwd();
+
+  beforeEach(() => {
+    if (existsSync(TEST_DIR)) {
+      rmSync(TEST_DIR, { recursive: true });
+    }
+    mkdirSync(TEST_DIR, { recursive: true });
+    process.chdir(TEST_DIR);
+  });
+
+  afterEach(() => {
+    process.chdir(originalCwd);
+    if (existsSync(TEST_DIR)) {
+      rmSync(TEST_DIR, { recursive: true });
+    }
+  });
+
+  it('initializes claude IDE only', async () => {
+    const result = await init('claude');
+
+    expect(isOk(result)).toBe(true);
+    expect(existsSync(join(TEST_DIR, '.claude'))).toBe(true);
+    expect(existsSync(join(TEST_DIR, '.cursor'))).toBe(false);
+    expect(existsSync(join(TEST_DIR, 'CLAUDE.md'))).toBe(true);
+  });
+
+  it('initializes cursor IDE only', async () => {
+    const result = await init('cursor');
+
+    expect(isOk(result)).toBe(true);
+    expect(existsSync(join(TEST_DIR, '.cursor'))).toBe(true);
+    expect(existsSync(join(TEST_DIR, '.claude'))).toBe(false);
+    expect(existsSync(join(TEST_DIR, '.cursor', 'rules', 'agentic.mdc'))).toBe(true);
+  });
+
+  it('initializes both IDEs by default', async () => {
+    const result = await init('both');
+
+    expect(isOk(result)).toBe(true);
+    expect(existsSync(join(TEST_DIR, '.claude'))).toBe(true);
+    expect(existsSync(join(TEST_DIR, '.cursor'))).toBe(true);
+  });
+
+  it('creates expected directory structure for claude', async () => {
+    await init('claude');
+
+    const claudeDir = join(TEST_DIR, '.claude');
+
+    expect(existsSync(join(claudeDir, 'agents'))).toBe(true);
+    expect(existsSync(join(claudeDir, 'skills'))).toBe(true);
+    expect(existsSync(join(claudeDir, 'commands'))).toBe(true);
+    expect(existsSync(join(claudeDir, 'workflows'))).toBe(true);
+    expect(existsSync(join(claudeDir, 'scripts'))).toBe(true);
+  });
+
+  it('creates expected directory structure for cursor', async () => {
+    await init('cursor');
+
+    const cursorDir = join(TEST_DIR, '.cursor');
+
+    expect(existsSync(join(cursorDir, 'agents'))).toBe(true);
+    expect(existsSync(join(cursorDir, 'skills'))).toBe(true);
+    expect(existsSync(join(cursorDir, 'commands'))).toBe(true);
+    expect(existsSync(join(cursorDir, 'workflows'))).toBe(true);
+    expect(existsSync(join(cursorDir, 'scripts'))).toBe(true);
+  });
+});

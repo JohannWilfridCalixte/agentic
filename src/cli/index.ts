@@ -1,4 +1,4 @@
-import { assertNever, isErr } from '../lib/monads';
+import { isErr } from '../lib/monads';
 import { help, init, list } from './commands';
 import type { IDE } from './constants';
 
@@ -8,6 +8,7 @@ function parseCommand(arg: string | undefined): Command {
   if (!arg || arg === 'help' || arg === '--help' || arg === '-h') return 'help';
   if (arg === 'init') return 'init';
   if (arg === 'list') return 'list';
+
   return 'help';
 }
 
@@ -16,6 +17,7 @@ function parseIdeOption(args: readonly string[]): IDE {
   if (ideIndex === -1 || !args[ideIndex + 1]) return 'both';
 
   const ideArg = args[ideIndex + 1];
+
   if (ideArg === 'claude' || ideArg === 'cursor' || ideArg === 'both') {
     return ideArg;
   }
@@ -24,7 +26,7 @@ function parseIdeOption(args: readonly string[]): IDE {
   process.exit(1);
 }
 
-export async function run(args: readonly string[]): Promise<void> {
+export async function run(args: readonly string[]) {
   const command = parseCommand(args[0]);
 
   switch (command) {
@@ -54,6 +56,6 @@ export async function run(args: readonly string[]): Promise<void> {
     }
 
     default:
-      assertNever(command);
+      throw new Error(`Unexpected command: ${command satisfies never}`);
   }
 }

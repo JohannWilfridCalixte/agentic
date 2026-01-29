@@ -1,9 +1,8 @@
 import { existsSync, mkdirSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Result } from '../lib/monads';
-import type { IDE } from './constants';
-
 import { Err, Ok } from '../lib/monads';
+import type { IDE } from './constants';
 
 interface CopyDirError {
   readonly code: 'COPY_DIR_FAILED';
@@ -11,25 +10,28 @@ interface CopyDirError {
   readonly cause: unknown;
 }
 
-const TEMPLATE_VARS: Record<IDE, Record<string, string>> = {
+type TargetIDE = Exclude<IDE, 'both'>;
+
+const TEMPLATE_VARS = {
   claude: { 'ide-folder': 'claude', 'ide-invoke-prefix': 'Read .' },
   cursor: { 'ide-folder': 'cursor', 'ide-invoke-prefix': '@.' },
-  both: { 'ide-folder': '', 'ide-invoke-prefix': '' },
-};
+} as const satisfies Record<TargetIDE, Record<string, string>>;
 
-export function processTemplate(content: string, ide: 'claude' | 'cursor'): string {
+export function processTemplate(content: string, ide: TargetIDE) {
   const vars = TEMPLATE_VARS[ide];
   let result = content;
+
   for (const [key, value] of Object.entries(vars)) {
     result = result.replaceAll(`{${key}}`, value);
   }
+
   return result;
 }
 
 export async function copyAndProcess(
   source: string,
   destination: string,
-  ide: 'claude' | 'cursor',
+  ide: TargetIDE,
 ): Promise<Result<void, CopyDirError>> {
   try {
     if (!existsSync(destination)) {
@@ -45,7 +47,7 @@ export async function copyAndProcess(
       if (entry.isDirectory()) {
         const result = await copyAndProcess(sourcePath, destinationPath, ide);
         if (result._type === 'Err') return result;
-      } else if (entry.name.endsWith('.md') || entry.name.endsWith('.yaml') || entry.name.endsWith('.yml')) {
+      } else if (isTemplateFile(entry.name)) {
         const content = await Bun.file(sourcePath).text();
         await Bun.write(destinationPath, processTemplate(content, ide));
       } else {
@@ -62,4 +64,8 @@ export async function copyAndProcess(
       cause: error,
     });
   }
+}
+
+function isTemplateFile(filename: string) {
+  return filename.endsWith('.md') || filename.endsWith('.yaml') || filename.endsWith('.yml');
 }

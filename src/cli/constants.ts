@@ -1,20 +1,15 @@
-export const AGENTS: readonly string[] = [
-  'cpo',
-  'cto',
-  'dx',
-  'team-and-workflow',
-];
+export type IDE = 'claude' | 'cursor' | 'both';
 
-export const SCRIPTS: readonly string[] = [
+export type Command = 'init' | 'list' | 'help';
+
+export const AGENTS = ['cpo', 'cto', 'dx', 'team-and-workflow'] as const;
+
+export const SCRIPTS = [
   'sync-to-github.sh',
   'sync-from-github.sh',
   'sync-all.sh',
   'create-pr.sh',
   'resolve-parent.sh',
-];
+] as const;
 
-export type IDE = 'claude' | 'cursor' | 'both';
-
-type Command = 'init' | 'list' | 'help';
-
-export const COMMANDS: readonly Command[] = ['init', 'list', 'help'];
+export const COMMANDS = ['init', 'list', 'help'] as const satisfies readonly Command[];

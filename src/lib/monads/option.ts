@@ -5,13 +5,13 @@ import { Err, Ok } from './result';
 export interface Some<TData> {
   readonly _type: 'Some';
   readonly data: TData;
-  readonly fmap: <TResult>(callback: (data: TData) => TResult) => Option<TResult>;
+  readonly fmap: <TResult>(fn: (data: TData) => TResult) => Option<TResult>;
   readonly toResult: () => Result<TData, never>;
 }
 
 export interface None {
   readonly _type: 'None';
-  readonly fmap: <TResult>(callback: (data: never) => TResult) => None;
+  readonly fmap: <TResult>(fn: (data: never) => TResult) => None;
   readonly toResult: () => Result<never, { readonly reason: 'no_data' }>;
 }
 
@@ -21,7 +21,7 @@ export function Some<TData>(data: TData): Some<TData> {
   return {
     _type: 'Some' as const,
     data,
-    fmap: (callback) => Option(callback(data)),
+    fmap: (fn) => Option(fn(data)),
     toResult: () => Ok(data),
   };
 }
@@ -54,13 +54,13 @@ export function Option<TData>(data?: TData | null): Option<TData> {
 
 Option.match = <TData, TResult>(
   option: Option<TData>,
-  callback: {
+  callbacks: {
     readonly Some: (data: TData) => TResult;
     readonly None: () => TResult;
   },
 ) => {
   if (option._type === 'Some') {
-    return callback.Some(option.data);
+    return callbacks.Some(option.data);
   }
-  return callback.None();
+  return callbacks.None();
 };

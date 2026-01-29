@@ -6,8 +6,8 @@ interface LoggerOptions {
   readonly transport?: pino.TransportSingleOptions;
 }
 
-export const createLogger = ({ service_name, service_revision, transport }: LoggerOptions) =>
-  pino({
+export function createLogger({ service_name, service_revision, transport }: LoggerOptions) {
+  return pino({
     name: service_name,
     transport,
     base: {
@@ -17,5 +17,6 @@ export const createLogger = ({ service_name, service_revision, transport }: Logg
       },
     },
   });
+}
 
 export type Logger = ReturnType<typeof createLogger>;

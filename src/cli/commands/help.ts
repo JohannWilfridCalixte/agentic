@@ -1,4 +1,4 @@
-export function help(): void {
+export function help() {
   console.log(`
 agentic - Agent prompts and scripts for Claude Code + Cursor
 
