@@ -137,6 +137,7 @@ export async function init(ide: IDE = 'both'): Promise<Result<void, InitError>> 
   console.log('\nUsage:');
   console.log('  /agentic:quick-spec-and-implement [--auto] [input]');
   console.log('  /agentic:auto-implement [input]');
+  console.log('  /agentic:debug [input]');
 
   return Ok(undefined);
 }

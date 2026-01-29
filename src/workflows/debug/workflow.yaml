@@ -1,0 +1,126 @@
+# Debug Workflow Configuration
+# Routes: Input Classification → Root Cause → Pattern Analysis → Hypothesis → Fix → QA Loop
+
+name: debug
+description: "Systematic debugging from bug report/CI logs/error to verified fix. No guessing - evidence-based."
+version: "1.0.0"
+
+triggers:
+  - "/agentic:debug"
+
+input_modes:
+  file: "Path to error log, CI output, or bug report (.md, .log, .txt)"
+  github_issue: "GitHub issue URL or #number"
+  inline: "Direct error message or bug description"
+
+mode: auto
+confidence_threshold: 0.90
+max_hypothesis_attempts: 3
+max_qa_iterations: 3
+
+input_classes:
+  ci_failure:
+    description: "CI/build failure logs, pipeline errors"
+    route: [root-cause-investigation, pattern-analysis, hypothesis-testing, fix-implementation, qa-loop]
+
+  test_failure:
+    description: "Test failures with stack traces, assertion errors"
+    route: [root-cause-investigation, pattern-analysis, hypothesis-testing, fix-implementation, qa-loop]
+
+  runtime_error:
+    description: "Production/runtime errors, exceptions, crashes"
+    route: [root-cause-investigation, pattern-analysis, hypothesis-testing, fix-implementation, qa-loop]
+
+  behavior_bug:
+    description: "Unexpected behavior, logic errors (no stack trace)"
+    route: [root-cause-investigation, pattern-analysis, hypothesis-testing, fix-implementation, qa-loop]
+
+  performance:
+    description: "Performance issues, slow queries, memory leaks"
+    route: [root-cause-investigation, pattern-analysis, hypothesis-testing, fix-implementation, qa-loop]
+
+agents:
+  orchestrator:
+    role: "Workflow coordination and input classification"
+    decides: ["input classification", "workflow progression", "hypothesis validation", "escalation"]
+
+  investigator:
+    role: "Root cause investigation and evidence gathering"
+    decides: ["diagnostic instrumentation", "data flow tracing", "component isolation"]
+    prompt: "{ide-invoke-prefix}{ide-folder}/agents/investigator.md"
+
+  analyst:
+    role: "Pattern analysis and hypothesis formation"
+    decides: ["working vs broken comparison", "hypothesis formation", "test design"]
+    prompt: "{ide-invoke-prefix}{ide-folder}/agents/analyst.md"
+
+  editor:
+    role: "Fix implementation"
+    decides: ["fix approach", "test creation", "code changes"]
+    prompt: "{ide-invoke-prefix}{ide-folder}/agents/editor.md"
+
+  qa:
+    role: "Quality Assurance - verify fix"
+    decides: ["test coverage", "regression check", "quality gates"]
+    prompt: "{ide-invoke-prefix}{ide-folder}/agents/qa.md"
+
+paths:
+  base: "documentation/debug"
+  session: "{base}/DEBUG-{session_id}"
+  artifacts:
+    investigation_log: "{session}/investigation-log.md"
+    evidence: "{session}/evidence.md"
+    hypothesis_log: "{session}/hypothesis-log.md"
+    fix_log: "{session}/fix-log.md"
+    qa_reviews: "{session}/qa-{review_number}.md"
+    decision_log: "{session}/decision-log.md"
+    workflow_state: "{session}/workflow-state.yaml"
+
+qa_loop:
+  max_iterations: 3
+  severity_handling:
+    blocker: { action: must_fix, blocks_completion: true }
+    major: { action: should_fix, blocks_completion: true }
+    minor: { action: may_fix, blocks_completion: false }
+    nit: { action: defer, blocks_completion: false }
+  exit_conditions:
+    - "no blockers AND no majors AND original bug verified fixed"
+    - "max_iterations reached AND escalation"
+
+steps:
+  - id: 1
+    name: "input-classification"
+    file: "steps/step-01-input-classification.md"
+
+  - id: 2
+    name: "root-cause-investigation"
+    file: "steps/step-02-root-cause-investigation.md"
+    agent: "investigator"
+    output: "investigation-log.md"
+
+  - id: 3
+    name: "pattern-analysis"
+    file: "steps/step-03-pattern-analysis.md"
+    agent: "analyst"
+    output: "evidence.md"
+
+  - id: 4
+    name: "hypothesis-testing"
+    file: "steps/step-04-hypothesis-testing.md"
+    agent: "analyst"
+    output: "hypothesis-log.md"
+    loop: true
+    max_iterations: 3
+
+  - id: 5
+    name: "fix-implementation"
+    file: "steps/step-05-fix-implementation.md"
+    agent: "editor"
+    output: "fix-log.md"
+
+  - id: 6
+    name: "qa-loop"
+    file: "steps/step-06-qa-loop.md"
+    agents: ["qa", "editor"]
+    loop: true
+    max_iterations: 3
