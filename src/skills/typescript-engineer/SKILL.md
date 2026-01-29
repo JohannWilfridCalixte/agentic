@@ -108,6 +108,87 @@ const count = 0;                     // ✅ inferred
 const errors = [] satisfies Error[]; // ✅ empty array needs type
 ```
 
+### Return types
+
+**Primary rule: avoid explicit return types.**
+
+Return types can lie. Inference cannot.
+
+| Approach | Risk |
+|----------|------|
+| Explicit return type | Can be wider, narrower, or false |
+| Inferred | Always matches actual value |
+| `as const` + inferred | Narrow AND truthful |
+
+**Problem:** Discriminated unions lose precision with explicit return types.
+
+```typescript
+// ❌ Inferred without as const = too wide
+function getResult() {
+  return Math.random() > 0.5
+    ? { status: 'ok', value: 'foo' }
+    : { status: 'error', error: new Error('bar') }
+}
+// result.value is string | undefined even after narrowing
+
+// ❌ Explicit return type = right shape but still wide
+function getResult(): Result<string> { ... }
+// result.value is string (not 'foo')
+
+// ✅ as const = narrow AND truthful
+function getResult() {
+  return Math.random() > 0.5
+    ? { status: 'ok', value: 'foo' } as const
+    : { status: 'error', error: new Error('bar') } as const
+}
+// result.value is 'foo' after narrowing
+```
+
+**Problem:** Return types can hide leaked data.
+
+```typescript
+type User = { username: string; email: string }
+
+// ❌ Return type hides password leak
+const getUser = (): User => {
+  return { username: 'user', email: 'a@b.com', password: 'SECRET' };
+}
+// Type says User, but password IS returned at runtime
+
+// ✅ Inferred exposes the truth
+const getUser = () => {
+  return { username: 'user', email: 'a@b.com', password: 'SECRET' };
+}
+// Type shows password - bug is visible
+```
+
+**Problem:** Function overloads can be completely false.
+
+```typescript
+// ❌ Overloads lie about runtime behavior
+function getUser(role: 'user'): { role: 'user' };
+function getUser(role: 'admin'): { role: 'admin' };
+function getUser(role: 'user' | 'admin') {
+  if (role === 'user') return { role: 'admin' };  // BUG: swapped!
+  return { role: 'user' };
+}
+// getUser('user') typed as { role: 'user' } but returns { role: 'admin' }
+
+// ✅ as const reveals actual values
+function getUser(role: 'user' | 'admin') {
+  if (role === 'user') return { role: 'admin' as const };
+  return { role: 'user' as const };
+}
+// Type: { role: 'admin' } | { role: 'user' } - truth visible
+```
+
+**When return types ARE acceptable:**
+- Public API contracts where you WANT the abstraction
+- Generic functions where inference fails
+- Recursive functions (required by TS)
+
+Default: let TypeScript infer. Use `as const` to narrow.
+
 ## Error Handling
 
 ### Result/Option monads
@@ -241,6 +322,8 @@ function getStrategy(type: ItemType): ItemStrategy<ItemData> {
 - Missing `readonly` on interface properties
 - `readonly` inside `z.object({})` (that's runtime JS, not type syntax)
 - `any` or `as` casts
+- Explicit return types (prefer inference + `as const`)
+- Function overloads (they can lie; use union returns instead)
 - Throwing in domain logic
 - Switch without `satisfies never`
 - Nesting > 3 levels
