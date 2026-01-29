@@ -112,9 +112,10 @@ Shell scripts:
 ## CLI Commands
 
 ```bash
-agentic init [--ide <claude|cursor|both>]  # Setup in project
-agentic list                                # List agents/scripts
-agentic help                                # Show help
+agentic init [--ide <claude|cursor|both>]    # Setup in project (default: both)
+agentic update [--ide <claude|cursor|both>]  # Update existing setup (default: auto-detect)
+agentic list                                  # List agents/scripts
+agentic help                                  # Show help
 ```
 
 ## Project Structure After Init
