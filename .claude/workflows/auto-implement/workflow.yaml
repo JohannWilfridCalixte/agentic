@@ -1,0 +1,121 @@
+# Auto-Implement Workflow Configuration
+# Routes: Input Classification → [Architect Context] → [Architect Plan] → Editor → Review Loop → PR
+
+name: auto-implement
+description: "Autonomous implementation from spec/PRD/plan to PR. No user interaction."
+version: "1.0.0"
+
+triggers:
+  - "/agentic:auto-implement"
+
+input_modes:
+  file: "Path to spec/plan file (.md)"
+  github_issue: "GitHub issue URL or #number"
+  inline: "Direct text description"
+
+# Always auto - no interactive mode
+mode: auto
+confidence_threshold: 0.90
+max_review_iterations: 3
+
+# Input classification determines route
+input_classes:
+  product:
+    description: "Spec/PRD/epic/US with acceptance criteria, no implementation details"
+    route: [architect-context, architect-plan, editor-implement, review-loop, create-pr]
+
+  technical-plan:
+    description: "Technical plan with tasks but no codebase context"
+    route: [architect-context, editor-implement, review-loop, create-pr]
+
+  technical-plan-with-context:
+    description: "Technical plan with tasks AND codebase analysis"
+    route: [editor-implement, review-loop, create-pr]
+
+  mixed:
+    description: "Product requirements with some technical direction"
+    route: [architect-context, architect-plan, editor-implement, review-loop, create-pr]
+
+agents:
+  orchestrator:
+    role: "Workflow coordination and input classification"
+    decides: ["input classification", "workflow progression", "agent handoffs", "escalation"]
+
+  architect:
+    role: "Technical Architect"
+    decides: ["technical approach", "architecture", "implementation strategy"]
+    prompt: "Read .claude/agents/architect.md"
+
+  editor:
+    role: "Implementation"
+    decides: ["code structure", "test approach"]
+    prompt: "Read .claude/agents/editor.md"
+
+  qa:
+    role: "Quality Assurance"
+    decides: ["test coverage", "quality gates"]
+    prompt: "Read .claude/agents/qa.md"
+
+  security_qa:
+    role: "Security Review"
+    decides: ["security compliance", "vulnerability assessment"]
+    prompt: "Read .claude/agents/security-qa.md"
+
+paths:
+  base: "documentation/task/{epic_id}-EPIC-{epic_name}"
+  story: "{base}/US-{story_id}"
+  artifacts:
+    technical_context: "{story}/technical-context.md"
+    technical_plan: "{story}/technical-plan.md"
+    implementation_log: "{story}/implementation-log.md"
+    qa_reviews: "{story}/qa-{review_number}.md"
+    security_reviews: "{story}/security-{review_number}.md"
+    decision_log: "{story}/decision-log.md"
+    workflow_state: "{story}/workflow-state.yaml"
+
+review_loop:
+  max_iterations: 3
+  severity_handling:
+    blocker: { action: must_fix, blocks_pr: true }
+    major: { action: should_fix, blocks_pr: true }
+    minor: { action: may_fix, blocks_pr: false }
+    nit: { action: defer, blocks_pr: false }
+  exit_conditions:
+    - "no blockers AND no majors"
+    - "max_iterations reached AND escalation"
+
+steps:
+  - id: 1
+    name: "input-classification"
+    file: "steps/step-01-input-classification.md"
+
+  - id: 2
+    name: "architect-context"
+    file: "steps/step-02-architect-context.md"
+    agent: "architect"
+    output: "technical-context.md"
+    conditional: "input_class != 'technical-plan-with-context'"
+
+  - id: 3
+    name: "architect-plan"
+    file: "steps/step-03-architect-plan.md"
+    agent: "architect"
+    output: "technical-plan.md"
+    conditional: "input_class in ['product', 'mixed']"
+
+  - id: 4
+    name: "editor-implement"
+    file: "steps/step-04-editor-implement.md"
+    agent: "editor"
+    output: "implementation-log.md"
+
+  - id: 5
+    name: "review-loop"
+    file: "steps/step-05-review-loop.md"
+    agents: ["qa", "security_qa", "editor"]
+    loop: true
+
+  - id: 6
+    name: "create-pr"
+    file: "steps/step-06-create-pr.md"
+    output: "pr_url"
