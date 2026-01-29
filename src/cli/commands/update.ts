@@ -13,8 +13,8 @@ interface UpdateError {
   readonly cause?: unknown;
 }
 
-function detectIdes(projectRoot: string): readonly TargetIDE[] {
-  const detected: TargetIDE[] = [];
+function detectIdes(projectRoot: string) {
+  const detected = [] satisfies TargetIDE[];
 
   if (existsSync(join(projectRoot, '.claude'))) detected.push('claude');
   if (existsSync(join(projectRoot, '.cursor'))) detected.push('cursor');
