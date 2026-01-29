@@ -1,13 +1,14 @@
 import { isErr } from '../lib/monads';
-import { help, init, list } from './commands';
+import { help, init, list, update } from './commands';
 import type { IDE } from './constants';
 
-type Command = 'help' | 'init' | 'list';
+type Command = 'help' | 'init' | 'list' | 'update';
 
 function parseCommand(arg: string | undefined): Command {
   if (!arg || arg === 'help' || arg === '--help' || arg === '-h') return 'help';
   if (arg === 'init') return 'init';
   if (arg === 'list') return 'list';
+  if (arg === 'update') return 'update';
 
   return 'help';
 }
@@ -15,6 +16,20 @@ function parseCommand(arg: string | undefined): Command {
 function parseIdeOption(args: readonly string[]): IDE {
   const ideIndex = args.indexOf('--ide');
   if (ideIndex === -1 || !args[ideIndex + 1]) return 'both';
+
+  const ideArg = args[ideIndex + 1];
+
+  if (ideArg === 'claude' || ideArg === 'cursor' || ideArg === 'both') {
+    return ideArg;
+  }
+
+  console.error(`Invalid --ide value: ${ideArg}. Use claude, cursor, or both.`);
+  process.exit(1);
+}
+
+function parseIdeOptionOptional(args: readonly string[]): IDE | undefined {
+  const ideIndex = args.indexOf('--ide');
+  if (ideIndex === -1 || !args[ideIndex + 1]) return undefined;
 
   const ideArg = args[ideIndex + 1];
 
@@ -45,6 +60,19 @@ export async function run(args: readonly string[]) {
     case 'init': {
       const ide = parseIdeOption(args);
       const result = await init(ide);
+
+      if (isErr(result)) {
+        console.error(`Error: ${result.data.message}`);
+        process.exit(1);
+      }
+
+      process.exit(0);
+      break;
+    }
+
+    case 'update': {
+      const ide = parseIdeOptionOptional(args);
+      const result = await update(ide);
 
       if (isErr(result)) {
         console.error(`Error: ${result.data.message}`);

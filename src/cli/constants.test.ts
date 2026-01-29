@@ -34,9 +34,10 @@ describe('COMMANDS', () => {
     expect(COMMANDS).toContain('init');
     expect(COMMANDS).toContain('list');
     expect(COMMANDS).toContain('help');
+    expect(COMMANDS).toContain('update');
   });
 
-  it('has 3 commands', () => {
-    expect(COMMANDS).toHaveLength(3);
+  it('has 4 commands', () => {
+    expect(COMMANDS).toHaveLength(4);
   });
 });

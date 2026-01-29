@@ -30,7 +30,7 @@ function makeScriptsExecutable(scriptsDir: string) {
   }
 }
 
-async function setupIde(
+export async function setupIde(
   targetIde: TargetIDE,
   projectRoot: string,
 ): Promise<Result<void, InitError>> {
