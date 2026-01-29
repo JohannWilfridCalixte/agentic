@@ -5,6 +5,7 @@
 ```bash
 bun run bin/agentic.ts          # Run CLI
 bun run bin/agentic.ts init     # Test init command
+bun run bin/agentic.ts update   # Test update command
 bun run bin/agentic.ts list     # Test list command
 bun test                         # Run unit tests
 ```
@@ -26,6 +27,7 @@ src/
 │   │   │   ├── types.ts    # InitError, TargetIDE, IdeSetupStrategy
 │   │   │   └── strategies/ # Per-IDE setup strategies
 │   │   ├── list.ts
+│   │   ├── update.ts
 │   │   └── help.ts
 │   ├── constants.ts        # AGENTS, SCRIPTS, IDE type
 │   ├── paths.ts            # Path constants
@@ -47,6 +49,8 @@ src/
 **Flow**: `bin/agentic.ts` → `src/cli/index.ts:run()` → `src/cli/commands/*.ts`
 
 The `init` command copies `src/agentic/*` to `.{claude|cursor}/` and generates IDE configs.
+
+The `update` command detects existing IDE setups and updates them, preserving user files.
 
 **Adding new IDE**: Create strategy in `src/cli/commands/init/strategies/`, register in `strategies/index.ts`.
 
