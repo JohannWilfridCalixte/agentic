@@ -1,6 +1,6 @@
 ---
 name: github
-description: GitHub issue sync - create/update issues from markdown docs, sync epics and user stories
+description: Use when syncing product artifacts to GitHub issues or pulling issues into markdown docs
 ---
 
 # GitHub Sync

@@ -1,6 +1,6 @@
 ---
 name: debug
-description: Systematic debugging workflow. Takes bug reports, CI logs, or errors and debugs to verified fix. Evidence-based, no guessing.
+description: Use when debugging from bug reports, CI failures, runtime errors, or flaky tests to verified fix
 ---
 
 # /agentic:debug - Systematic Debugging

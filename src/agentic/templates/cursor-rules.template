@@ -6,26 +6,70 @@ alwaysApply: true
 
 # Agentic Framework
 
-Load agents with: `@.cursor/agents/{agent}.md`
-Load skills with: `@.cursor/skills/{skill}/SKILL.md`
+## Skill Index (always available)
 
-## Skills
+Load skill: `@.cursor/skills/{name}/SKILL.md`
 
-- typescript-engineer - Types, error handling, code style
-- typescript-imports - Import ordering and grouping
-- observability - Logging, tracing, instrumentation
+| Skill | Use When |
+|-------|----------|
+| **typescript-engineer** | Writing TypeScript code - types, error handling, patterns |
+| **typescript-imports** | Writing imports - ordering, grouping, type imports |
+| **clean-architecture** | Services with business logic needing decoupling from frameworks/DB |
+| **observability** | Adding logging, tracing, instrumentation |
+| **code** | Implementing code per technical plan |
+| **qa** | Reviewing implementation against plan/ACs |
+| **security-qa** | Reviewing code for security/privacy/tenant isolation |
+| **debug** | Bug reports, CI failures, runtime errors, flaky tests |
+| **brainstorming** | Turning ideas into designs through dialogue |
+| **product-discovery** | Exploring new product idea before design/technical work |
+| **product-manager** | Producing epics, user stories, acceptance criteria |
+| **gather-technical-context** | Extracting context from codebase before planning |
+| **technical-planning** | Producing technical plans with task breakdown |
+| **product-vision** | Defining product direction, roadmap (CPO-level) |
+| **tech-vision** | Defining technical vision, architecture (CTO-level) |
+| **security-context** | Adding security/privacy constraints to artifacts |
+| **dx** | Tooling, linting, CI, repo ergonomics |
+| **ux-patterns** | Forms, inputs, modals, loading states |
+| **context7** | Fetching up-to-date library docs before coding |
+| **github** | Syncing product artifacts to/from GitHub issues |
+
+## Workflow Commands
+
+| Command | Use When |
+|---------|----------|
+| `/agentic:auto-implement <input>` | Autonomous spec/PRD/plan → PR without interaction |
+| `/agentic:quick-spec-and-implement <idea>` | Interactive idea → spec → PR with collaboration |
+| `/agentic:debug <error>` | Systematic debugging to verified fix |
+| `/agentic:product-spec <idea>` | Product discovery → PRD |
 
 ## Agents
 
-- cpo, cto, pm - Leadership roles
-- architect-context, architect-plan - Architecture
-- editor - Code implementation
-- qa, security-qa - Quality assurance
-- security-context - Security analysis
-- dx - Developer experience
+Load agent: `@.cursor/agents/{name}.md`
+
+| Agent | Role |
+|-------|------|
+| **cpo** | Product vision, roadmap (Chief Product Officer) |
+| **cto** | Technical vision, architecture (Chief Technology Officer) |
+| **dx** | Developer experience, tooling |
+
+## Subagents (for workflows)
+
+| Subagent | Role |
+|----------|------|
+| **pm** | Product specs, stories, ACs |
+| **architect** | Technical context + planning |
+| **editor** | Code implementation |
+| **qa** | Quality review |
+| **security** | Threat modeling |
+| **security-qa** | Security compliance review |
+| **investigator** | Root cause investigation (debug) |
+| **analyst** | Pattern analysis (debug) |
 
 ## Scripts
 
 Located in `.cursor/scripts/`:
-- sync-to-github.sh, sync-from-github.sh, sync-all.sh
-- create-pr.sh, resolve-parent.sh
+- `sync-to-github.sh` - Push markdown to GitHub issue
+- `sync-from-github.sh` - Pull GitHub issue to markdown
+- `sync-all.sh` - Sync all documentation
+- `create-pr.sh` - Create pull request
+- `resolve-parent.sh` - Resolve parent issue

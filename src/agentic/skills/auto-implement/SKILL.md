@@ -1,6 +1,6 @@
 ---
 name: auto-implement
-description: Auto-implement workflow. Autonomously implements from spec/PRD/plan to PR. Classifies input and routes through architect/editor/review as needed.
+description: Use when autonomously implementing from spec/PRD/plan to PR without user interaction
 ---
 
 # /agentic:auto-implement - Autonomous Implementation

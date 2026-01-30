@@ -66,27 +66,50 @@ cd .tmp && bun run ../bin/agentic.ts init
 ## Agentic Framework
 
 Agents in `.claude/agents/` - load with `Read .claude/agents/{agent}.md`
-Skills in `.claude/skills/` - auto-loaded by Claude Code
+Skills in `.claude/skills/` - load with `Read .claude/skills/{name}/SKILL.md`
 Scripts in `.claude/scripts/`
 
-### Skills
+### Skill Index (always available)
 
-- `typescript-engineer` - Types, error handling, code style
-- `typescript-imports` - Import ordering and grouping
-- `observability` - Logging, tracing, instrumentation
+| Skill | Use When |
+|-------|----------|
+| **typescript-engineer** | Writing TypeScript code - types, error handling, patterns |
+| **typescript-imports** | Writing imports - ordering, grouping, type imports |
+| **clean-architecture** | Services with business logic needing decoupling |
+| **observability** | Adding logging, tracing, instrumentation |
+| **code** | Implementing code per technical plan |
+| **qa** | Reviewing implementation against plan/ACs |
+| **security-qa** | Reviewing code for security/privacy |
+| **debug** | Bug reports, CI failures, runtime errors |
+| **brainstorming** | Turning ideas into designs |
+| **product-discovery** | Exploring new product idea |
+| **product-manager** | Producing epics, user stories, ACs |
+| **gather-technical-context** | Extracting context before planning |
+| **technical-planning** | Producing technical plans |
+| **product-vision** | Product direction (CPO-level) |
+| **tech-vision** | Technical vision (CTO-level) |
+| **security-context** | Security/privacy constraints |
+| **dx** | Tooling, linting, CI, repo ergonomics |
+| **ux-patterns** | Forms, inputs, modals, loading states |
+| **context7** | Fetching up-to-date library docs |
+| **github** | Syncing product artifacts to GitHub issues |
 
 ### Agents
 
 - `cpo` - Chief Product Officer
 - `cto` - Chief Technology Officer
+- `dx` - Developer experience
+
+### Subagents (for workflows)
+
 - `pm` - Product Manager
-- `architect-context` - Context analysis
-- `architect-plan` - Technical planning
+- `architect` - Technical context + planning
 - `editor` - Code implementation
 - `qa` - Quality assurance
-- `security-context` - Security context analysis
+- `security` - Threat modeling
 - `security-qa` - Security QA
-- `dx` - Developer experience
+- `investigator` - Root cause investigation
+- `analyst` - Pattern analysis
 
 ### Scripts
 
