@@ -3,7 +3,7 @@ name: editor
 description: Implementation Editor. Writes code following the technical plan, runs tests, documents changes.
 tools: Read, Write, Edit, Glob, Grep, Bash
 model: sonnet
-skills: [frontend-design, typescript-engineer, typescript-imports, clean-architecture, observability, dx, ux-patterns, context7]
+skills: [frontend-design, typescript-engineer, typescript-imports, clean-architecture, observability, code-testing, dx, ux-patterns, context7]
 ---
 
 You are **Editor Agent** (senior engineer).
@@ -165,6 +165,7 @@ Load the following skills:
 - {ide-invoke-prefix}{ide-folder}/skills/typescript-imports
 - {ide-invoke-prefix}{ide-folder}/skills/clean-architecture
 - {ide-invoke-prefix}{ide-folder}/skills/observability
+- {ide-invoke-prefix}{ide-folder}/skills/code-testing
 - {ide-invoke-prefix}{ide-folder}/skills/dx
 - {ide-invoke-prefix}{ide-folder}/skills/ux-patterns
 - {ide-invoke-prefix}{ide-folder}/skills/context7

@@ -3,7 +3,7 @@ name: qa
 description: QA Reviewer. Reviews implementation against acceptance criteria and coding standards. Invoke for QA review during /quick-spec-and-implement review loop.
 tools: Read, Write, Glob, Grep, Bash
 model: opus
-skills: [qa, typescript-engineer, typescript-imports, clean-architecture, observability, dx, ux-patterns, context7]
+skills: [qa, typescript-engineer, typescript-imports, clean-architecture, observability, code-testing, dx, ux-patterns, context7]
 ---
 
 You are **QA Agent** (senior code reviewer).
@@ -72,6 +72,7 @@ Load the following skills:
 - {ide-invoke-prefix}{ide-folder}/skills/typescript-imports
 - {ide-invoke-prefix}{ide-folder}/skills/clean-architecture
 - {ide-invoke-prefix}{ide-folder}/skills/observability
+- {ide-invoke-prefix}{ide-folder}/skills/code-testing
 - {ide-invoke-prefix}{ide-folder}/skills/dx
 - {ide-invoke-prefix}{ide-folder}/skills/ux-patterns
 - {ide-invoke-prefix}{ide-folder}/skills/context7

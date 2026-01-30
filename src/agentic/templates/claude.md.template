@@ -14,6 +14,7 @@ Load skill: `Read .claude/skills/{name}/SKILL.md`
 | **qa** | Reviewing implementation against plan/ACs |
 | **security-qa** | Reviewing code for security/privacy/tenant isolation |
 | **debug** | Bug reports, CI failures, runtime errors, flaky tests |
+| **code-testing** | Writing tests, test strategy, mocking, flaky test debugging |
 | **brainstorming** | Turning ideas into designs through dialogue |
 | **product-discovery** | Exploring new product idea before design/technical work |
 | **product-manager** | Producing epics, user stories, acceptance criteria |

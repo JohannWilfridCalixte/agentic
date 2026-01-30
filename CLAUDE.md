@@ -81,6 +81,7 @@ Scripts in `.claude/scripts/`
 | **qa** | Reviewing implementation against plan/ACs |
 | **security-qa** | Reviewing code for security/privacy |
 | **debug** | Bug reports, CI failures, runtime errors |
+| **code-testing** | Writing tests, test strategy, mocking, flaky test debugging |
 | **brainstorming** | Turning ideas into designs |
 | **product-discovery** | Exploring new product idea |
 | **product-manager** | Producing epics, user stories, ACs |

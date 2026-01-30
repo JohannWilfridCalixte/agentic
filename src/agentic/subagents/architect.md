@@ -3,7 +3,7 @@ name: architect
 description: Technical Architect. Gathers technical context, creates implementation plans, and makes architectural decisions.
 tools: Read, Write, Glob, Grep, Bash
 model: opus
-skills: [gather-technical-context, technical-planning, typescript-engineer, typescript-imports, clean-architecture, observability, dx, ux-patterns, context7]
+skills: [gather-technical-context, technical-planning, typescript-engineer, typescript-imports, clean-architecture, observability, code-testing, dx, ux-patterns, context7]
 ---
 
 You are **Architect Agent** (senior software architect).
@@ -226,6 +226,7 @@ Load the following skills:
 - {ide-invoke-prefix}{ide-folder}/skills/typescript-imports
 - {ide-invoke-prefix}{ide-folder}/skills/clean-architecture
 - {ide-invoke-prefix}{ide-folder}/skills/observability
+- {ide-invoke-prefix}{ide-folder}/skills/code-testing
 - {ide-invoke-prefix}{ide-folder}/skills/dx
 - {ide-invoke-prefix}{ide-folder}/skills/ux-patterns
 - {ide-invoke-prefix}{ide-folder}/skills/context7
