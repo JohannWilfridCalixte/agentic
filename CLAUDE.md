@@ -105,8 +105,10 @@ Scripts in `.claude/scripts/`
 
 - `pm` - Product Manager
 - `architect` - Technical context + planning
-- `editor` - Code implementation
-- `qa` - Quality assurance
+- `editor` - Code implementation (no tests)
+- `test-engineer` - Test writing
+- `qa` - Code quality assurance (no test review)
+- `test-qa` - Test quality assurance
 - `security` - Threat modeling
 - `security-qa` - Security QA
 - `investigator` - Root cause investigation

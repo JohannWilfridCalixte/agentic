@@ -48,13 +48,23 @@ agents:
 
   editor:
     role: "Implementation"
-    decides: ["code structure", "test approach"]
+    decides: ["code structure", "implementation details"]
     prompt: "{ide-invoke-prefix}{ide-folder}/agents/editor.md"
 
+  test_engineer:
+    role: "Test Writing"
+    decides: ["test structure", "test data", "mocking strategy"]
+    prompt: "{ide-invoke-prefix}{ide-folder}/agents/test-engineer.md"
+
   qa:
-    role: "Quality Assurance"
-    decides: ["test coverage", "quality gates"]
+    role: "Code Quality Assurance"
+    decides: ["code quality", "implementation correctness"]
     prompt: "{ide-invoke-prefix}{ide-folder}/agents/qa.md"
+
+  test_qa:
+    role: "Test Quality Assurance"
+    decides: ["test coverage", "test quality", "testing anti-patterns"]
+    prompt: "{ide-invoke-prefix}{ide-folder}/agents/test-qa.md"
 
   security_qa:
     role: "Security Review"
@@ -69,6 +79,8 @@ paths:
     technical_plan: "{story}/technical-plan.md"
     implementation_log: "{story}/implementation-log.md"
     qa_reviews: "{story}/qa-{review_number}.md"
+    test_log: "{story}/test-log.md"
+    test_qa_reviews: "{story}/test-qa-{review_number}.md"
     security_reviews: "{story}/security-{review_number}.md"
     decision_log: "{story}/decision-log.md"
     workflow_state: "{story}/workflow-state.yaml"
@@ -109,10 +121,16 @@ steps:
     agent: "editor"
     output: "implementation-log.md"
 
+  - id: "4b"
+    name: "test-engineer"
+    file: "steps/step-04b-test-engineer.md"
+    agent: "test_engineer"
+    output: "test-log.md"
+
   - id: 5
     name: "review-loop"
     file: "steps/step-05-review-loop.md"
-    agents: ["qa", "security_qa", "editor"]
+    agents: ["qa", "test_qa", "security_qa", "editor", "test_engineer"]
     loop: true
 
   - id: 6

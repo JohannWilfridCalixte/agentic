@@ -6,7 +6,7 @@
 
 **You MUST delegate all reviews and fixes using the Task tool. Do NOT review or fix code yourself.**
 
-Loop through QA and Security reviews until clean or max iterations (3).
+Loop through QA, Test QA, and Security reviews until clean or max iterations (3).
 
 ---
 
@@ -34,13 +34,13 @@ review_loop:
   rounds: []
 ```
 
-### 5.2 Delegate QA Review
+### 5.2 Delegate QA Review (Code)
 
 ```
 Task(subagent_type="general-purpose", prompt="
 You are the QA agent. {ide-invoke-prefix}{ide-folder}/agents/qa.md for your full instructions.
 
-Review the implementation.
+Review the implementation code (NOT tests - Test QA handles that).
 
 Workflow: auto-implement (autonomous)
 Iteration: {iteration}
@@ -55,7 +55,29 @@ Output to: {story_path}/qa-{iteration}.md
 
 Validate: `{story_path}/qa-{iteration}.md` exists with verdict.
 
-### 5.3 Delegate Security QA Review
+### 5.3 Delegate Test QA Review
+
+```
+Task(subagent_type="general-purpose", prompt="
+You are the Test QA agent. {ide-invoke-prefix}{ide-folder}/agents/test-qa.md for your full instructions.
+
+Review the tests for quality and coverage.
+
+Workflow: auto-implement (autonomous)
+Iteration: {iteration}
+Story ID: {story_id}
+Story path: {story_path}
+Technical Plan: {story_path}/technical-plan.md
+{If exists: Spec: {story_path}/spec.md}
+Test Log: {story_path}/test-log.md
+Implementation Log: {story_path}/implementation-log.md
+Output to: {story_path}/test-qa-{iteration}.md
+")
+```
+
+Validate: `{story_path}/test-qa-{iteration}.md` exists with verdict.
+
+### 5.4 Delegate Security QA Review
 
 ```
 Task(subagent_type="general-purpose", prompt="
@@ -74,9 +96,9 @@ Output to: {story_path}/security-{iteration}.md
 
 Validate: `{story_path}/security-{iteration}.md` exists with verdict.
 
-### 5.4 Aggregate Results
+### 5.5 Aggregate Results
 
-Read both review files. Collect all issues:
+Read all three review files (qa, test-qa, security). Collect all issues:
 
 ```yaml
 review_round:
@@ -114,21 +136,45 @@ IF (blockers > 0 OR majors > 0) AND iteration < max_iterations:
 
 ### 5.6 Delegate Fix Phase
 
+**For code issues (from QA/Security):**
+
 ```
 Task(subagent_type="general-purpose", prompt="
 You are the Editor agent. {ide-invoke-prefix}{ide-folder}/agents/editor.md for your full instructions (Fix Phase section).
 
-Fix review issues.
+Fix code review issues.
 
 Workflow: auto-implement (autonomous)
 Iteration: {iteration}
 Story ID: {story_id}
 Story path: {story_path}
 Issues to fix:
-{blocker and major issues list}
+{blocker and major code issues from qa-{iteration}.md and security-{iteration}.md}
 
 Priority: Blockers first, then Majors.
 Update implementation-log.md.
+Run existing tests to verify no regressions.
+Decision log: {story_path}/decision-log.md
+")
+```
+
+**For test issues (from Test QA):**
+
+```
+Task(subagent_type="general-purpose", prompt="
+You are the Test Engineer agent. {ide-invoke-prefix}{ide-folder}/agents/test-engineer.md for your full instructions.
+
+Fix test review issues.
+
+Workflow: auto-implement (autonomous)
+Iteration: {iteration}
+Story ID: {story_id}
+Story path: {story_path}
+Issues to fix:
+{blocker and major test issues from test-qa-{iteration}.md}
+
+Priority: Blockers first, then Majors.
+Update test-log.md.
 Run tests to verify.
 Decision log: {story_path}/decision-log.md
 ")

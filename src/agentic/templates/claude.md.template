@@ -53,8 +53,10 @@ Load agent: `Read .claude/agents/{name}.md`
 |----------|------|
 | **pm** | Product specs, stories, ACs |
 | **architect** | Technical context + planning |
-| **editor** | Code implementation |
-| **qa** | Quality review |
+| **editor** | Code implementation (no tests) |
+| **test-engineer** | Test writing |
+| **qa** | Code quality review (no test review) |
+| **test-qa** | Test quality review |
 | **security** | Threat modeling |
 | **security-qa** | Security compliance review |
 | **investigator** | Root cause investigation (debug) |

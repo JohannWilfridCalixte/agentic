@@ -4,9 +4,9 @@
 
 ## ORCHESTRATOR ACTION
 
-**You MUST delegate QA reviews and fixes using the Task tool. Do NOT review or fix yourself.**
+**You MUST delegate QA and Test QA reviews using the Task tool. Do NOT review or fix yourself.**
 
-Verify the fix actually resolves the original bug. Check for regressions.
+Verify the fix actually resolves the original bug. Check test quality. Check for regressions.
 
 ---
 
@@ -34,13 +34,13 @@ qa_loop:
   rounds: []
 ```
 
-### 6.2 Delegate QA Review
+### 6.2 Delegate QA Review (Fix Quality)
 
 ```
 Task(subagent_type="general-purpose", prompt="
 You are the QA agent. {ide-invoke-prefix}{ide-folder}/agents/qa.md for your full instructions.
 
-Verify the debug fix.
+Verify the debug fix (NOT tests - Test QA handles that).
 
 Workflow: debug (autonomous)
 Iteration: {iteration}
@@ -61,8 +61,7 @@ Your task:
 
 3. Review fix quality
    - Is the fix at the source or at the symptom?
-   - Is test coverage adequate?
-   - Any edge cases missed?
+   - Code quality acceptable?
 
 Output to: {session_path}/qa-{iteration}.md
 
@@ -76,17 +75,57 @@ Decision log: {session_path}/decision-log.md
 ")
 ```
 
-### 6.3 Validate Output
+### 6.3 Delegate Test QA Review
 
-Read `{session_path}/qa-{iteration}.md`. Verify it contains:
+```
+Task(subagent_type="general-purpose", prompt="
+You are the Test QA agent. {ide-invoke-prefix}{ide-folder}/agents/test-qa.md for your full instructions.
 
-**Required sections:**
+Review the regression test quality.
+
+Workflow: debug (autonomous)
+Iteration: {iteration}
+Session ID: {session_id}
+Session path: {session_path}
+Bug report: {session_path}/bug-report.md
+Regression test log: {session_path}/regression-test-log.md
+Fix log: {session_path}/fix-log.md
+Output to: {session_path}/test-qa-{iteration}.md
+
+Your task:
+1. Verify regression test actually catches the bug
+   - Does it test the root cause scenario?
+   - Would it have failed before the fix?
+
+2. Check test quality
+   - Is it maintainable?
+   - Does it test behavior, not implementation?
+   - Any anti-patterns?
+
+3. Check coverage
+   - Edge cases covered?
+   - Related scenarios tested?
+
+Decision log: {session_path}/decision-log.md
+")
+```
+
+### 6.4 Validate Output
+
+Read both review files. Verify they contain:
+
+**QA review (`qa-{iteration}.md`):**
 - [ ] Original Bug Verification - is it fixed?
 - [ ] Regression Check - any new issues?
 - [ ] Fix Quality Review
 - [ ] Verdict: PASS or issues list with severity
 
-### 6.4 Aggregate Results
+**Test QA review (`test-qa-{iteration}.md`):**
+- [ ] Regression test catches the bug
+- [ ] Test quality assessment
+- [ ] Verdict: PASS or issues list with severity
+
+### 6.5 Aggregate Results
 
 ```yaml
 qa_round:
@@ -100,7 +139,7 @@ qa_round:
   verdict: "PASS" | "FIX_REQUIRED" | "BLOCKED"
 ```
 
-### 6.5 Check Exit Conditions
+### 6.6 Check Exit Conditions
 
 **Clean exit (success):**
 
@@ -123,15 +162,15 @@ IF (blockers > 0 OR majors > 0 OR !original_bug_fixed) AND iteration < max_itera
   → FIX PHASE
 ```
 
-### 6.6 Delegate Fix Phase
+### 6.7 Delegate Fix Phase
 
-If issues found or original bug not fixed:
+**For code/fix issues (from QA):**
 
 ```
 Task(subagent_type="general-purpose", prompt="
 You are the Editor agent. {ide-invoke-prefix}{ide-folder}/agents/editor.md for your full instructions.
 
-Address QA findings.
+Address QA findings on the fix.
 
 Workflow: debug (autonomous)
 Iteration: {iteration}
@@ -140,7 +179,7 @@ Session path: {session_path}
 QA findings: {session_path}/qa-{iteration}.md
 
 Issues to fix:
-{blocker and major issues list}
+{blocker and major issues from qa-{iteration}.md}
 
 {If original bug not fixed}:
 CRITICAL: The original bug is NOT fixed. Review the root cause and hypothesis.
@@ -158,11 +197,36 @@ Decision log: {session_path}/decision-log.md
 ")
 ```
 
-### 6.7 Loop
+**For test issues (from Test QA):**
+
+```
+Task(subagent_type="general-purpose", prompt="
+You are the Test Engineer agent. {ide-invoke-prefix}{ide-folder}/agents/test-engineer.md for your full instructions.
+
+Address Test QA findings.
+
+Workflow: debug (autonomous)
+Iteration: {iteration}
+Session ID: {session_id}
+Session path: {session_path}
+Test QA findings: {session_path}/test-qa-{iteration}.md
+
+Issues to fix:
+{blocker and major issues from test-qa-{iteration}.md}
+
+Priority: Blockers first, then Majors.
+Update regression-test-log.md.
+Run tests to verify.
+
+Decision log: {session_path}/decision-log.md
+")
+```
+
+### 6.8 Loop
 
 Increment iteration, go to 6.2.
 
-### 6.8 Handle Escalation
+### 6.9 Handle Escalation
 
 If max iterations reached without success:
 

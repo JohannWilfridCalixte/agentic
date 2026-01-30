@@ -6,7 +6,7 @@
 
 **You MUST delegate all reviews and fixes using the Task tool. Do NOT review or fix code yourself.**
 
-Loop through QA and Security reviews until clean or max iterations (3).
+Loop through QA, Test QA, and Security reviews until clean or max iterations (3).
 
 ---
 
@@ -34,13 +34,13 @@ review_loop:
   rounds: []
 ```
 
-### 7.2 Delegate QA Review
+### 7.2 Delegate QA Review (Code)
 
 ```
 Task(subagent_type="general-purpose", prompt="
 You are the QA agent. {ide-invoke-prefix}{ide-folder}/agents/qa.md for your full instructions.
 
-Review the implementation.
+Review the implementation code (NOT tests - Test QA handles that).
 
 Workflow mode: {workflow_mode}
 Iteration: {iteration}
@@ -55,7 +55,29 @@ Output to: {story_path}/qa-{iteration}.md
 
 Validate: `{story_path}/qa-{iteration}.md` exists with verdict.
 
-### 7.3 Delegate Security QA Review
+### 7.3 Delegate Test QA Review
+
+```
+Task(subagent_type="general-purpose", prompt="
+You are the Test QA agent. {ide-invoke-prefix}{ide-folder}/agents/test-qa.md for your full instructions.
+
+Review the tests for quality and coverage.
+
+Workflow mode: {workflow_mode}
+Iteration: {iteration}
+Story ID: {story_id}
+Story path: {story_path}
+Spec: {story_path}/spec.md
+Technical Plan: {story_path}/technical-plan.md
+Test Log: {story_path}/test-log.md
+Implementation Log: {story_path}/implementation-log.md
+Output to: {story_path}/test-qa-{iteration}.md
+")
+```
+
+Validate: `{story_path}/test-qa-{iteration}.md` exists with verdict.
+
+### 7.4 Delegate Security QA Review
 
 ```
 Task(subagent_type="general-purpose", prompt="
@@ -75,9 +97,9 @@ Output to: {story_path}/security-{iteration}.md
 
 Validate: `{story_path}/security-{iteration}.md` exists with verdict.
 
-### 7.4 Aggregate Results
+### 7.5 Aggregate Results
 
-Read both review files. Collect all issues:
+Read all three review files (qa, test-qa, security). Collect all issues:
 
 ```yaml
 review_round:
@@ -90,7 +112,7 @@ review_round:
   verdict: "PASS" | "FIX_REQUIRED" | "BLOCKED"
 ```
 
-### 7.5 Check Exit Conditions
+### 7.6 Check Exit Conditions
 
 **Clean exit:**
 
@@ -113,23 +135,47 @@ IF (blockers > 0 OR majors > 0) AND iteration < max_iterations:
   → FIX PHASE
 ```
 
-### 7.6 Delegate Fix Phase
+### 7.7 Delegate Fix Phase
+
+**For code issues (from QA/Security):**
 
 ```
 Task(subagent_type="general-purpose", prompt="
 You are the Editor agent. {ide-invoke-prefix}{ide-folder}/agents/editor.md for your full instructions (Fix Phase section).
 
-Fix review issues.
+Fix code review issues.
 
 Workflow mode: {workflow_mode}
 Iteration: {iteration}
 Story ID: {story_id}
 Story path: {story_path}
 Issues to fix:
-{blocker and major issues list}
+{blocker and major code issues from qa-{iteration}.md and security-{iteration}.md}
 
 Priority: Blockers first, then Majors.
 Update implementation-log.md.
+Run existing tests to verify no regressions.
+Decision log: {story_path}/decision-log.md
+")
+```
+
+**For test issues (from Test QA):**
+
+```
+Task(subagent_type="general-purpose", prompt="
+You are the Test Engineer agent. {ide-invoke-prefix}{ide-folder}/agents/test-engineer.md for your full instructions.
+
+Fix test review issues.
+
+Workflow mode: {workflow_mode}
+Iteration: {iteration}
+Story ID: {story_id}
+Story path: {story_path}
+Issues to fix:
+{blocker and major test issues from test-qa-{iteration}.md}
+
+Priority: Blockers first, then Majors.
+Update test-log.md.
 Run tests to verify.
 Decision log: {story_path}/decision-log.md
 ")
@@ -137,11 +183,11 @@ Decision log: {story_path}/decision-log.md
 
 Validate: fixes applied, tests pass.
 
-### 7.7 Loop
+### 7.8 Loop
 
 Update iteration count, go to 7.2.
 
-### 7.8 Handle Escalation
+### 7.9 Handle Escalation
 
 **Interactive mode:** Present unresolved issues, ask user how to proceed.
 

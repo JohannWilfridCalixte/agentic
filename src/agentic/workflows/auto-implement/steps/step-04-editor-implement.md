@@ -40,7 +40,7 @@ IMPORTANT: Do NOT ask user questions. Log all decisions and open questions in de
 
 After the subagent completes, verify:
 - `{story_path}/implementation-log.md` exists and is non-empty
-- Implementation log contains actual test command output (not just claims)
+- Implementation log contains regression test output (no regressions)
 - Code changes exist in working tree
 
 ---
@@ -59,11 +59,11 @@ steps_completed:
     completed_at: {ISO}
     output: "{story_path}/implementation-log.md"
 
-current_step: 5
+current_step: "4b"
 ```
 
 ---
 
 ## NEXT STEP
 
-Load `step-05-review-loop.md`
+Load `step-04b-test-engineer.md`

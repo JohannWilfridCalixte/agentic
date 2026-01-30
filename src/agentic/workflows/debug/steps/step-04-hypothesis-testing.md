@@ -105,7 +105,7 @@ Read `{session_path}/hypothesis-log.md`. Verify latest entry contains:
 **Reversibility**: N/A
 ```
 
-Set `root_cause_identified: true` and proceed to Step 5.
+Set `root_cause_identified: true` and proceed to Step 4b (Test Engineer - Regression Test).
 
 **If hypothesis REJECTED and attempts < 3:**
 
@@ -231,7 +231,7 @@ root_cause_identified: true
 artifacts:
   hypothesis_log: "{session_path}/hypothesis-log.md"
 
-current_step: 5
+current_step: "4b"
 ```
 
 **Output:**
@@ -242,7 +242,7 @@ Hypothesis: {confirmed hypothesis}
 Attempts: {count}
 Evidence: {session_path}/hypothesis-log.md
 
-Proceeding to Fix Implementation...
+Proceeding to Test Engineer (regression test)...
 ```
 
 ---
@@ -287,5 +287,5 @@ Proceeding to Fix Implementation...
 
 ## NEXT STEP
 
-If confirmed: Load `step-05-fix-implementation.md`
+If confirmed: Load `step-04b-test-engineer-regression.md`
 If escalated: Halt workflow

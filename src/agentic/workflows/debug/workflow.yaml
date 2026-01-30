@@ -54,15 +54,25 @@ agents:
     decides: ["working vs broken comparison", "hypothesis formation", "test design"]
     prompt: "{ide-invoke-prefix}{ide-folder}/agents/analyst.md"
 
+  test_engineer:
+    role: "Regression test writing"
+    decides: ["test structure", "test data", "reproduction scenario"]
+    prompt: "{ide-invoke-prefix}{ide-folder}/agents/test-engineer.md"
+
   editor:
     role: "Fix implementation"
-    decides: ["fix approach", "test creation", "code changes"]
+    decides: ["fix approach", "code changes"]
     prompt: "{ide-invoke-prefix}{ide-folder}/agents/editor.md"
 
   qa:
     role: "Quality Assurance - verify fix"
-    decides: ["test coverage", "regression check", "quality gates"]
+    decides: ["fix quality", "regression check"]
     prompt: "{ide-invoke-prefix}{ide-folder}/agents/qa.md"
+
+  test_qa:
+    role: "Test Quality Assurance"
+    decides: ["test quality", "test coverage", "testing anti-patterns"]
+    prompt: "{ide-invoke-prefix}{ide-folder}/agents/test-qa.md"
 
 paths:
   base: "documentation/debug"
@@ -72,7 +82,9 @@ paths:
     evidence: "{session}/evidence.md"
     hypothesis_log: "{session}/hypothesis-log.md"
     fix_log: "{session}/fix-log.md"
+    regression_test_log: "{session}/regression-test-log.md"
     qa_reviews: "{session}/qa-{review_number}.md"
+    test_qa_reviews: "{session}/test-qa-{review_number}.md"
     decision_log: "{session}/decision-log.md"
     workflow_state: "{session}/workflow-state.yaml"
 
@@ -112,6 +124,12 @@ steps:
     loop: true
     max_iterations: 3
 
+  - id: "4b"
+    name: "test-engineer-regression"
+    file: "steps/step-04b-test-engineer-regression.md"
+    agent: "test_engineer"
+    output: "regression-test-log.md"
+
   - id: 5
     name: "fix-implementation"
     file: "steps/step-05-fix-implementation.md"
@@ -121,6 +139,6 @@ steps:
   - id: 6
     name: "qa-loop"
     file: "steps/step-06-qa-loop.md"
-    agents: ["qa", "editor"]
+    agents: ["qa", "test_qa", "editor", "test_engineer"]
     loop: true
     max_iterations: 3

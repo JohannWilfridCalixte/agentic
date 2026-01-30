@@ -6,7 +6,7 @@
 
 **You MUST delegate fix implementation using the Task tool. Do NOT implement fixes yourself.**
 
-Fix the root cause, not the symptom. Test first.
+Fix the root cause, not the symptom. The failing regression test was written in step 4b.
 
 ---
 
@@ -27,15 +27,15 @@ Confirmed hypothesis: {from hypothesis-log}
 Investigation log: {session_path}/investigation-log.md
 Evidence: {session_path}/evidence.md
 Hypothesis log: {session_path}/hypothesis-log.md
+Regression test: {session_path}/regression-test-log.md
 
 Your task:
-1. Create a FAILING test case that reproduces the bug
+1. Review the FAILING regression test (written by Test Engineer in step 4b)
 2. Implement the fix - ONE change addressing root cause
-3. Verify the test now passes
-4. Run full test suite to check for regressions
+3. Verify the regression test now PASSES
+4. Run full test suite to check for no regressions
 
 RULES:
-- Failing test FIRST, then fix
 - ONE fix at a time
 - No 'while I'm here' improvements
 - No bundled refactoring
@@ -54,13 +54,10 @@ Decision log: {session_path}/decision-log.md
 Read `{session_path}/fix-log.md`. Verify it contains:
 
 **Required sections:**
-- [ ] Test Case - failing test that reproduces bug
+- [ ] Regression Test Verification - test now passes
 - [ ] Fix Description - what was changed
-- [ ] Verification - test passes, no regressions
+- [ ] Full Suite - no regressions
 - [ ] Files Changed - list of modified files
-
-**If test not written first:**
-Re-delegate with emphasis on TDD requirement.
 
 ### 5.3 Log Fix Decision
 
@@ -162,19 +159,14 @@ Proceeding to QA Loop...
 
 {1-2 sentences from confirmed hypothesis}
 
-## Test Case
+## Regression Test Verification
 
-### Failing Test (before fix)
+**Test location:** {from regression-test-log.md}
+**Before fix:** FAILING (as expected)
+**After fix:** PASSING
 
-```{language}
-{test code that reproduces the bug}
 ```
-
-**Location:** {file:line}
-
-**Failure output:**
-```
-{test failure output before fix}
+{test output showing pass}
 ```
 
 ## Fix Implementation

@@ -42,7 +42,7 @@ Decision log: {story_path}/decision-log.md
 
 After the subagent completes, verify:
 - `{story_path}/implementation-log.md` exists and is non-empty
-- Implementation log contains actual test command output (not just claims)
+- Implementation log contains regression test output (no regressions)
 - Code changes exist in working tree
 
 ---
@@ -61,11 +61,11 @@ steps_completed:
     completed_at: {ISO_timestamp}
     output: "{story_path}/implementation-log.md"
 
-current_step: 7
+current_step: "6b"
 ```
 
 ---
 
 ## NEXT STEP
 
-Load `step-07-review-loop.md`
+Load `step-06b-test-engineer.md`
