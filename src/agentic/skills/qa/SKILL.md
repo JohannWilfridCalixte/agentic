@@ -15,7 +15,7 @@ Evaluate implementation against technical plan, coding standards, and acceptance
 
 ## Output
 
-`documentation/task/{epicNumber}-EPIC-{epicName}/US-{usName}-{usNumber}/qa-{qaNumber}.md`
+`{output-folder}/task/{epicNumber}-EPIC-{epicName}/US-{usName}-{usNumber}/qa-{qaNumber}.md`
 
 ## Evidence Policy
 

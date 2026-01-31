@@ -25,7 +25,7 @@ describe('init', () => {
   });
 
   it('initializes claude IDE only', async () => {
-    const result = await init('claude');
+    const result = await init({ ide: 'claude' });
 
     expect(isOk(result)).toBe(true);
     expect(existsSync(join(TEST_DIR, '.claude'))).toBe(true);
@@ -34,7 +34,7 @@ describe('init', () => {
   });
 
   it('initializes cursor IDE only', async () => {
-    const result = await init('cursor');
+    const result = await init({ ide: 'cursor' });
 
     expect(isOk(result)).toBe(true);
     expect(existsSync(join(TEST_DIR, '.cursor'))).toBe(true);
@@ -43,7 +43,7 @@ describe('init', () => {
   });
 
   it('initializes both IDEs by default', async () => {
-    const result = await init('both');
+    const result = await init({ ide: 'both' });
 
     expect(isOk(result)).toBe(true);
     expect(existsSync(join(TEST_DIR, '.claude'))).toBe(true);
@@ -51,7 +51,7 @@ describe('init', () => {
   });
 
   it('creates expected directory structure for claude', async () => {
-    await init('claude');
+    await init({ ide: 'claude' });
 
     const claudeDir = join(TEST_DIR, '.claude');
 
@@ -61,12 +61,26 @@ describe('init', () => {
   });
 
   it('creates expected directory structure for cursor', async () => {
-    await init('cursor');
+    await init({ ide: 'cursor' });
 
     const cursorDir = join(TEST_DIR, '.cursor');
 
     expect(existsSync(join(cursorDir, 'agents'))).toBe(true);
     expect(existsSync(join(cursorDir, 'skills'))).toBe(true);
     expect(existsSync(join(cursorDir, 'skills', 'github', 'scripts'))).toBe(true);
+  });
+
+  it('uses custom output folder', async () => {
+    const result = await init({ ide: 'claude', outputFolder: 'custom_output' });
+
+    expect(isOk(result)).toBe(true);
+
+    // Verify output-folder was replaced in template files
+    const claudeDir = join(TEST_DIR, '.claude');
+    const skillFile = Bun.file(join(claudeDir, 'skills', 'qa', 'SKILL.md'));
+    const content = await skillFile.text();
+
+    expect(content).toContain('custom_output/');
+    expect(content).not.toContain('{output-folder}');
   });
 });

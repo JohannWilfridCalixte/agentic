@@ -106,7 +106,7 @@ mixed:                      [2, 3, 4, 5, 6]  # context → plan → editor → r
 - Inline references: `EPIC-####`, `US-####`
 
 **If missing:**
-- Check existing epics in `documentation/product/prd/` or `documentation/task/`
+- Check existing epics in `{output-folder}/product/prd/` or `{output-folder}/task/`
 - Assign IDs based on context
 - Log decision
 
@@ -114,16 +114,31 @@ mixed:                      [2, 3, 4, 5, 6]  # context → plan → editor → r
 epic_id: "EPIC-####"
 epic_name: "kebab-case-name"
 story_id: "US-####"
-story_path: "documentation/task/{epic_id}-EPIC-{epic_name}/US-{story_id}"
 ```
 
-### 1.5 Create Story Directory
+### 1.5 Generate Workflow Instance ID
+
+**Generate unique instance ID to prevent parallel workflow collisions:**
+
+```
+instance_id = "{YYYYMMDD}-{HHMMSS}-{random4chars}"
+# Example: 20240115-143052-a7b2
+```
+
+**Set story_path with instance ID:**
+```yaml
+story_path: "{output-folder}/task/{epic_id}-EPIC-{epic_name}/US-{story_id}/{instance_id}"
+```
+
+This ensures parallel workflows don't overwrite each other's files.
+
+### 1.6 Create Story Directory
 
 ```bash
 mkdir -p {story_path}
 ```
 
-### 1.6 Initialize Workflow State
+### 1.7 Initialize Workflow State
 
 **Create `{story_path}/workflow-state.yaml`:**
 
@@ -140,6 +155,7 @@ route: {list of step IDs}
 epic_id: {epic_id}
 epic_name: {epic_name}
 story_id: {story_id}
+instance_id: {instance_id}
 story_path: {story_path}
 
 started_at: {ISO}
@@ -164,7 +180,7 @@ artifacts:
 pr_url: null
 ```
 
-### 1.7 Initialize Decision Log
+### 1.8 Initialize Decision Log
 
 **Create `{story_path}/decision-log.md`:**
 
@@ -204,14 +220,14 @@ _Questions that couldn't be confidently answered. Review post-completion._
 {DEC-1 from classification above}
 ```
 
-### 1.8 Store Input as Artifact
+### 1.9 Store Input as Artifact
 
 **If input is product/mixed:** Save as `{story_path}/spec.md` (treat as spec)
 **If input is technical-plan or technical-plan-with-context:** Save as `{story_path}/technical-plan.md`
 
 This ensures downstream agents have the input in the expected location.
 
-### 1.9 Complete Step
+### 1.10 Complete Step
 
 **Update workflow-state.yaml:**
 ```yaml

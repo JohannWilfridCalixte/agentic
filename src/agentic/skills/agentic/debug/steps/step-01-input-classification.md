@@ -103,14 +103,19 @@ IF unclear                                → "runtime_error" (safest default)
 
 ### 1.3 Generate Session ID
 
+**Generate unique session ID to prevent parallel workflow collisions:**
+
 ```
-session_id = "DEBUG-{YYYYMMDD}-{HHMMSS}"
+session_id = "DEBUG-{YYYYMMDD}-{HHMMSS}-{random4chars}"
+# Example: DEBUG-20240115-143052-a7b2
 ```
+
+This ensures parallel debug sessions don't overwrite each other's files.
 
 ### 1.4 Create Session Directory
 
 ```bash
-mkdir -p documentation/debug/{session_id}
+mkdir -p {output-folder}/debug/{session_id}
 ```
 
 ### 1.5 Initialize Workflow State
@@ -127,7 +132,7 @@ input_source: {path | url | null}
 input_class: {ci_failure | test_failure | runtime_error | behavior_bug | performance}
 
 session_id: {session_id}
-session_path: documentation/debug/{session_id}
+session_path: {output-folder}/debug/{session_id}
 
 started_at: {ISO}
 updated_at: {ISO}

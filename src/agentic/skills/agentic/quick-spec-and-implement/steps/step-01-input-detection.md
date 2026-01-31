@@ -85,7 +85,7 @@ Wait for user response.
 
 *Auto mode:*
 - Analyze `raw_input` for epic context clues
-- Check existing epics in `documentation/product/prd/` for fit
+- Check existing epics in `{output-folder}/product/prd/` for fit
 - **DECISION POINT**: Log decision about epic assignment
 - Generate next available story ID
 
@@ -94,16 +94,31 @@ Wait for user response.
 epic_id: "EPIC-####"
 epic_name: "kebab-case-name"
 story_id: "US-####"
-story_path: "documentation/task/{epic_id}-EPIC-{epic_name}/US-{story_id}"
 ```
 
-### 1.4 Create Story Directory
+### 1.4 Generate Workflow Instance ID
+
+**Generate unique instance ID to prevent parallel workflow collisions:**
+
+```
+instance_id = "{YYYYMMDD}-{HHMMSS}-{random4chars}"
+# Example: 20240115-143052-a7b2
+```
+
+**Set story_path with instance ID:**
+```yaml
+story_path: "{output-folder}/task/{epic_id}-EPIC-{epic_name}/US-{story_id}/{instance_id}"
+```
+
+This ensures parallel workflows don't overwrite each other's files.
+
+### 1.5 Create Story Directory
 
 ```bash
 mkdir -p {story_path}
 ```
 
-### 1.5 Initialize Workflow State
+### 1.6 Initialize Workflow State
 
 **Create `{story_path}/workflow-state.yaml`:**
 
@@ -120,6 +135,7 @@ input_source: {input_source}
 epic_id: {epic_id}
 epic_name: {epic_name}
 story_id: {story_id}
+instance_id: {instance_id}
 story_path: {story_path}
 
 # Timing
@@ -150,7 +166,7 @@ artifacts:
 pr_url: null
 ```
 
-### 1.6 Initialize Decision Log (Auto Mode)
+### 1.7 Initialize Decision Log (Auto Mode)
 
 **If workflow_mode == "auto", create `{story_path}/decision-log.md`:**
 
@@ -193,7 +209,7 @@ artifacts:
   decision_log: "{story_path}/decision-log.md"
 ```
 
-### 1.7 Complete Step
+### 1.8 Complete Step
 
 **Update workflow-state.yaml:**
 ```yaml

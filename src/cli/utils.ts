@@ -12,13 +12,20 @@ interface CopyDirError {
 
 type TargetIDE = Exclude<IDE, 'both'>;
 
-const TEMPLATE_VARS = {
+const IDE_TEMPLATE_VARS = {
   claude: { 'ide-folder': 'claude', 'ide-invoke-prefix': 'Read .' },
   cursor: { 'ide-folder': 'cursor', 'ide-invoke-prefix': '@.' },
 } as const satisfies Record<TargetIDE, Record<string, string>>;
 
-export function processTemplate(content: string, ide: TargetIDE) {
-  const vars = TEMPLATE_VARS[ide];
+export interface TemplateOptions {
+  outputFolder: string;
+}
+
+export function processTemplate(content: string, ide: TargetIDE, options: TemplateOptions) {
+  const vars = {
+    ...IDE_TEMPLATE_VARS[ide],
+    'output-folder': options.outputFolder,
+  };
   let result = content;
 
   for (const [key, value] of Object.entries(vars)) {
@@ -32,6 +39,7 @@ export async function copyAndProcess(
   source: string,
   destination: string,
   ide: TargetIDE,
+  options: TemplateOptions,
 ): Promise<Result<void, CopyDirError>> {
   try {
     if (!existsSync(destination)) {
@@ -45,11 +53,11 @@ export async function copyAndProcess(
       const destinationPath = join(destination, entry.name);
 
       if (entry.isDirectory()) {
-        const result = await copyAndProcess(sourcePath, destinationPath, ide);
+        const result = await copyAndProcess(sourcePath, destinationPath, ide, options);
         if (result._type === 'Err') return result;
       } else if (isTemplateFile(entry.name)) {
         const content = await Bun.file(sourcePath).text();
-        await Bun.write(destinationPath, processTemplate(content, ide));
+        await Bun.write(destinationPath, processTemplate(content, ide, options));
       } else {
         const content = await Bun.file(sourcePath).arrayBuffer();
         await Bun.write(destinationPath, content);
@@ -67,5 +75,10 @@ export async function copyAndProcess(
 }
 
 function isTemplateFile(filename: string) {
-  return filename.endsWith('.md') || filename.endsWith('.yaml') || filename.endsWith('.yml');
+  return (
+    filename.endsWith('.md') ||
+    filename.endsWith('.yaml') ||
+    filename.endsWith('.yml') ||
+    filename.endsWith('.sh')
+  );
 }

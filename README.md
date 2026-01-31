@@ -20,11 +20,12 @@ This package is hosted on GitHub Packages. One-time auth setup required:
 bunx @JohannWilfridCalixte/agentic@alpha init
 ```
 
-Or target a specific IDE:
+Options:
 
 ```bash
-bunx @JohannWilfridCalixte/agentic@alpha init --ide claude
-bunx @JohannWilfridCalixte/agentic@alpha init --ide cursor
+bunx @JohannWilfridCalixte/agentic@alpha init --ide claude    # claude only
+bunx @JohannWilfridCalixte/agentic@alpha init --ide cursor    # cursor only
+bunx @JohannWilfridCalixte/agentic@alpha init --output docs   # custom output folder
 ```
 
 ## Update
@@ -33,13 +34,15 @@ bunx @JohannWilfridCalixte/agentic@alpha init --ide cursor
 bunx @JohannWilfridCalixte/agentic@alpha update
 ```
 
-Auto-detects existing IDE setups and updates them.
+Auto-detects existing IDE setups and updates them. Supports same `--ide` and `--output` options.
 
 ## What It Does
 
 1. Creates `.claude/` and/or `.cursor/` with agents and skills
-2. Template-processes all files for the target IDE (paths, invocation syntax)
+2. Template-processes files (`.md`, `.yaml`, `.sh`) with IDE paths and output folder
 3. Sets up `CLAUDE.md` and/or `.cursor/rules/agentic.mdc`
+
+Workflow artifacts (specs, plans, logs) go to the configured output folder (`_agentic_output` by default).
 
 ## Usage
 
@@ -135,11 +138,15 @@ Located in `skills/github/scripts/`:
 ## CLI Commands
 
 ```bash
-agentic init|install [--ide <claude|cursor|both>]  # Setup in project (default: both)
-agentic update [--ide <claude|cursor|both>]        # Update existing setup (default: auto-detect)
-agentic list                                        # List agents/scripts
-agentic help                                        # Show help
+agentic init|install [options]  # Setup in project
+agentic update [options]        # Update existing setup
+agentic list                    # List agents/scripts
+agentic help                    # Show help
 ```
+
+Options:
+- `--ide <claude|cursor|both>` - Target IDE (init: both, update: auto-detect)
+- `--output <folder>` - Output folder for workflow artifacts (default: `_agentic_output`)
 
 ## Project Structure After Init
 
@@ -153,6 +160,10 @@ your-project/
 │   ├── skills/              # Skill definitions (incl. workflows, scripts)
 │   └── rules/
 │       └── agentic.mdc      # Cursor rules
+├── _agentic_output/         # Workflow artifacts (configurable via --output)
+│   ├── product/             # PRDs, specs, designs
+│   ├── task/                # Technical plans, implementation logs
+│   └── tech/                # Vision docs, DX docs
 ├── CLAUDE.md                # Claude Code config (if claude)
 ```
 

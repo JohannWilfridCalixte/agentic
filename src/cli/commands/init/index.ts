@@ -8,9 +8,12 @@ import {
   SKILLS_DIR,
   SUBAGENTS_DIR,
 } from '../../paths';
+import type { TemplateOptions } from '../../utils';
 import { copyAndProcess } from '../../utils';
 import { getIdeStrategy } from './strategies';
 import type { InitError, TargetIDE } from './types';
+
+export const DEFAULT_OUTPUT_FOLDER = '_agentic_output';
 
 function makeScriptsExecutableRecursive(dir: string) {
   if (!existsSync(dir)) return;
@@ -31,15 +34,23 @@ function makeScriptsExecutableRecursive(dir: string) {
   }
 }
 
+export interface SetupOptions {
+  outputFolder?: string;
+}
+
 export async function setupIde(
   targetIde: TargetIDE,
   projectRoot: string,
+  options: SetupOptions = {},
 ): Promise<Result<void, InitError>> {
   const ideDir = join(projectRoot, `.${targetIde}`);
+  const outputFolder = options.outputFolder ?? DEFAULT_OUTPUT_FOLDER;
 
   if (!existsSync(ideDir)) {
     mkdirSync(ideDir, { recursive: true });
   }
+
+  const templateOptions: TemplateOptions = { outputFolder };
 
   const copies: readonly [string, string][] = [
     [AGENTS_DIR, join(ideDir, 'agents')],
@@ -48,7 +59,7 @@ export async function setupIde(
   ];
 
   for (const [source, destination] of copies) {
-    const result = await copyAndProcess(source, destination, targetIde);
+    const result = await copyAndProcess(source, destination, targetIde, templateOptions);
 
     if (isErr(result)) {
       return Err({
@@ -71,14 +82,22 @@ export async function setupIde(
   return Ok(undefined);
 }
 
-export async function init(ide: IDE = 'both'): Promise<Result<void, InitError>> {
+export interface InitOptions {
+  ide?: IDE;
+  outputFolder?: string;
+}
+
+export async function init(options: InitOptions = {}): Promise<Result<void, InitError>> {
   const projectRoot = process.cwd();
+  const ide = options.ide ?? 'both';
+  const outputFolder = options.outputFolder ?? DEFAULT_OUTPUT_FOLDER;
   const ides: readonly TargetIDE[] = ide === 'both' ? ['claude', 'cursor'] : [ide];
 
   console.log('Initializing agentic...\n');
+  console.log(`  Output folder: ${outputFolder}`);
 
   for (const targetIde of ides) {
-    const result = await setupIde(targetIde, projectRoot);
+    const result = await setupIde(targetIde, projectRoot, { outputFolder });
     if (isErr(result)) return result;
   }
 
@@ -98,3 +117,4 @@ export async function init(ide: IDE = 'both'): Promise<Result<void, InitError>> 
 }
 
 export type { InitError, TargetIDE } from './types';
+export type { SetupOptions, InitOptions };

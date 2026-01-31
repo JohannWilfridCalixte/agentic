@@ -33,7 +33,7 @@ Decision log: {output_path}/decision-log.md (if auto mode)
 - `raw_input` (from file or user prompt)
 - `workflow_mode`: interactive or auto
 - `topic`: kebab-case topic slug
-- `output_path`: documentation/product/specs
+- `output_path`: {output-folder}/product/specs
 
 ### Expected Output
 

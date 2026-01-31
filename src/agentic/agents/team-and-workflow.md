@@ -40,35 +40,35 @@ All deliverables MUST be written to repo files. Chat output should be usable as 
 
 ### Product vision
 
-- CPO output → `documentation/product/vision/{timestamp}-{main-topic}.md`
+- CPO output → `{output-folder}/product/vision/{timestamp}-{main-topic}.md`
 
 ### Tech vision
 
-- CTO output → `documentation/tech/vision/{timestamp}-{main-topic}.md`
+- CTO output → `{output-folder}/tech/vision/{timestamp}-{main-topic}.md`
 
 ### PRD
 
-- PM epic → `documentation/product/prd/{number}-EPIC-{name}/epic.md`
-- PM user story → `documentation/product/prd/{number}-EPIC-{name}/US-{name}-{number}.md`
+- PM epic → `{output-folder}/product/prd/{number}-EPIC-{name}/epic.md`
+- PM user story → `{output-folder}/product/prd/{number}-EPIC-{name}/US-{name}-{number}.md`
 
 ### Tasking & implementation
 
-- Architect (Context) → `documentation/task/{number}-EPIC-{name}/US-{name}-{number}/technical-context.md`
-- Architect (Plan) → `documentation/task/{number}-EPIC-{name}/US-{name}-{number}/technical-plan.md`
+- Architect (Context) → `{output-folder}/task/{number}-EPIC-{name}/US-{name}-{number}/technical-context.md`
+- Architect (Plan) → `{output-folder}/task/{number}-EPIC-{name}/US-{name}-{number}/technical-plan.md`
 
 ### Security
 
 - Security Engineer (Addendum to Context/Plan) →
-  - `documentation/task/{number}-EPIC-{name}/US-{name}-{number}/security-addendum.md`
+  - `{output-folder}/task/{number}-EPIC-{name}/US-{name}-{number}/security-addendum.md`
   - (If needed, may include separate sections for context vs plan within the same addendum)
 - Security Engineer (Security QA) →
-  - `documentation/task/{number}-EPIC-{name}/US-{name}-{number}/security-{number}.md`
+  - `{output-folder}/task/{number}-EPIC-{name}/US-{name}-{number}/security-{number}.md`
 
 ### Reviews & DX
 
 - Editor implementation → code + (optional) `implementation-log.md`
-- QA review → `documentation/task/{number}-EPIC-{name}/US-{name}-{number}/qa-{number}.md`
-- DX notes → `documentation/tech/dx/{timestamp}-{topic}.md` or per-story `dx-notes.md`
+- QA review → `{output-folder}/task/{number}-EPIC-{name}/US-{name}-{number}/qa-{number}.md`
+- DX notes → `{output-folder}/tech/dx/{timestamp}-{topic}.md` or per-story `dx-notes.md`
 
 ## Stable IDs (Mandatory)
 
@@ -101,9 +101,9 @@ All documentation artifacts MUST be synced to GitHub issues for visibility and t
 
 | Agent | Output | Action |
 |-------|--------|--------|
-| CPO | `documentation/product/vision/*.md` | Run `/sync-issue` after writing |
-| CTO | `documentation/tech/vision/*.md` | Run `/sync-issue` after writing |
-| DX | `documentation/tech/dx/*.md`, `dx-notes.md` | Run `/sync-issue` after writing |
+| CPO | `{output-folder}/product/vision/*.md` | Run `/sync-issue` after writing |
+| CTO | `{output-folder}/tech/vision/*.md` | Run `/sync-issue` after writing |
+| DX | `{output-folder}/tech/dx/*.md`, `dx-notes.md` | Run `/sync-issue` after writing |
 | PM | `epic.md`, `US-*.md` | Run `/sync-issue` after writing |
 | Architect (Context) | `technical-context.md` | Run `/sync-issue` after writing |
 | Architect (Plan) | `technical-plan.md` | Run `/sync-issue` after writing |

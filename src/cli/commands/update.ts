@@ -5,12 +5,17 @@ import type { Result } from '../../lib/monads';
 import { Err, isErr, Ok } from '../../lib/monads';
 import type { IDE } from '../constants';
 import type { InitError, TargetIDE } from './init';
-import { setupIde } from './init';
+import { DEFAULT_OUTPUT_FOLDER, setupIde } from './init';
 
 interface UpdateError {
   readonly code: 'NO_IDE_DETECTED' | 'UPDATE_FAILED';
   readonly message: string;
   readonly cause?: unknown;
+}
+
+export interface UpdateOptions {
+  ide?: IDE;
+  outputFolder?: string;
 }
 
 function detectIdes(projectRoot: string) {
@@ -22,13 +27,14 @@ function detectIdes(projectRoot: string) {
   return detected;
 }
 
-export async function update(ide?: IDE): Promise<Result<void, UpdateError | InitError>> {
+export async function update(options: UpdateOptions = {}): Promise<Result<void, UpdateError | InitError>> {
   const projectRoot = process.cwd();
+  const outputFolder = options.outputFolder ?? DEFAULT_OUTPUT_FOLDER;
 
-  const ides: readonly TargetIDE[] = ide
-    ? ide === 'both'
+  const ides: readonly TargetIDE[] = options.ide
+    ? options.ide === 'both'
       ? ['claude', 'cursor']
-      : [ide]
+      : [options.ide]
     : detectIdes(projectRoot);
 
   if (ides.length === 0) {
@@ -39,9 +45,10 @@ export async function update(ide?: IDE): Promise<Result<void, UpdateError | Init
   }
 
   console.log('Updating agentic...\n');
+  console.log(`  Output folder: ${outputFolder}`);
 
   for (const targetIde of ides) {
-    const result = await setupIde(targetIde, projectRoot);
+    const result = await setupIde(targetIde, projectRoot, { outputFolder });
     if (isErr(result)) {
       return Err({
         code: 'UPDATE_FAILED' as const,

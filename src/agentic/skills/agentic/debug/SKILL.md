@@ -178,7 +178,7 @@ Create `{session_path}/escalation.md` or `{session_path}/qa-escalation.md` with:
 
 ## Artifacts
 
-All outputs: `documentation/debug/{session_id}/`
+All outputs: `{output-folder}/debug/{session_id}/`
 
 | Artifact | Purpose |
 |----------|---------|

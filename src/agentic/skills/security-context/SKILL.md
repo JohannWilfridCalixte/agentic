@@ -10,13 +10,13 @@ Harden engineering work by adding security constraints to story artifacts.
 ## Inputs
 
 - Tech vision docs (if provided)
-- PRD (`documentation/product/prd/.../US-*.md`)
+- PRD (`{output-folder}/product/prd/.../US-*.md`)
 - Technical context (if exists)
 - Technical plan (if exists)
 
 ## Output
 
-`documentation/task/{epicNumber}-EPIC-{epicName}/US-{usName}-{usNumber}/security-addendum.md`
+`{output-folder}/task/{epicNumber}-EPIC-{epicName}/US-{usName}-{usNumber}/security-addendum.md`
 
 ## How to Operate
 

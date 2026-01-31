@@ -39,6 +39,13 @@ function parseIdeOptionOptional(args: readonly string[]): IDE | undefined {
   process.exit(1);
 }
 
+function parseOutputOption(args: readonly string[]): string | undefined {
+  const outputIndex = args.indexOf('--output');
+  if (outputIndex === -1 || !args[outputIndex + 1]) return undefined;
+
+  return args[outputIndex + 1];
+}
+
 export async function run(args: readonly string[]) {
   const command = parseCommand(args[0]);
 
@@ -53,7 +60,8 @@ export async function run(args: readonly string[]) {
 
     case 'init': {
       const ide = parseIdeOption(args);
-      const result = await init(ide);
+      const outputFolder = parseOutputOption(args);
+      const result = await init({ ide, outputFolder });
 
       if (isErr(result)) {
         console.error(`Error: ${result.data.message}`);
@@ -65,7 +73,8 @@ export async function run(args: readonly string[]) {
 
     case 'update': {
       const ide = parseIdeOptionOptional(args);
-      const result = await update(ide);
+      const outputFolder = parseOutputOption(args);
+      const result = await update({ ide, outputFolder });
 
       if (isErr(result)) {
         console.error(`Error: ${result.data.message}`);

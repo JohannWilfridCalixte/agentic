@@ -111,7 +111,7 @@ Execute each step in order by reading the corresponding step file.
 
 ## ARTIFACTS
 
-All outputs go to: `documentation/task/{epic_id}-EPIC-{epic_name}/US-{story_id}/`
+All outputs go to: `{output-folder}/task/{epic_id}-EPIC-{epic_name}/US-{story_id}/`
 
 | Artifact | Description |
 |----------|-------------|

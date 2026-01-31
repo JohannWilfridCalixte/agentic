@@ -56,18 +56,33 @@ From `raw_input`:
 **Set variables:**
 ```yaml
 topic: "kebab-case-topic"
-output_path: "documentation/product/specs"
 ```
 
-### 1.4 Create Output Directory
+### 1.4 Generate Workflow Instance ID
+
+**Generate unique instance ID to prevent parallel workflow collisions:**
+
+```
+instance_id = "{YYYYMMDD}-{HHMMSS}-{random4chars}"
+# Example: 20240115-143052-a7b2
+```
+
+**Set output_path with instance ID:**
+```yaml
+output_path: "{output-folder}/product/specs/{topic}/{instance_id}"
+```
+
+This ensures parallel workflows don't overwrite each other's files.
+
+### 1.5 Create Output Directory
 
 ```bash
-mkdir -p documentation/product/specs
+mkdir -p {output_path}
 ```
 
-### 1.5 Initialize Workflow State
+### 1.6 Initialize Workflow State
 
-**Create `documentation/product/specs/workflow-state.yaml`:**
+**Create `{output_path}/workflow-state.yaml`:**
 
 ```yaml
 workflow: product-spec
@@ -80,6 +95,7 @@ input_source: {input_source}
 
 # Topic identification
 topic: {topic}
+instance_id: {instance_id}
 output_path: {output_path}
 
 # Timing
@@ -103,9 +119,9 @@ validation:
   required_sections_present: false
 ```
 
-### 1.6 Initialize Decision Log (Auto Mode)
+### 1.7 Initialize Decision Log (Auto Mode)
 
-**If workflow_mode == "auto", create `documentation/product/specs/decision-log.md`:**
+**If workflow_mode == "auto", create `{output_path}/decision-log.md`:**
 
 ```markdown
 # Decision Log - {topic}
@@ -141,10 +157,10 @@ _Questions that arose but couldn't be confidently answered._
 **Update workflow-state.yaml:**
 ```yaml
 artifacts:
-  decision_log: "documentation/product/specs/decision-log.md"
+  decision_log: "{output_path}/decision-log.md"
 ```
 
-### 1.7 Complete Step
+### 1.8 Complete Step
 
 **Update workflow-state.yaml:**
 ```yaml

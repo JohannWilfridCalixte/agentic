@@ -27,7 +27,7 @@ Turn ideas into fully formed designs through natural collaborative dialogue.
 
 ## After Design
 
-Write validated design to `documentation/product/YYYY-MM-DD-<topic>-design.md` and commit.
+Write validated design to `{output-folder}/product/YYYY-MM-DD-<topic>-design.md` and commit.
 
 ## Principles
 

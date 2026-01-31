@@ -9,7 +9,7 @@ Define product direction and decision principles.
 
 ## Output
 
-`documentation/product/vision/{timestamp}-{main-topic}.md`
+`{output-folder}/product/vision/{timestamp}-{main-topic}.md`
 
 ## Required Structure
 

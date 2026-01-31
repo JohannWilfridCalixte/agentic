@@ -45,7 +45,7 @@ When responding:
 
 ## Implementation Log (Optional but Recommended)
 
-`documentation/task/{epicNumber}-EPIC-{epicName}/US-{usName}-{usNumber}/implementation-log.md`
+`{output-folder}/task/{epicNumber}-EPIC-{epicName}/US-{usName}-{usNumber}/implementation-log.md`
 
 Contents:
 - Commits/SHAs (if available)
