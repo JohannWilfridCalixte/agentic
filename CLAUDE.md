@@ -29,7 +29,7 @@ src/
 │   │   ├── list.ts
 │   │   ├── update.ts
 │   │   └── help.ts
-│   ├── constants.ts        # AGENTS, SCRIPTS, IDE type
+│   ├── constants.ts        # AGENTS, IDE type
 │   ├── paths.ts            # Path constants
 │   └── utils.ts            # copyAndProcess helper
 ├── lib/                    # Shared utilities
@@ -38,8 +38,7 @@ src/
 └── agentic/                # Content assets
     ├── agents/             # Agent prompts
     ├── subagents/          # Sub-agent prompts
-    ├── skills/             # Skill definitions (incl. agentic/* workflows)
-    ├── scripts/            # Shell scripts
+    ├── skills/             # Skill definitions
     ├── templates/          # IDE config templates
     └── personas/           # Persona definitions
 ```
@@ -65,7 +64,6 @@ cd .tmp && bun run ../bin/agentic.ts init
 
 Agents in `.claude/agents/` - load with `Read .claude/agents/{agent}.md`
 Skills in `.claude/skills/` - load with `Read .claude/skills/{name}/SKILL.md`
-Scripts in `.claude/scripts/`
 
 ### Skill Index (always available)
 
@@ -94,7 +92,7 @@ Scripts in `.claude/scripts/`
 | **dx** | Tooling, linting, CI, repo ergonomics |
 | **ux-patterns** | Forms, inputs, modals, loading states |
 | **context7** | Fetching up-to-date library docs |
-| **github** | Syncing product artifacts to GitHub issues |
+| **github** | GitHub operations - syncing docs, PRs, issues, gh CLI |
 
 ### Agents
 
@@ -114,11 +112,3 @@ Scripts in `.claude/scripts/`
 - `security-qa` - Security QA
 - `investigator` - Root cause investigation
 - `analyst` - Pattern analysis
-
-### Scripts
-
-- `sync-to-github.sh` - Push markdown to GitHub issue
-- `sync-from-github.sh` - Pull GitHub issue to markdown
-- `sync-all.sh` - Sync all documentation files
-- `create-pr.sh` - Create pull request
-- `resolve-parent.sh` - Resolve parent issue

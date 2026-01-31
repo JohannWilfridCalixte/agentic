@@ -57,7 +57,7 @@ describe('init', () => {
 
     expect(existsSync(join(claudeDir, 'agents'))).toBe(true);
     expect(existsSync(join(claudeDir, 'skills'))).toBe(true);
-    expect(existsSync(join(claudeDir, 'scripts'))).toBe(true);
+    expect(existsSync(join(claudeDir, 'skills', 'github', 'scripts'))).toBe(true);
   });
 
   it('creates expected directory structure for cursor', async () => {
@@ -67,6 +67,6 @@ describe('init', () => {
 
     expect(existsSync(join(cursorDir, 'agents'))).toBe(true);
     expect(existsSync(join(cursorDir, 'skills'))).toBe(true);
-    expect(existsSync(join(cursorDir, 'scripts'))).toBe(true);
+    expect(existsSync(join(cursorDir, 'skills', 'github', 'scripts'))).toBe(true);
   });
 });

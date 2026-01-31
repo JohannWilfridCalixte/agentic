@@ -1,40 +1,75 @@
 ---
 name: github
-description: Use when syncing product artifacts to GitHub issues or pulling issues into markdown docs
+description: Use when interacting with GitHub - syncing docs to issues, creating PRs, managing issues/PRs, or any gh CLI operation
 ---
 
-# GitHub Sync
+# GitHub Operations
 
-## Sync Single Issue
+Scripts in `.{ide-folder}/skills/github/scripts/`.
 
-Run the sync script on the provided file:
+## Available Scripts
 
-```bash
-./scripts/sync-to-github.sh $ARGUMENTS
-```
+| Script | Purpose |
+|--------|---------|
+| `sync-to-github.sh <file>` | Push markdown to GitHub issue |
+| `sync-from-github.sh <file>` | Pull issue updates to markdown |
+| `sync-all.sh [--dry-run]` | Sync all docs in order |
+| `create-pr.sh <log-file> [--base <branch>]` | Create PR from implementation log |
+| `resolve-parent.sh <file>` | Find parent issue number |
 
-Creates/updates a GitHub issue with:
-- Title from markdown `# heading`
-- Full content as issue body
-- Label based on file type (Epic, User Story, Technical Plan, Security)
-- Native sub-issue parent relationship (Epic → US → Tech Plan)
-- Status sync (Done/Completed → closes issue)
-
-The script adds `**GitHub Issue:** #N` to the markdown file after first sync.
-
-## Sync All
-
-Run the bash sync script:
+## Sync to GitHub
 
 ```bash
-./scripts/sync-all.sh $ARGUMENTS
+.{ide-folder}/skills/github/scripts/sync-to-github.sh <markdown-file>
 ```
 
-Syncs all documentation in correct order:
-1. **Phase 1**: Epics (`epic.md`)
-2. **Phase 2**: User Stories (`US-*.md`)
-3. **Phase 3**: Technical Plans + Security (`technical-plan.md`, `security-*.md`)
+Creates/updates issue with:
+- Title from `# heading`
+- Full content as body
+- Label by file type (Epic, User Story, Technical Plan, Security)
+- Native sub-issue parent relationship
+- Status sync (Done/Completed → closes)
 
-This order ensures parent issues exist before children reference them.
+Adds `**GitHub Issue:** #N` to file after first sync.
 
-Use `--dry-run` to preview without making changes.
+## Sync All Docs
+
+```bash
+.{ide-folder}/skills/github/scripts/sync-all.sh [--dry-run]
+```
+
+Syncs in order: Vision → Epics → User Stories → Task Docs.
+
+## Create PR
+
+```bash
+.{ide-folder}/skills/github/scripts/create-pr.sh <implementation-log.md> [--base main]
+```
+
+Creates PR with log as description, auto-closes related issue.
+
+## gh CLI Fallback
+
+If no script matches your need, use `gh` CLI directly:
+
+```bash
+# Issues
+gh issue list
+gh issue view <number>
+gh issue create --title "..." --body "..."
+gh issue edit <number> --title "..." --body "..."
+gh issue close <number>
+
+# PRs
+gh pr list
+gh pr view <number>
+gh pr create --title "..." --body "..."
+gh pr merge <number>
+gh pr checkout <number>
+
+# API (for advanced ops)
+gh api repos/{owner}/{repo}/issues
+gh api graphql -f query='...'
+```
+
+Run `gh --help` or `gh <command> --help` for full options.

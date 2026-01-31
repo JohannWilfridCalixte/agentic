@@ -1,12 +1,10 @@
-import { chmodSync, existsSync, mkdirSync } from 'node:fs';
+import { chmodSync, existsSync, mkdirSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Result } from '../../../lib/monads';
 import { Err, isErr, Ok } from '../../../lib/monads';
 import type { IDE } from '../../constants';
-import { SCRIPTS } from '../../constants';
 import {
   AGENTS_DIR,
-  SCRIPTS_DIR,
   SKILLS_DIR,
   SUBAGENTS_DIR,
 } from '../../paths';
@@ -14,13 +12,18 @@ import { copyAndProcess } from '../../utils';
 import { getIdeStrategy } from './strategies';
 import type { InitError, TargetIDE } from './types';
 
-function makeScriptsExecutable(scriptsDir: string) {
-  for (const script of SCRIPTS) {
-    const scriptPath = join(scriptsDir, script);
+function makeScriptsExecutableRecursive(dir: string) {
+  if (!existsSync(dir)) return;
 
-    if (existsSync(scriptPath)) {
+  for (const entry of readdirSync(dir)) {
+    const fullPath = join(dir, entry);
+    const stat = statSync(fullPath);
+
+    if (stat.isDirectory()) {
+      makeScriptsExecutableRecursive(fullPath);
+    } else if (entry.endsWith('.sh')) {
       try {
-        chmodSync(scriptPath, 0o755);
+        chmodSync(fullPath, 0o755);
       } catch {
         // Ignore chmod errors
       }
@@ -42,7 +45,6 @@ export async function setupIde(
     [AGENTS_DIR, join(ideDir, 'agents')],
     [SUBAGENTS_DIR, join(ideDir, 'agents')],
     [SKILLS_DIR, join(ideDir, 'skills')],
-    [SCRIPTS_DIR, join(ideDir, 'scripts')],
   ];
 
   for (const [source, destination] of copies) {
@@ -57,9 +59,9 @@ export async function setupIde(
     }
   }
 
-  console.log(`  Copied to .${targetIde}/agents/, skills/, scripts/`);
+  console.log(`  Copied to .${targetIde}/agents/, skills/`);
 
-  makeScriptsExecutable(join(ideDir, 'scripts'));
+  makeScriptsExecutableRecursive(join(ideDir, 'skills'));
 
   const strategy = getIdeStrategy(targetIde);
   const result = await strategy.setup(projectRoot);
@@ -83,7 +85,7 @@ export async function init(ide: IDE = 'both'): Promise<Result<void, InitError>> 
   console.log('\nDone!');
 
   for (const targetIde of ides) {
-    console.log(`  .${targetIde}/: agents/, skills/, scripts/`);
+    console.log(`  .${targetIde}/: agents/, skills/`);
   }
 
   console.log('\nUsage:');

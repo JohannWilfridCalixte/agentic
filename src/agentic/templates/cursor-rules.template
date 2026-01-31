@@ -32,7 +32,7 @@ Load skill: `@.cursor/skills/{name}/SKILL.md`
 | **dx** | Tooling, linting, CI, repo ergonomics |
 | **ux-patterns** | Forms, inputs, modals, loading states |
 | **context7** | Fetching up-to-date library docs before coding |
-| **github** | Syncing product artifacts to/from GitHub issues |
+| **github** | GitHub operations - syncing docs, PRs, issues, gh CLI |
 
 ## Agentic Skills (workflow orchestration)
 
@@ -67,12 +67,3 @@ Load agent: `@.cursor/agents/{name}.md`
 | **security-qa** | Security compliance review |
 | **investigator** | Root cause investigation (debug) |
 | **analyst** | Pattern analysis (debug) |
-
-## Scripts
-
-Located in `.cursor/scripts/`:
-- `sync-to-github.sh` - Push markdown to GitHub issue
-- `sync-from-github.sh` - Pull GitHub issue to markdown
-- `sync-all.sh` - Sync all documentation
-- `create-pr.sh` - Create pull request
-- `resolve-parent.sh` - Resolve parent issue
