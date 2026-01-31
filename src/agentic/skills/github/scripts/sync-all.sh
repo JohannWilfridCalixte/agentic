@@ -25,34 +25,34 @@ TASK_DOCS=()
 # Phase 1: Vision docs (no parents)
 while IFS= read -r -d '' file; do
     VISION+=("$file")
-done < <(find {output-folder}/product/vision -name "*.md" -print0 2>/dev/null)
+done < <(find {ide-folder}/{output-folder}/product/vision -name "*.md" -print0 2>/dev/null)
 while IFS= read -r -d '' file; do
     VISION+=("$file")
-done < <(find {output-folder}/tech/vision -name "*.md" -print0 2>/dev/null)
+done < <(find {ide-folder}/{output-folder}/tech/vision -name "*.md" -print0 2>/dev/null)
 while IFS= read -r -d '' file; do
     VISION+=("$file")
-done < <(find {output-folder}/tech/dx -name "*.md" -print0 2>/dev/null)
+done < <(find {ide-folder}/{output-folder}/tech/dx -name "*.md" -print0 2>/dev/null)
 
 # Phase 2: Epics
 while IFS= read -r -d '' file; do
     EPICS+=("$file")
-done < <(find {output-folder}/product/prd -name "epic.md" -print0 2>/dev/null)
+done < <(find {ide-folder}/{output-folder}/product/prd -name "epic.md" -print0 2>/dev/null)
 
 # Phase 3: User Stories
 while IFS= read -r -d '' file; do
     USER_STORIES+=("$file")
-done < <(find {output-folder}/product/prd -name "US-*.md" -print0 2>/dev/null)
+done < <(find {ide-folder}/{output-folder}/product/prd -name "US-*.md" -print0 2>/dev/null)
 
 # Phase 4: Task docs (technical-context, technical-plan, security-addendum)
 while IFS= read -r -d '' file; do
     TASK_DOCS+=("$file")
-done < <(find {output-folder}/task -name "technical-context.md" -print0 2>/dev/null)
+done < <(find {ide-folder}/{output-folder}/task -name "technical-context.md" -print0 2>/dev/null)
 while IFS= read -r -d '' file; do
     TASK_DOCS+=("$file")
-done < <(find {output-folder}/task -name "technical-plan.md" -print0 2>/dev/null)
+done < <(find {ide-folder}/{output-folder}/task -name "technical-plan.md" -print0 2>/dev/null)
 while IFS= read -r -d '' file; do
     TASK_DOCS+=("$file")
-done < <(find {output-folder}/task -name "security-addendum.md" -print0 2>/dev/null)
+done < <(find {ide-folder}/{output-folder}/task -name "security-addendum.md" -print0 2>/dev/null)
 
 # Display function
 display_file() {

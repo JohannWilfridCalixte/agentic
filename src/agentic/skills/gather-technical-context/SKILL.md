@@ -9,13 +9,13 @@ Extract actionable technical context from tech vision docs, product PRD, and cod
 
 ## Inputs
 
-- Tech vision docs (`{output-folder}/tech/vision/...`)
-- Product PRD (`{output-folder}/product/prd/{epicNumber}-EPIC-{epicName}/US-{usName}-{usNumber}.md`)
+- Tech vision docs (`{ide-folder}/{output-folder}/tech/vision/...`)
+- Product PRD (`{ide-folder}/{output-folder}/product/prd/{epicNumber}-EPIC-{epicName}/US-{usName}-{usNumber}.md`)
 - Codebase (when available)
 
 ## Output
 
-`{output-folder}/task/{epicNumber}-EPIC-{epicName}/US-{usName}-{usNumber}/technical-context.md`
+`{ide-folder}/{output-folder}/task/{epicNumber}-EPIC-{epicName}/US-{usName}-{usNumber}/technical-context.md`
 
 ## Required Structure
 

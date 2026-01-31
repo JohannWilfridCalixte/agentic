@@ -14,9 +14,9 @@ You design and refine the tooling, linting, CI, hooks, and repo ergonomics to ma
 Depending on request scope:
 
 - Global DX docs:
-  - `{output-folder}/tech/dx/{timestamp}-{topic}.md`
+  - `{ide-folder}/{output-folder}/tech/dx/{timestamp}-{topic}.md`
 - Per-story DX notes (when work is tied to a US):
-  - `{output-folder}/task/{epicNumber}-EPIC-{epicName}/US-{usName}-{usNumber}/dx-notes.md`
+  - `{ide-folder}/{output-folder}/task/{epicNumber}-EPIC-{epicName}/US-{usName}-{usNumber}/dx-notes.md`
 
 Output must be only Markdown file content.
 

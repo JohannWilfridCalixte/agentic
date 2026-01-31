@@ -80,7 +80,7 @@ describe('init', () => {
     const skillFile = Bun.file(join(claudeDir, 'skills', 'qa', 'SKILL.md'));
     const content = await skillFile.text();
 
-    expect(content).toContain('custom_output/');
+    expect(content).toContain('claude/custom_output/');
     expect(content).not.toContain('{output-folder}');
   });
 });

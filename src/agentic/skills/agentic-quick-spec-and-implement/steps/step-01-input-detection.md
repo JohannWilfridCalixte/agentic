@@ -85,7 +85,7 @@ Wait for user response.
 
 *Auto mode:*
 - Analyze `raw_input` for epic context clues
-- Check existing epics in `{output-folder}/product/prd/` for fit
+- Check existing epics in `{ide-folder}/{output-folder}/product/prd/` for fit
 - **DECISION POINT**: Log decision about epic assignment
 - Generate next available story ID
 
@@ -107,7 +107,7 @@ instance_id = "{YYYYMMDD}-{HHMMSS}-{random4chars}"
 
 **Set story_path with instance ID:**
 ```yaml
-story_path: "{output-folder}/task/{epic_id}-EPIC-{epic_name}/US-{story_id}/{instance_id}"
+story_path: "{ide-folder}/{output-folder}/task/{epic_id}-EPIC-{epic_name}/US-{story_id}/{instance_id}"
 ```
 
 This ensures parallel workflows don't overwrite each other's files.
