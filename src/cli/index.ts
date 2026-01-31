@@ -4,7 +4,7 @@ import type { IDE } from './constants';
 
 function parseCommand(arg: string | undefined) {
   if (!arg || arg === 'help' || arg === '--help' || arg === '-h') return 'help' as const;
-  if (arg === 'init') return 'init' as const;
+  if (arg === 'init' || arg === 'install') return 'init' as const;
   if (arg === 'list') return 'list' as const;
   if (arg === 'update') return 'update' as const;
 
