@@ -178,9 +178,10 @@ bun run bin/agentic.ts
 
 ## Publishing
 
-Push a version tag to auto-publish to GitHub Packages:
+Use the bump script to update version, commit, tag, and push:
 
 ```bash
-git tag v0.1.0
-git push --tags
+bun run bump v0.1.1-alpha.16
 ```
+
+This triggers GitHub Actions to publish to GitHub Packages.

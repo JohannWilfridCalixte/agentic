@@ -23,6 +23,7 @@
   "author": "Johann Wilfrid Calixte",
   "license": "MIT",
   "scripts": {
+    "bump": "bun run bin/bump.ts",
     "test": "bun test",
     "typecheck": "tsc --noEmit",
     "lint": "biome check .",
