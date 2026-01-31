@@ -57,8 +57,6 @@ describe('init', () => {
 
     expect(existsSync(join(claudeDir, 'agents'))).toBe(true);
     expect(existsSync(join(claudeDir, 'skills'))).toBe(true);
-    expect(existsSync(join(claudeDir, 'commands'))).toBe(true);
-    expect(existsSync(join(claudeDir, 'workflows'))).toBe(true);
     expect(existsSync(join(claudeDir, 'scripts'))).toBe(true);
   });
 
@@ -69,8 +67,6 @@ describe('init', () => {
 
     expect(existsSync(join(cursorDir, 'agents'))).toBe(true);
     expect(existsSync(join(cursorDir, 'skills'))).toBe(true);
-    expect(existsSync(join(cursorDir, 'commands'))).toBe(true);
-    expect(existsSync(join(cursorDir, 'workflows'))).toBe(true);
     expect(existsSync(join(cursorDir, 'scripts'))).toBe(true);
   });
 });

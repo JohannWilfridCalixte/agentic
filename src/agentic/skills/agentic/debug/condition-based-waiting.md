@@ -126,6 +126,6 @@ await new Promise(r => setTimeout(r, 200));   // Then: wait for timed behavior
 
 From debugging session:
 - Fixed 15 flaky tests across 3 files
-- Pass rate: 60% → 100%
+- Pass rate: 60% -> 100%
 - Execution time: 40% faster
 - No more race conditions

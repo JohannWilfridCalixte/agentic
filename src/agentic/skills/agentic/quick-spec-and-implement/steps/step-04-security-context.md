@@ -30,8 +30,8 @@ Decision log: {story_path}/decision-log.md
 
 ### Inputs to provide
 
-- `spec.md` — product requirements with security implications
-- `technical-context.md` — technical landscape
+- `spec.md` - product requirements with security implications
+- `technical-context.md` - technical landscape
 - `workflow_mode`: interactive or auto
 
 ### Validate output

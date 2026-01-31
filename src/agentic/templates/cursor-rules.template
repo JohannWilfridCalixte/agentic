@@ -34,14 +34,14 @@ Load skill: `@.cursor/skills/{name}/SKILL.md`
 | **context7** | Fetching up-to-date library docs before coding |
 | **github** | Syncing product artifacts to/from GitHub issues |
 
-## Workflow Commands
+## Agentic Skills (workflow orchestration)
 
-| Command | Use When |
-|---------|----------|
-| `/agentic:auto-implement <input>` | Autonomous spec/PRD/plan → PR without interaction |
-| `/agentic:quick-spec-and-implement <idea>` | Interactive idea → spec → PR with collaboration |
-| `/agentic:debug <error>` | Systematic debugging to verified fix |
-| `/agentic:product-spec <idea>` | Product discovery → PRD |
+| Skill | Use When |
+|-------|----------|
+| **agentic:auto-implement** | Autonomous spec/PRD/plan → PR without interaction |
+| **agentic:quick-spec-and-implement** | Interactive idea → spec → PR with collaboration |
+| **agentic:debug** | Systematic debugging to verified fix |
+| **agentic:product-spec** | Product discovery → PRD |
 
 ## Agents
 

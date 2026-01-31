@@ -38,9 +38,7 @@ src/
 └── agentic/                # Content assets
     ├── agents/             # Agent prompts
     ├── subagents/          # Sub-agent prompts
-    ├── skills/             # Skill definitions
-    ├── commands/           # Workflow commands
-    ├── workflows/          # Multi-step workflows
+    ├── skills/             # Skill definitions (incl. agentic/* workflows)
     ├── scripts/            # Shell scripts
     ├── templates/          # IDE config templates
     └── personas/           # Persona definitions
@@ -80,7 +78,10 @@ Scripts in `.claude/scripts/`
 | **code** | Implementing code per technical plan |
 | **qa** | Reviewing implementation against plan/ACs |
 | **security-qa** | Reviewing code for security/privacy |
-| **debug** | Bug reports, CI failures, runtime errors |
+| **agentic:debug** | Bug reports, CI failures, runtime errors, flaky tests |
+| **agentic:auto-implement** | Autonomous spec/PRD/plan → PR without interaction |
+| **agentic:quick-spec-and-implement** | Interactive idea → spec → PR with collaboration |
+| **agentic:product-spec** | Product discovery → PRD |
 | **code-testing** | Writing tests, test strategy, mocking, flaky test debugging |
 | **brainstorming** | Turning ideas into designs |
 | **product-discovery** | Exploring new product idea |

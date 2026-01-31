@@ -32,10 +32,10 @@ Decision log: {story_path}/decision-log.md
 
 ### Inputs to provide
 
-- `technical-plan.md` — implementation guide (follow tasks in order)
-- `technical-context.md` — codebase patterns to follow
-- `spec.md` — acceptance criteria
-- `security-addendum.md` — security requirements
+- `technical-plan.md` - implementation guide (follow tasks in order)
+- `technical-context.md` - codebase patterns to follow
+- `spec.md` - acceptance criteria
+- `security-addendum.md` - security requirements
 - `workflow_mode`: interactive or auto
 
 ### Validate output

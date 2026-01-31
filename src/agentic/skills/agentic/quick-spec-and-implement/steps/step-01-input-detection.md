@@ -2,10 +2,10 @@
 
 ## EXECUTION RULES
 
-- 🎯 Detect workflow mode and input source
-- 📋 Initialize workflow state and decision log
-- 🚫 Do not proceed until state file is created
-- ✅ Output: `workflow-state.yaml` initialized
+- Detect workflow mode and input source
+- Initialize workflow state and decision log
+- Do not proceed until state file is created
+- Output: `workflow-state.yaml` initialized
 
 ---
 
@@ -17,14 +17,14 @@
 
 ```
 Pattern matching:
-- /quick-spec-and-implement                      → mode: interactive, input: user
-- /quick-spec-and-implement --auto               → mode: auto, input: user
-- /quick-spec-and-implement path/to/file.md      → mode: interactive, input: file
-- /quick-spec-and-implement --auto path/to.md    → mode: auto, input: file
-- /quick-spec-and-implement #123                  → mode: interactive, input: github_issue
-- /quick-spec-and-implement --auto #123          → mode: auto, input: github_issue
-- /quick-spec-and-implement https://github...    → mode: interactive, input: github_issue
-- /quick-spec-and-implement --auto https://...   → mode: auto, input: github_issue
+- /quick-spec-and-implement                      -> mode: interactive, input: user
+- /quick-spec-and-implement --auto               -> mode: auto, input: user
+- /quick-spec-and-implement path/to/file.md      -> mode: interactive, input: file
+- /quick-spec-and-implement --auto path/to.md    -> mode: auto, input: file
+- /quick-spec-and-implement #123                  -> mode: interactive, input: github_issue
+- /quick-spec-and-implement --auto #123          -> mode: auto, input: github_issue
+- /quick-spec-and-implement https://github...    -> mode: interactive, input: github_issue
+- /quick-spec-and-implement --auto https://...   -> mode: auto, input: github_issue
 ```
 
 **Set variables:**
@@ -210,23 +210,23 @@ updated_at: {ISO_timestamp}
 
 *Interactive mode:*
 ```
-✅ Workflow initialized
+Workflow initialized
 
-📁 Story: {story_id}
-📂 Path: {story_path}
-🔄 Mode: Interactive
+Story: {story_id}
+Path: {story_path}
+Mode: Interactive
 
 Ready to create product spec. Loading PM agent...
 ```
 
 *Auto mode:*
 ```
-✅ Workflow initialized (Autonomous Mode)
+Workflow initialized (Autonomous Mode)
 
-📁 Story: {story_id}
-📂 Path: {story_path}
-🤖 Mode: Autonomous (90% confidence threshold)
-📝 Decision log: {story_path}/decision-log.md
+Story: {story_id}
+Path: {story_path}
+Mode: Autonomous (90% confidence threshold)
+Decision log: {story_path}/decision-log.md
 
 Proceeding to create product spec...
 ```

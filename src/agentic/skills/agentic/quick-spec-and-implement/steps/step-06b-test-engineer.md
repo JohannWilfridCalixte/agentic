@@ -31,9 +31,9 @@ Decision log: {story_path}/decision-log.md
 
 ### Inputs to provide
 
-- `implementation-log.md` — what was implemented (files changed)
-- `technical-plan.md` — tasks and expected behavior
-- `spec.md` — acceptance criteria to cover
+- `implementation-log.md` - what was implemented (files changed)
+- `technical-plan.md` - tasks and expected behavior
+- `spec.md` - acceptance criteria to cover
 - `workflow_mode`: interactive or auto
 
 ### Validate output

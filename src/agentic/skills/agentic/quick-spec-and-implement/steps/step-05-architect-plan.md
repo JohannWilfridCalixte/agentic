@@ -32,9 +32,9 @@ IMPORTANT: Plan must address ALL acceptance criteria (AC-*) and security require
 
 ### Inputs to provide
 
-- `spec.md` — acceptance criteria to implement
-- `technical-context.md` — codebase context
-- `security-addendum.md` — security requirements to satisfy
+- `spec.md` - acceptance criteria to implement
+- `technical-context.md` - codebase context
+- `security-addendum.md` - security requirements to satisfy
 - `workflow_mode`: interactive or auto
 
 ### Validate output

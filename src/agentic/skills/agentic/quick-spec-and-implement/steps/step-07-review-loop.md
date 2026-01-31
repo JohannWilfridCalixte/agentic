@@ -118,21 +118,21 @@ review_round:
 
 ```
 IF blocker_count == 0 AND major_count == 0:
-  → EXIT → Proceed to Step 8
+  -> EXIT -> Proceed to Step 8
 ```
 
 **Max iterations with escalation:**
 
 ```
 IF iteration >= max_iterations AND (blockers > 0 OR majors > 0):
-  → ESCALATION
+  -> ESCALATION
 ```
 
 **Continue:**
 
 ```
 IF (blockers > 0 OR majors > 0) AND iteration < max_iterations:
-  → FIX PHASE
+  -> FIX PHASE
 ```
 
 ### 7.7 Delegate Fix Phase

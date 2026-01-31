@@ -41,10 +41,10 @@ IMPORTANT: Do NOT ask user questions. Log all decisions in decision-log.md.
 
 ### Inputs to provide
 
-- `bug-report.md` — what the bug is
-- `investigation-log.md` — investigation findings
-- `evidence.md` — evidence collected
-- `hypothesis-log.md` — confirmed root cause
+- `bug-report.md` - what the bug is
+- `investigation-log.md` - investigation findings
+- `evidence.md` - evidence collected
+- `hypothesis-log.md` - confirmed root cause
 
 ### Validate output
 

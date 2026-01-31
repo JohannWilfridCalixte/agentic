@@ -6,11 +6,9 @@ import type { IDE } from '../../constants';
 import { SCRIPTS } from '../../constants';
 import {
   AGENTS_DIR,
-  COMMANDS_DIR,
   SCRIPTS_DIR,
   SKILLS_DIR,
   SUBAGENTS_DIR,
-  WORKFLOWS_DIR,
 } from '../../paths';
 import { copyAndProcess } from '../../utils';
 import { getIdeStrategy } from './strategies';
@@ -44,8 +42,6 @@ export async function setupIde(
     [AGENTS_DIR, join(ideDir, 'agents')],
     [SUBAGENTS_DIR, join(ideDir, 'agents')],
     [SKILLS_DIR, join(ideDir, 'skills')],
-    [COMMANDS_DIR, join(ideDir, 'commands')],
-    [WORKFLOWS_DIR, join(ideDir, 'workflows')],
     [SCRIPTS_DIR, join(ideDir, 'scripts')],
   ];
 
@@ -61,7 +57,7 @@ export async function setupIde(
     }
   }
 
-  console.log(`  Copied to .${targetIde}/agents/, skills/, commands/, workflows/, scripts/`);
+  console.log(`  Copied to .${targetIde}/agents/, skills/, scripts/`);
 
   makeScriptsExecutable(join(ideDir, 'scripts'));
 
@@ -87,7 +83,7 @@ export async function init(ide: IDE = 'both'): Promise<Result<void, InitError>> 
   console.log('\nDone!');
 
   for (const targetIde of ides) {
-    console.log(`  .${targetIde}/: agents/, skills/, commands/, workflows/, scripts/`);
+    console.log(`  .${targetIde}/: agents/, skills/, scripts/`);
   }
 
   console.log('\nUsage:');

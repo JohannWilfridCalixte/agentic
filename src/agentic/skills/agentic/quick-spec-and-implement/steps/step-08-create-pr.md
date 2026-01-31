@@ -2,10 +2,10 @@
 
 ## EXECUTION RULES
 
-- 🎯 Generate comprehensive PR from all artifacts
-- 📋 Link to story, specs, and review results
-- 🚫 Draft PR if escalated from review loop
-- ✅ Output: PR URL
+- Generate comprehensive PR from all artifacts
+- Link to story, specs, and review results
+- Draft PR if escalated from review loop
+- Output: PR URL
 
 ---
 
@@ -86,8 +86,6 @@ Implements:
 
 Technical approach:
 {Brief summary from technical-plan}
-
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 EOF
 )"
 ```
@@ -128,8 +126,8 @@ git push -u origin {branch_name}
 
 | AC | Description | Status |
 |----|-------------|--------|
-| AC-01 | {description} | ✅ |
-| AC-02 | {description} | ✅ |
+| AC-01 | {description} | Done |
+| AC-02 | {description} | Done |
 
 ## Testing
 
@@ -165,7 +163,7 @@ git push -u origin {branch_name}
 
 ---
 
-🤖 Generated with [Claude Code](https://claude.ai/code) via spec-to-pr workflow
+Generated with [Claude Code](https://claude.ai/code) via spec-to-pr workflow
 ```
 
 ### 8.7 Create PR
@@ -190,7 +188,7 @@ gh pr create \
 
 ---
 
-⚠️ **This PR requires human review**
+**This PR requires human review**
 
 The automated review loop reached maximum iterations with unresolved issues:
 
@@ -250,11 +248,11 @@ completed_at: {ISO_timestamp}
 
 **If pr_type == "ready":**
 ```
-✅ Workflow Complete!
+Workflow Complete!
 
-📄 Story: {story_id}
-🔗 PR: {pr_url}
-📊 Status: Ready for review
+Story: {story_id}
+PR: {pr_url}
+Status: Ready for review
 
 **Summary:**
 - Spec created with {ac_count} acceptance criteria
@@ -272,11 +270,11 @@ Artifacts: {story_path}/
 
 **If pr_type == "needs_review" (escalated):**
 ```
-⚠️ Workflow Complete (Escalated)
+Workflow Complete (Escalated)
 
-📄 Story: {story_id}
-🔗 PR: {pr_url} (DRAFT)
-📊 Status: Needs human review
+Story: {story_id}
+PR: {pr_url} (DRAFT)
+Status: Needs human review
 
 **Unresolved Issues:**
 - Blockers: {count}
@@ -293,8 +291,8 @@ Artifacts: {story_path}/
 
 **If auto mode, add:**
 ```
-🤖 Autonomous Decisions: {decision_count}
-📝 Review decisions: {story_path}/decision-log.md
+Autonomous Decisions: {decision_count}
+Review decisions: {story_path}/decision-log.md
 ```
 
 ---
@@ -306,15 +304,15 @@ The spec-to-pr workflow has finished.
 **Artifacts Created:**
 ```
 {story_path}/
-├── spec.md                 # Product specification
-├── technical-context.md    # Technical context analysis
-├── security-addendum.md    # Security requirements
-├── technical-plan.md       # Implementation plan
-├── implementation-log.md   # What was implemented
-├── qa-{n}.md              # QA review(s)
-├── security-{n}.md        # Security review(s)
-├── decision-log.md        # Decisions (auto mode only)
-└── workflow-state.yaml    # Workflow state tracking
+  spec.md                 # Product specification
+  technical-context.md    # Technical context analysis
+  security-addendum.md    # Security requirements
+  technical-plan.md       # Implementation plan
+  implementation-log.md   # What was implemented
+  qa-{n}.md              # QA review(s)
+  security-{n}.md        # Security review(s)
+  decision-log.md        # Decisions (auto mode only)
+  workflow-state.yaml    # Workflow state tracking
 ```
 
 **PR Created:** {pr_url}

@@ -29,7 +29,7 @@ Decision log: {story_path}/decision-log.md
 
 ### Inputs to provide
 
-- `spec.md` — product requirements to contextualize
+- `spec.md` - product requirements to contextualize
 - `workflow_mode`: interactive or auto
 - Codebase access
 
