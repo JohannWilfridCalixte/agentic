@@ -38,7 +38,17 @@ qa_loop:
 
 ```
 Task(subagent_type="general-purpose", prompt="
-You are the QA agent. {ide-invoke-prefix}{ide-folder}/agents/qa.md for your full instructions.
+# MANDATORY FIRST ACTION - DO NOT SKIP
+
+{ide-invoke-prefix}{ide-folder}/agents/qa.md
+
+This file contains your role, skill loading instructions (you MUST use the Skill tool for each skill listed), and output format. Complete ALL setup steps in that file before proceeding.
+
+After setup, confirm: 'Agent file read. Skills loaded. Beginning QA review.'
+
+---
+
+# TASK: Verify Debug Fix
 
 Verify the debug fix (NOT tests - Test QA handles that).
 
@@ -79,7 +89,17 @@ Decision log: {session_path}/decision-log.md
 
 ```
 Task(subagent_type="general-purpose", prompt="
-You are the Test QA agent. {ide-invoke-prefix}{ide-folder}/agents/test-qa.md for your full instructions.
+# MANDATORY FIRST ACTION - DO NOT SKIP
+
+{ide-invoke-prefix}{ide-folder}/agents/test-qa.md
+
+This file contains your role, skill loading instructions (you MUST use the Skill tool for each skill listed), and output format. Complete ALL setup steps in that file before proceeding.
+
+After setup, confirm: 'Agent file read. Skills loaded. Beginning Test QA review.'
+
+---
+
+# TASK: Review Regression Test Quality
 
 Review the regression test quality.
 
@@ -168,7 +188,17 @@ IF (blockers > 0 OR majors > 0 OR !original_bug_fixed) AND iteration < max_itera
 
 ```
 Task(subagent_type="general-purpose", prompt="
-You are the Editor agent. {ide-invoke-prefix}{ide-folder}/agents/editor.md for your full instructions.
+# MANDATORY FIRST ACTION - DO NOT SKIP
+
+{ide-invoke-prefix}{ide-folder}/agents/editor.md
+
+This file contains your role, skill loading instructions (you MUST use the Skill tool for each skill listed), and output format. See 'Fix Phase' section. Complete ALL setup steps before proceeding.
+
+After setup, confirm: 'Agent file read. Skills loaded. Beginning fix phase.'
+
+---
+
+# TASK: Address QA Findings
 
 Address QA findings on the fix.
 
@@ -201,7 +231,17 @@ Decision log: {session_path}/decision-log.md
 
 ```
 Task(subagent_type="general-purpose", prompt="
-You are the Test Engineer agent. {ide-invoke-prefix}{ide-folder}/agents/test-engineer.md for your full instructions.
+# MANDATORY FIRST ACTION - DO NOT SKIP
+
+{ide-invoke-prefix}{ide-folder}/agents/test-engineer.md
+
+This file contains your role, skill loading instructions (you MUST use the Skill tool for each skill listed), and output format. Complete ALL setup steps before proceeding.
+
+After setup, confirm: 'Agent file read. Skills loaded. Beginning test fixes.'
+
+---
+
+# TASK: Address Test QA Findings
 
 Address Test QA findings.
 

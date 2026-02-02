@@ -16,7 +16,17 @@ Fix the root cause, not the symptom. The failing regression test was written in 
 
 ```
 Task(subagent_type="general-purpose", prompt="
-You are the Editor agent. {ide-invoke-prefix}{ide-folder}/agents/editor.md for your full instructions.
+# MANDATORY FIRST ACTION - DO NOT SKIP
+
+{ide-invoke-prefix}{ide-folder}/agents/editor.md
+
+This file contains your role, skill loading instructions (you MUST use the Skill tool for each skill listed), and output format. Complete ALL setup steps in that file before proceeding.
+
+After setup, confirm: 'Agent file read. Skills loaded. Beginning fix implementation.'
+
+---
+
+# TASK: Implement Fix for Root Cause
 
 Implement the fix for the confirmed root cause.
 

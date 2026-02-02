@@ -26,7 +26,17 @@ If you haven't completed evidence gathering, you cannot form hypotheses.
 
 ```
 Task(subagent_type="general-purpose", prompt="
-You are the Investigator agent. {ide-invoke-prefix}{ide-folder}/agents/investigator.md for your full instructions.
+# MANDATORY FIRST ACTION - DO NOT SKIP
+
+{ide-invoke-prefix}{ide-folder}/agents/investigator.md
+
+This file contains your role, skill loading instructions (you MUST use the Skill tool for each skill listed), and output format. Complete ALL setup steps in that file before proceeding.
+
+After setup, confirm: 'Agent file read. Skills loaded. Beginning investigation.'
+
+---
+
+# TASK: Root Cause Investigation
 
 Perform root cause investigation. DO NOT propose fixes yet.
 

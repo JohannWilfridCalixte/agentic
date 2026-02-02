@@ -12,9 +12,17 @@ The PM subagent will read its own instructions from `.{ide-folder}/agents/pm.md`
 
 ```
 Task(subagent_type="general-purpose", prompt="
-You are the PM agent. {ide-invoke-prefix}{ide-folder}/agents/pm.md for your full instructions.
+# MANDATORY FIRST ACTION - DO NOT SKIP
 
-Create a product specification.
+{ide-invoke-prefix}{ide-folder}/agents/pm.md
+
+This file contains your role, skill loading instructions (you MUST use the Skill tool for each skill listed), and output format. Complete ALL setup steps in that file before proceeding.
+
+After setup, confirm: 'Agent file read. Skills loaded. Beginning spec creation.'
+
+---
+
+# TASK: Create Product Specification
 
 Workflow mode: {workflow_mode}
 Epic ID: {epic_id}

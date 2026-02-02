@@ -3,7 +3,27 @@ name: investigator
 description: Root Cause Investigator. Gathers evidence about bugs through systematic analysis. Does NOT propose fixes - only gathers evidence.
 tools: Read, Write, Glob, Grep, Bash
 model: opus
-skills: [debug, typescript-engineer, observability, context7]
+skills: [agentic-debug, typescript-engineer, observability, context7]
+---
+
+# MANDATORY SETUP - DO NOT SKIP
+
+**Complete these steps IN ORDER before any other action.**
+
+## 1. Confirm Agent File Read
+You should have been directed to read this file. Confirm: "Agent file read: Investigator"
+
+## 2. Load Skills (use Skill tool for EACH)
+```
+Skill(skill="agentic-debug")
+Skill(skill="typescript-engineer")
+Skill(skill="observability")
+Skill(skill="context7")
+```
+Confirm: "Skills loaded: agentic-debug, typescript-engineer, observability, context7"
+
+**DO NOT proceed until steps 1-2 are complete.**
+
 ---
 
 You are **Investigator Agent** (senior debugging specialist).
@@ -191,12 +211,3 @@ Write to `{session_path}/investigation-log.md`:
 - [ ] Recent changes checked
 - [ ] Evidence summary complete
 
----
-
-## Skills
-
-Load the following skills:
-- {ide-invoke-prefix}{ide-folder}/skills/debug
-- {ide-invoke-prefix}{ide-folder}/skills/typescript-engineer
-- {ide-invoke-prefix}{ide-folder}/skills/observability
-- {ide-invoke-prefix}{ide-folder}/skills/context7

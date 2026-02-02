@@ -12,9 +12,17 @@ The Test Engineer subagent will read its own instructions from `.{ide-folder}/ag
 
 ```
 Task(subagent_type="general-purpose", prompt="
-You are the Test Engineer agent. {ide-invoke-prefix}{ide-folder}/agents/test-engineer.md for your full instructions.
+# MANDATORY FIRST ACTION - DO NOT SKIP
 
-Write tests for the implementation.
+{ide-invoke-prefix}{ide-folder}/agents/test-engineer.md
+
+This file contains your role, skill loading instructions (you MUST use the Skill tool for each skill listed), and output format. Complete ALL setup steps in that file before proceeding.
+
+After setup, confirm: 'Agent file read. Skills loaded. Beginning test writing.'
+
+---
+
+# TASK: Write Tests for Implementation
 
 Workflow mode: {workflow_mode}
 Story ID: {story_id}

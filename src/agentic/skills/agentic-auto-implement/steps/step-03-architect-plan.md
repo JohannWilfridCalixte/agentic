@@ -14,9 +14,17 @@ The Architect subagent will read its own instructions from `.{ide-folder}/agents
 
 ```
 Task(subagent_type="general-purpose", prompt="
-You are the Architect agent. {ide-invoke-prefix}{ide-folder}/agents/architect.md for your full instructions.
+# MANDATORY FIRST ACTION - DO NOT SKIP
 
-Execute Phase 2: Technical Planning.
+{ide-invoke-prefix}{ide-folder}/agents/architect.md
+
+This file contains your role, skill loading instructions (you MUST use the Skill tool for each skill listed), and output format. Complete ALL setup steps in that file before proceeding.
+
+After setup, confirm: 'Agent file read. Skills loaded. Beginning technical planning.'
+
+---
+
+# TASK: Technical Planning (Phase 2)
 
 Workflow: auto-implement (autonomous, no user questions)
 Story ID: {story_id}

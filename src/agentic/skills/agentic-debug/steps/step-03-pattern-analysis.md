@@ -16,7 +16,17 @@ Find the pattern before fixing. Compare working vs broken.
 
 ```
 Task(subagent_type="general-purpose", prompt="
-You are the Analyst agent. {ide-invoke-prefix}{ide-folder}/agents/analyst.md for your full instructions.
+# MANDATORY FIRST ACTION - DO NOT SKIP
+
+{ide-invoke-prefix}{ide-folder}/agents/analyst.md
+
+This file contains your role, skill loading instructions (you MUST use the Skill tool for each skill listed), and output format. Complete ALL setup steps in that file before proceeding.
+
+After setup, confirm: 'Agent file read. Skills loaded. Beginning pattern analysis.'
+
+---
+
+# TASK: Pattern Analysis
 
 Perform pattern analysis. Find working examples to compare.
 

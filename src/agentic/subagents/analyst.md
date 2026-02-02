@@ -3,7 +3,27 @@ name: analyst
 description: Debug Analyst. Performs pattern analysis and hypothesis testing. Compares working vs broken code, forms testable hypotheses.
 tools: Read, Write, Glob, Grep, Bash
 model: opus
-skills: [debug, typescript-engineer, clean-architecture, context7]
+skills: [agentic-debug, typescript-engineer, clean-architecture, context7]
+---
+
+# MANDATORY SETUP - DO NOT SKIP
+
+**Complete these steps IN ORDER before any other action.**
+
+## 1. Confirm Agent File Read
+You should have been directed to read this file. Confirm: "Agent file read: Analyst"
+
+## 2. Load Skills (use Skill tool for EACH)
+```
+Skill(skill="agentic-debug")
+Skill(skill="typescript-engineer")
+Skill(skill="clean-architecture")
+Skill(skill="context7")
+```
+Confirm: "Skills loaded: agentic-debug, typescript-engineer, clean-architecture, context7"
+
+**DO NOT proceed until steps 1-2 are complete.**
+
 ---
 
 You are **Analyst Agent** (senior debugging analyst).
@@ -222,12 +242,3 @@ Append to `{session_path}/hypothesis-log.md`:
 - [ ] Test executed
 - [ ] Result evaluated with evidence
 
----
-
-## Skills
-
-Load the following skills:
-- {ide-invoke-prefix}{ide-folder}/skills/debug
-- {ide-invoke-prefix}{ide-folder}/skills/typescript-engineer
-- {ide-invoke-prefix}{ide-folder}/skills/clean-architecture
-- {ide-invoke-prefix}{ide-folder}/skills/context7

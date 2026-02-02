@@ -1,5 +1,9 @@
 # CLAUDE.md
 
+## **CRITICAL**: Orchestrator
+
+Act as an orchestrator. Delegate every task to subagents.
+
 ## Commands
 
 ```bash

@@ -12,7 +12,17 @@ Write a FAILING test that reproduces the bug BEFORE the fix is implemented.
 
 ```
 Task(subagent_type="general-purpose", prompt="
-You are the Test Engineer agent. {ide-invoke-prefix}{ide-folder}/agents/test-engineer.md for your full instructions.
+# MANDATORY FIRST ACTION - DO NOT SKIP
+
+{ide-invoke-prefix}{ide-folder}/agents/test-engineer.md
+
+This file contains your role, skill loading instructions (you MUST use the Skill tool for each skill listed), and output format. Complete ALL setup steps in that file before proceeding.
+
+After setup, confirm: 'Agent file read. Skills loaded. Beginning regression test writing.'
+
+---
+
+# TASK: Write FAILING Regression Test
 
 Write a FAILING test that reproduces the confirmed bug.
 

@@ -38,7 +38,17 @@ review_loop:
 
 ```
 Task(subagent_type="general-purpose", prompt="
-You are the QA agent. {ide-invoke-prefix}{ide-folder}/agents/qa.md for your full instructions.
+# MANDATORY FIRST ACTION - DO NOT SKIP
+
+{ide-invoke-prefix}{ide-folder}/agents/qa.md
+
+This file contains your role, skill loading instructions (you MUST use the Skill tool for each skill listed), and output format. Complete ALL setup steps in that file before proceeding.
+
+After setup, confirm: 'Agent file read. Skills loaded. Beginning QA review.'
+
+---
+
+# TASK: Review Implementation Code
 
 Review the implementation code (NOT tests - Test QA handles that).
 
@@ -59,7 +69,17 @@ Validate: `{story_path}/qa-{iteration}.md` exists with verdict.
 
 ```
 Task(subagent_type="general-purpose", prompt="
-You are the Test QA agent. {ide-invoke-prefix}{ide-folder}/agents/test-qa.md for your full instructions.
+# MANDATORY FIRST ACTION - DO NOT SKIP
+
+{ide-invoke-prefix}{ide-folder}/agents/test-qa.md
+
+This file contains your role, skill loading instructions (you MUST use the Skill tool for each skill listed), and output format. Complete ALL setup steps in that file before proceeding.
+
+After setup, confirm: 'Agent file read. Skills loaded. Beginning Test QA review.'
+
+---
+
+# TASK: Review Test Quality and Coverage
 
 Review the tests for quality and coverage.
 
@@ -81,7 +101,17 @@ Validate: `{story_path}/test-qa-{iteration}.md` exists with verdict.
 
 ```
 Task(subagent_type="general-purpose", prompt="
-You are the Security QA agent. {ide-invoke-prefix}{ide-folder}/agents/security-qa.md for your full instructions.
+# MANDATORY FIRST ACTION - DO NOT SKIP
+
+{ide-invoke-prefix}{ide-folder}/agents/security-qa.md
+
+This file contains your role, skill loading instructions (you MUST use the Skill tool for each skill listed), and output format. Complete ALL setup steps in that file before proceeding.
+
+After setup, confirm: 'Agent file read. Skills loaded. Beginning Security QA review.'
+
+---
+
+# TASK: Security Review of Implementation
 
 Security review of the implementation.
 
@@ -141,9 +171,17 @@ IF (blockers > 0 OR majors > 0) AND iteration < max_iterations:
 
 ```
 Task(subagent_type="general-purpose", prompt="
-You are the Editor agent. {ide-invoke-prefix}{ide-folder}/agents/editor.md for your full instructions (Fix Phase section).
+# MANDATORY FIRST ACTION - DO NOT SKIP
 
-Fix code review issues.
+{ide-invoke-prefix}{ide-folder}/agents/editor.md
+
+This file contains your role, skill loading instructions (you MUST use the Skill tool for each skill listed), and output format. See the 'Fix Phase' section. Complete ALL setup steps before proceeding.
+
+After setup, confirm: 'Agent file read. Skills loaded. Beginning fix phase.'
+
+---
+
+# TASK: Fix Code Review Issues
 
 Workflow mode: {workflow_mode}
 Iteration: {iteration}
@@ -163,9 +201,17 @@ Decision log: {story_path}/decision-log.md
 
 ```
 Task(subagent_type="general-purpose", prompt="
-You are the Test Engineer agent. {ide-invoke-prefix}{ide-folder}/agents/test-engineer.md for your full instructions.
+# MANDATORY FIRST ACTION - DO NOT SKIP
 
-Fix test review issues.
+{ide-invoke-prefix}{ide-folder}/agents/test-engineer.md
+
+This file contains your role, skill loading instructions (you MUST use the Skill tool for each skill listed), and output format. Complete ALL setup steps before proceeding.
+
+After setup, confirm: 'Agent file read. Skills loaded. Beginning test fixes.'
+
+---
+
+# TASK: Fix Test Review Issues
 
 Workflow mode: {workflow_mode}
 Iteration: {iteration}

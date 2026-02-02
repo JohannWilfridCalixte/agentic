@@ -12,7 +12,17 @@ The Security subagent will read its own instructions from `.{ide-folder}/agents/
 
 ```
 Task(subagent_type="general-purpose", prompt="
-You are the Security agent. {ide-invoke-prefix}{ide-folder}/agents/security.md for your full instructions.
+# MANDATORY FIRST ACTION - DO NOT SKIP
+
+{ide-invoke-prefix}{ide-folder}/agents/security.md
+
+This file contains your role, skill loading instructions (you MUST use the Skill tool for each skill listed), and output format. Complete ALL setup steps in that file before proceeding.
+
+After setup, confirm: 'Agent file read. Skills loaded. Beginning security analysis.'
+
+---
+
+# TASK: Create Security Addendum
 
 Create security addendum with threat model and security requirements.
 

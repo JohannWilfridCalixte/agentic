@@ -12,9 +12,17 @@ The Editor subagent will read its own instructions from `.{ide-folder}/agents/ed
 
 ```
 Task(subagent_type="general-purpose", prompt="
-You are the Editor agent. {ide-invoke-prefix}{ide-folder}/agents/editor.md for your full instructions.
+# MANDATORY FIRST ACTION - DO NOT SKIP
 
-Implement the technical plan.
+{ide-invoke-prefix}{ide-folder}/agents/editor.md
+
+This file contains your role, skill loading instructions (you MUST use the Skill tool for each skill listed), and output format. Complete ALL setup steps in that file before proceeding.
+
+After setup, confirm: 'Agent file read. Skills loaded. Beginning implementation.'
+
+---
+
+# TASK: Implement Technical Plan
 
 Workflow: auto-implement (autonomous, no user questions)
 Story ID: {story_id}

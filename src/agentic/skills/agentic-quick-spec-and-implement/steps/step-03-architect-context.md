@@ -12,9 +12,17 @@ The Architect subagent will read its own instructions from `.{ide-folder}/agents
 
 ```
 Task(subagent_type="general-purpose", prompt="
-You are the Architect agent. {ide-invoke-prefix}{ide-folder}/agents/architect.md for your full instructions.
+# MANDATORY FIRST ACTION - DO NOT SKIP
 
-Execute Phase 1: Context Gathering.
+{ide-invoke-prefix}{ide-folder}/agents/architect.md
+
+This file contains your role, skill loading instructions (you MUST use the Skill tool for each skill listed), and output format. Complete ALL setup steps in that file before proceeding.
+
+After setup, confirm: 'Agent file read. Skills loaded. Beginning context gathering.'
+
+---
+
+# TASK: Context Gathering (Phase 1)
 
 Workflow mode: {workflow_mode}
 Story ID: {story_id}
