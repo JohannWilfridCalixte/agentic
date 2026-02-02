@@ -32,8 +32,8 @@ fi
 
 # technical-plan.md or security-*.md → parent is US in PRD folder
 if [[ "$FILENAME" == "technical-plan.md" ]] || [[ "$FILENAME" == security-*.md ]]; then
-    # Path pattern: {ide-folder}/{output-folder}/task/{epic-folder}/{us-folder}/file.md
-    # Need to find: {ide-folder}/{output-folder}/product/prd/{epic-folder}/{us-folder}.md
+    # Path pattern: .{ide-folder}/{output-folder}/task/{epic-folder}/{us-folder}/file.md
+    # Need to find: .{ide-folder}/{output-folder}/product/prd/{epic-folder}/{us-folder}.md
 
     # Get US folder name (parent directory)
     US_FOLDER=$(basename "$DIR")
@@ -41,14 +41,14 @@ if [[ "$FILENAME" == "technical-plan.md" ]] || [[ "$FILENAME" == security-*.md ]
     # Get epic folder name (grandparent directory)
     EPIC_FOLDER=$(basename "$(dirname "$DIR")")
 
-    # Find project root (go up until we find {ide-folder}/{output-folder}/)
+    # Find project root (go up until we find .{ide-folder}/{output-folder}/)
     PROJECT_ROOT="$ABS_PATH"
-    while [[ ! -d "$PROJECT_ROOT/{ide-folder}/{output-folder}" ]] && [[ "$PROJECT_ROOT" != "/" ]]; do
+    while [[ ! -d "$PROJECT_ROOT/.{ide-folder}/{output-folder}" ]] && [[ "$PROJECT_ROOT" != "/" ]]; do
         PROJECT_ROOT=$(dirname "$PROJECT_ROOT")
     done
 
     # Look for US file in PRD folder
-    PRD_DIR="$PROJECT_ROOT/{ide-folder}/{output-folder}/product/prd/$EPIC_FOLDER"
+    PRD_DIR="$PROJECT_ROOT/.{ide-folder}/{output-folder}/product/prd/$EPIC_FOLDER"
 
     if [[ -d "$PRD_DIR" ]]; then
         # Try exact match first: US-folder-name.md

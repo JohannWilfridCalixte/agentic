@@ -106,7 +106,7 @@ mixed:                      [2, 3, 4, 5, 6]  # context → plan → editor → r
 - Inline references: `EPIC-####`, `US-####`
 
 **If missing:**
-- Check existing epics in `{ide-folder}/{output-folder}/product/prd/` or `{ide-folder}/{output-folder}/task/`
+- Check existing epics in `.{ide-folder}/{output-folder}/product/prd/` or `.{ide-folder}/{output-folder}/task/`
 - Assign IDs based on context
 - Log decision
 
@@ -127,7 +127,7 @@ instance_id = "{YYYYMMDD}-{HHMMSS}-{random4chars}"
 
 **Set story_path with instance ID:**
 ```yaml
-story_path: "{ide-folder}/{output-folder}/task/{epic_id}-EPIC-{epic_name}/US-{story_id}/{instance_id}"
+story_path: ".{ide-folder}/{output-folder}/task/{epic_id}-EPIC-{epic_name}/US-{story_id}/{instance_id}"
 ```
 
 This ensures parallel workflows don't overwrite each other's files.

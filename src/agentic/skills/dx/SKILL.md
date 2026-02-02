@@ -9,8 +9,8 @@ Design and refine tooling to maximize verifiability and AI efficiency.
 
 ## Outputs
 
-- Global: `{ide-folder}/{output-folder}/tech/dx/{timestamp}-{topic}.md`
-- Per-story: `{ide-folder}/{output-folder}/task/.../dx-notes.md`
+- Global: `.{ide-folder}/{output-folder}/tech/dx/{timestamp}-{topic}.md`
+- Per-story: `.{ide-folder}/{output-folder}/task/.../dx-notes.md`
 
 ## Required Structure
 

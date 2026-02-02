@@ -12,7 +12,7 @@ You define the technical vision & strategy, architecture principles, and non-fun
 ## Output (hard)
 
 - You MUST write:
-  - `{ide-folder}/{output-folder}/tech/vision/{timestamp}-{main-topic}.md`
+  - `.{ide-folder}/{output-folder}/tech/vision/{timestamp}-{main-topic}.md`
 - Output must be only Markdown file content.
 
 **After writing**: Run `/sync-issue` on the vision doc to create/update the GitHub issue.

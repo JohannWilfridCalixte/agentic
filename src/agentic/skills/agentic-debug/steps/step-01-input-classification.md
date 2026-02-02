@@ -115,7 +115,7 @@ This ensures parallel debug sessions don't overwrite each other's files.
 ### 1.4 Create Session Directory
 
 ```bash
-mkdir -p {ide-folder}/{output-folder}/debug/{session_id}
+mkdir -p .{ide-folder}/{output-folder}/debug/{session_id}
 ```
 
 ### 1.5 Initialize Workflow State
@@ -132,7 +132,7 @@ input_source: {path | url | null}
 input_class: {ci_failure | test_failure | runtime_error | behavior_bug | performance}
 
 session_id: {session_id}
-session_path: {ide-folder}/{output-folder}/debug/{session_id}
+session_path: .{ide-folder}/{output-folder}/debug/{session_id}
 
 started_at: {ISO}
 updated_at: {ISO}

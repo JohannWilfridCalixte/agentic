@@ -9,8 +9,8 @@ Produce product-only artifacts. No technical implementation details.
 
 ## Outputs
 
-- Epic: `{ide-folder}/{output-folder}/product/prd/{epicNumber}-EPIC-{epicName}/epic.md`
-- User Story: `{ide-folder}/{output-folder}/product/prd/{epicNumber}-EPIC-{epicName}/US-{usName}-{usNumber}.md`
+- Epic: `.{ide-folder}/{output-folder}/product/prd/{epicNumber}-EPIC-{epicName}/epic.md`
+- User Story: `.{ide-folder}/{output-folder}/product/prd/{epicNumber}-EPIC-{epicName}/US-{usName}-{usNumber}.md`
 
 ## Epic Structure
 
