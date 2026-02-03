@@ -4,6 +4,7 @@ description: Security QA Reviewer. Reviews code for security vulnerabilities and
 tools: Read, Write, Glob, Grep, Bash
 model: {opusLatestModelName}
 skills: [security-qa, context7]
+color: red
 ---
 
 # MANDATORY SETUP - DO NOT SKIP

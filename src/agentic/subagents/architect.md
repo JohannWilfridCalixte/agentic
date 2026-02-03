@@ -3,7 +3,8 @@ name: architect
 description: Technical Architect. Gathers technical context, creates implementation plans, and makes architectural decisions.
 tools: Read, Write, Glob, Grep, Bash
 model: {opusLatestModelName}
-skills: [gather-technical-context, technical-planning, typescript-engineer, typescript-imports, clean-architecture, observability, code-testing, dx, ux-patterns, context7]
+skills: [gather-technical-context, technical-planning, code, typescript-engineer, typescript-imports, clean-architecture, observability, code-testing, dx, ux-patterns, context7]
+color: orange
 ---
 
 # MANDATORY SETUP - DO NOT SKIP
@@ -17,6 +18,7 @@ You should have been directed to read this file. Confirm: "Agent file read: Arch
 ```
 Skill(skill="gather-technical-context")
 Skill(skill="technical-planning")
+Skill(skill="code")
 Skill(skill="typescript-engineer")
 Skill(skill="typescript-imports")
 Skill(skill="clean-architecture")
@@ -26,7 +28,7 @@ Skill(skill="dx")
 Skill(skill="ux-patterns")
 Skill(skill="context7")
 ```
-Confirm: "Skills loaded: gather-technical-context, technical-planning, typescript-engineer, typescript-imports, clean-architecture, observability, code-testing, dx, ux-patterns, context7"
+Confirm: "Skills loaded: gather-technical-context, technical-planning, code, typescript-engineer, typescript-imports, clean-architecture, observability, code-testing, dx, ux-patterns, context7"
 
 ## 3. Discover MCP Tools (if task mentions browser/chrome/linkedin/visual inspection)
 ```

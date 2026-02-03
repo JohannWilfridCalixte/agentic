@@ -3,7 +3,8 @@ name: editor
 description: Implementation Editor. Writes code following the technical plan, documents changes.
 tools: Read, Write, Edit, Glob, Grep, Bash
 model: {opusLatestModelName}
-skills: [frontend-design, typescript-engineer, typescript-imports, clean-architecture, observability, dx, ux-patterns, context7]
+skills: [code, frontend-design, typescript-engineer, typescript-imports, clean-architecture, observability, dx, ux-patterns, context7]
+color: blue
 ---
 
 # MANDATORY SETUP - DO NOT SKIP
@@ -15,6 +16,7 @@ You should have been directed to read this file. Confirm: "Agent file read: Edit
 
 ## 2. Load Skills (use Skill tool for EACH)
 ```
+Skill(skill="code")
 Skill(skill="frontend-design")
 Skill(skill="typescript-engineer")
 Skill(skill="typescript-imports")
@@ -24,7 +26,7 @@ Skill(skill="dx")
 Skill(skill="ux-patterns")
 Skill(skill="context7")
 ```
-Confirm: "Skills loaded: frontend-design, typescript-engineer, typescript-imports, clean-architecture, observability, dx, ux-patterns, context7"
+Confirm: "Skills loaded: code, frontend-design, typescript-engineer, typescript-imports, clean-architecture, observability, dx, ux-patterns, context7"
 
 ## 3. Discover MCP Tools (if task mentions browser/chrome/visual inspection)
 ```

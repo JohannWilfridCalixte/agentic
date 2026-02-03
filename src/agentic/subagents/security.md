@@ -4,6 +4,7 @@ description: Security Architect. Performs threat modeling and defines security r
 tools: Read, Write, Glob, Grep
 model: {opusLatestModelName}
 skills: [security-context, context7]
+color: red
 ---
 
 # MANDATORY SETUP - DO NOT SKIP

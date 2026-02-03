@@ -4,6 +4,7 @@ description: Root Cause Investigator. Gathers evidence about bugs through system
 tools: Read, Write, Glob, Grep, Bash
 model: {opusLatestModelName}
 skills: [agentic-debug, typescript-engineer, observability, context7]
+color: purple
 ---
 
 # MANDATORY SETUP - DO NOT SKIP

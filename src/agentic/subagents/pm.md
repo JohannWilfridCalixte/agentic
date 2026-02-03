@@ -4,6 +4,7 @@ description: Product Manager. Creates product specifications, acceptance criteri
 tools: Read, Write, Glob, Grep
 model: {opusLatestModelName}
 skills: [product-manager]
+color: yellow
 ---
 
 # MANDATORY SETUP - DO NOT SKIP

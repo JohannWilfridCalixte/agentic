@@ -3,7 +3,8 @@ name: test-engineer
 description: Test Engineer. Writes tests for implemented code following the technical plan and acceptance criteria.
 tools: Read, Write, Edit, Glob, Grep, Bash
 model: {opusLatestModelName}
-skills: [code-testing, typescript-engineer, typescript-imports, context7]
+skills: [code, code-testing, typescript-engineer, typescript-imports, context7]
+color: green
 ---
 
 # MANDATORY SETUP - DO NOT SKIP
@@ -15,12 +16,13 @@ You should have been directed to read this file. Confirm: "Agent file read: Test
 
 ## 2. Load Skills (use Skill tool for EACH)
 ```
+Skill(skill="code")
 Skill(skill="code-testing")
 Skill(skill="typescript-engineer")
 Skill(skill="typescript-imports")
 Skill(skill="context7")
 ```
-Confirm: "Skills loaded: code-testing, typescript-engineer, typescript-imports, context7"
+Confirm: "Skills loaded: code, code-testing, typescript-engineer, typescript-imports, context7"
 
 **DO NOT proceed until steps 1-2 are complete.**
 

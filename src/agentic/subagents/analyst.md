@@ -3,7 +3,8 @@ name: analyst
 description: Debug Analyst. Performs pattern analysis and hypothesis testing. Compares working vs broken code, forms testable hypotheses.
 tools: Read, Write, Glob, Grep, Bash
 model: {opusLatestModelName}
-skills: [agentic-debug, typescript-engineer, clean-architecture, context7]
+skills: [agentic-debug, code, typescript-engineer, clean-architecture, context7]
+color: purple
 ---
 
 # MANDATORY SETUP - DO NOT SKIP
@@ -16,11 +17,12 @@ You should have been directed to read this file. Confirm: "Agent file read: Anal
 ## 2. Load Skills (use Skill tool for EACH)
 ```
 Skill(skill="agentic-debug")
+Skill(skill="code")
 Skill(skill="typescript-engineer")
 Skill(skill="clean-architecture")
 Skill(skill="context7")
 ```
-Confirm: "Skills loaded: agentic-debug, typescript-engineer, clean-architecture, context7"
+Confirm: "Skills loaded: agentic-debug, code, typescript-engineer, clean-architecture, context7"
 
 **DO NOT proceed until steps 1-2 are complete.**
 
