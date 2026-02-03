@@ -42,7 +42,7 @@ Execute steps in order. Each step file contains detailed instructions.
 
 Each subagent reads its own instructions from `.{ide-folder}/skills/{skill}/SKILL.md`.
 
-Invoke: `Task(subagent_type="general-purpose", prompt="You are the {Agent} agent. {ide-invoke-prefix}{ide-folder}/skills/{skill}/SKILL.md for your full instructions. ...")`
+Invoke: `Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="You are the {Agent} agent. {ide-invoke-prefix}{ide-folder}/skills/{skill}/SKILL.md for your full instructions. ...")`
 
 Available skills: `product-discovery`, `brainstorming`
 

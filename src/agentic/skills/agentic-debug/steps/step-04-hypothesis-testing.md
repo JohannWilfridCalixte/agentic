@@ -35,7 +35,7 @@ current_attempt: {from workflow-state}
 ### 4.1 Delegate Hypothesis Formation
 
 ```
-Task(subagent_type="general-purpose", prompt="
+Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="
 # MANDATORY FIRST ACTION - DO NOT SKIP
 
 {ide-invoke-prefix}{ide-folder}/agents/analyst.md

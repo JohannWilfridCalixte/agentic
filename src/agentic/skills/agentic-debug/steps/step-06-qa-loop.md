@@ -37,7 +37,7 @@ qa_loop:
 ### 6.2 Delegate QA Review (Fix Quality)
 
 ```
-Task(subagent_type="general-purpose", prompt="
+Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="
 # MANDATORY FIRST ACTION - DO NOT SKIP
 
 {ide-invoke-prefix}{ide-folder}/agents/qa.md
@@ -88,7 +88,7 @@ Decision log: {session_path}/decision-log.md
 ### 6.3 Delegate Test QA Review
 
 ```
-Task(subagent_type="general-purpose", prompt="
+Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="
 # MANDATORY FIRST ACTION - DO NOT SKIP
 
 {ide-invoke-prefix}{ide-folder}/agents/test-qa.md
@@ -187,7 +187,7 @@ IF (blockers > 0 OR majors > 0 OR !original_bug_fixed) AND iteration < max_itera
 **For code/fix issues (from QA):**
 
 ```
-Task(subagent_type="general-purpose", prompt="
+Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="
 # MANDATORY FIRST ACTION - DO NOT SKIP
 
 {ide-invoke-prefix}{ide-folder}/agents/editor.md
@@ -230,7 +230,7 @@ Decision log: {session_path}/decision-log.md
 **For test issues (from Test QA):**
 
 ```
-Task(subagent_type="general-purpose", prompt="
+Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="
 # MANDATORY FIRST ACTION - DO NOT SKIP
 
 {ide-invoke-prefix}{ide-folder}/agents/test-engineer.md

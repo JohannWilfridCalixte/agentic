@@ -11,7 +11,7 @@ Write a FAILING test that reproduces the bug BEFORE the fix is implemented.
 ### Delegate
 
 ```
-Task(subagent_type="general-purpose", prompt="
+Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="
 # MANDATORY FIRST ACTION - DO NOT SKIP
 
 {ide-invoke-prefix}{ide-folder}/agents/test-engineer.md

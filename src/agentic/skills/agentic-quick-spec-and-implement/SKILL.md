@@ -52,10 +52,10 @@ If you catch yourself doing agent work instead of delegating, STOP and use the T
 
 Subagent instructions live in `.{ide-folder}/agents/`. Each subagent reads its own file.
 
-Always use `general-purpose` subagent type:
+Always use `{subagentTypeGeneralPurpose}` subagent type:
 
 ```
-Task(subagent_type="general-purpose", prompt="You are the {Agent} agent. {ide-invoke-prefix}{ide-folder}/agents/{agent}.md for your full instructions. {task-specific context}")
+Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="You are the {Agent} agent. {ide-invoke-prefix}{ide-folder}/agents/{agent}.md for your full instructions. {task-specific context}")
 ```
 
 Available agents: `pm`, `architect`, `security`, `editor`, `test-engineer`, `qa`, `test-qa`, `security-qa`

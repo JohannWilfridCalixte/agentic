@@ -11,7 +11,7 @@ The Discovery subagent will read its own instructions from `.{ide-folder}/skills
 ### Delegate
 
 ```
-Task(subagent_type="general-purpose", prompt="
+Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="
 You are the Discovery agent. {ide-invoke-prefix}{ide-folder}/skills/product-discovery/SKILL.md for your full instructions.
 
 Run a product discovery session.

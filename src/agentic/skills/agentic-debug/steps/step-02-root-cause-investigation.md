@@ -25,7 +25,7 @@ If you haven't completed evidence gathering, you cannot form hypotheses.
 ### 2.1 Delegate Investigation
 
 ```
-Task(subagent_type="general-purpose", prompt="
+Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="
 # MANDATORY FIRST ACTION - DO NOT SKIP
 
 {ide-invoke-prefix}{ide-folder}/agents/investigator.md

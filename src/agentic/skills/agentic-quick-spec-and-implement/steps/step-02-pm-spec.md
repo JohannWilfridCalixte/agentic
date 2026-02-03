@@ -11,7 +11,7 @@ The PM subagent will read its own instructions from `.{ide-folder}/agents/pm.md`
 ### Delegate
 
 ```
-Task(subagent_type="general-purpose", prompt="
+Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="
 # MANDATORY FIRST ACTION - DO NOT SKIP
 
 {ide-invoke-prefix}{ide-folder}/agents/pm.md

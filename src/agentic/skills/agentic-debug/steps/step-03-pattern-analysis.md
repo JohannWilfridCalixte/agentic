@@ -15,7 +15,7 @@ Find the pattern before fixing. Compare working vs broken.
 ### 3.1 Delegate Pattern Analysis
 
 ```
-Task(subagent_type="general-purpose", prompt="
+Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="
 # MANDATORY FIRST ACTION - DO NOT SKIP
 
 {ide-invoke-prefix}{ide-folder}/agents/analyst.md

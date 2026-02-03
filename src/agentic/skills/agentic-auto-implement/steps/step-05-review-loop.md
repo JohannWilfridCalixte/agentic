@@ -37,7 +37,7 @@ review_loop:
 ### 5.2 Delegate QA Review (Code)
 
 ```
-Task(subagent_type="general-purpose", prompt="
+Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="
 # MANDATORY FIRST ACTION - DO NOT SKIP
 
 {ide-invoke-prefix}{ide-folder}/agents/qa.md
@@ -68,7 +68,7 @@ Validate: `{story_path}/qa-{iteration}.md` exists with verdict.
 ### 5.3 Delegate Test QA Review
 
 ```
-Task(subagent_type="general-purpose", prompt="
+Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="
 # MANDATORY FIRST ACTION - DO NOT SKIP
 
 {ide-invoke-prefix}{ide-folder}/agents/test-qa.md
@@ -100,7 +100,7 @@ Validate: `{story_path}/test-qa-{iteration}.md` exists with verdict.
 ### 5.4 Delegate Security QA Review
 
 ```
-Task(subagent_type="general-purpose", prompt="
+Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="
 # MANDATORY FIRST ACTION - DO NOT SKIP
 
 {ide-invoke-prefix}{ide-folder}/agents/security-qa.md
@@ -169,7 +169,7 @@ IF (blockers > 0 OR majors > 0) AND iteration < max_iterations:
 **For code issues (from QA/Security):**
 
 ```
-Task(subagent_type="general-purpose", prompt="
+Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="
 # MANDATORY FIRST ACTION - DO NOT SKIP
 
 {ide-invoke-prefix}{ide-folder}/agents/editor.md
@@ -199,7 +199,7 @@ Decision log: {story_path}/decision-log.md
 **For test issues (from Test QA):**
 
 ```
-Task(subagent_type="general-purpose", prompt="
+Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="
 # MANDATORY FIRST ACTION - DO NOT SKIP
 
 {ide-invoke-prefix}{ide-folder}/agents/test-engineer.md

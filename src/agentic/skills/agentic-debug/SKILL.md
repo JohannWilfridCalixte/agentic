@@ -52,7 +52,7 @@ If you catch yourself thinking:
 
 Each subagent reads instructions from `.{ide-folder}/agents/{agent}.md`.
 
-Invoke: `Task(subagent_type="general-purpose", prompt="You are the {Agent} agent. {ide-invoke-prefix}{ide-folder}/agents/{agent}.md for your full instructions. ...")`
+Invoke: `Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="You are the {Agent} agent. {ide-invoke-prefix}{ide-folder}/agents/{agent}.md for your full instructions. ...")`
 
 Available agents: `investigator`, `analyst`, `test-engineer`, `editor`, `qa`, `test-qa`
 

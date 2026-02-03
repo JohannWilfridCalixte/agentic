@@ -63,16 +63,16 @@ If you catch yourself doing agent work, STOP and use Task tool.
 
 ## Subagent Invocation
 
-Always use `general-purpose` subagent type:
+Always use `{subagentTypeGeneralPurpose}` subagent type:
 
 ```
-Task(subagent_type="general-purpose", prompt="You are the Architect agent. {ide-invoke-prefix}{ide-folder}/agents/architect.md for your full instructions. Execute Phase 1: Context Gathering. ...")
-Task(subagent_type="general-purpose", prompt="You are the Architect agent. {ide-invoke-prefix}{ide-folder}/agents/architect.md for your full instructions. Execute Phase 2: Technical Planning. ...")
-Task(subagent_type="general-purpose", prompt="You are the Editor agent. {ide-invoke-prefix}{ide-folder}/agents/editor.md for your full instructions. Implement the technical plan. ...")
-Task(subagent_type="general-purpose", prompt="You are the Test Engineer agent. {ide-invoke-prefix}{ide-folder}/agents/test-engineer.md for your full instructions. Write tests. ...")
-Task(subagent_type="general-purpose", prompt="You are the QA agent. {ide-invoke-prefix}{ide-folder}/agents/qa.md for your full instructions. Review implementation. ...")
-Task(subagent_type="general-purpose", prompt="You are the Test QA agent. {ide-invoke-prefix}{ide-folder}/agents/test-qa.md for your full instructions. Review tests. ...")
-Task(subagent_type="general-purpose", prompt="You are the Security QA agent. {ide-invoke-prefix}{ide-folder}/agents/security-qa.md for your full instructions. Security review. ...")
+Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="You are the Architect agent. {ide-invoke-prefix}{ide-folder}/agents/architect.md for your full instructions. Execute Phase 1: Context Gathering. ...")
+Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="You are the Architect agent. {ide-invoke-prefix}{ide-folder}/agents/architect.md for your full instructions. Execute Phase 2: Technical Planning. ...")
+Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="You are the Editor agent. {ide-invoke-prefix}{ide-folder}/agents/editor.md for your full instructions. Implement the technical plan. ...")
+Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="You are the Test Engineer agent. {ide-invoke-prefix}{ide-folder}/agents/test-engineer.md for your full instructions. Write tests. ...")
+Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="You are the QA agent. {ide-invoke-prefix}{ide-folder}/agents/qa.md for your full instructions. Review implementation. ...")
+Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="You are the Test QA agent. {ide-invoke-prefix}{ide-folder}/agents/test-qa.md for your full instructions. Review tests. ...")
+Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="You are the Security QA agent. {ide-invoke-prefix}{ide-folder}/agents/security-qa.md for your full instructions. Security review. ...")
 ```
 
 Available agents: `architect`, `editor`, `test-engineer`, `qa`, `test-qa`, `security-qa`

@@ -11,7 +11,7 @@ The Designer subagent will use `.{ide-folder}/skills/brainstorming/SKILL.md` for
 ### Step 3.1: Design Exploration (Delegate)
 
 ```
-Task(subagent_type="general-purpose", prompt="
+Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="
 You are the Designer agent. {ide-invoke-prefix}{ide-folder}/skills/brainstorming/SKILL.md for your full instructions.
 
 Explore design options for this product feature.

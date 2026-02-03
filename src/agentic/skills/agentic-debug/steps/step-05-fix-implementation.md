@@ -15,7 +15,7 @@ Fix the root cause, not the symptom. The failing regression test was written in 
 ### 5.1 Delegate Fix Implementation
 
 ```
-Task(subagent_type="general-purpose", prompt="
+Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="
 # MANDATORY FIRST ACTION - DO NOT SKIP
 
 {ide-invoke-prefix}{ide-folder}/agents/editor.md
