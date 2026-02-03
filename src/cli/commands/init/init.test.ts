@@ -39,7 +39,7 @@ describe('init', () => {
     expect(isOk(result)).toBe(true);
     expect(existsSync(join(TEST_DIR, '.cursor'))).toBe(true);
     expect(existsSync(join(TEST_DIR, '.claude'))).toBe(false);
-    expect(existsSync(join(TEST_DIR, '.cursor', 'rules', 'agentic.mdc'))).toBe(true);
+    expect(existsSync(join(TEST_DIR, 'AGENTS.md'))).toBe(true);
   });
 
   it('initializes both IDEs by default', async () => {

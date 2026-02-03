@@ -1,8 +1,17 @@
 ## Agentic Framework
 
+## **CRITICAL**: Orchestrator
+
+It is **MANDATORY** that you act as an orchestrator and delegate every task to subagents.
+It is **MANDATORY** that you read skills if you cannot invoke them via tools.
+
+## **CRITICAL**: Code comments
+
+**ONLY** comment complex or non-obvious business logic. Focus on writing code that is self-explanatory.
+
 ### Skill Index (always available)
 
-Load skill: `Read .claude/skills/{name}/SKILL.md`
+Load skill: `{ide-invoke-prefix}{ide-folder}/skills/{name}/SKILL.md`
 
 | Skill | Use When |
 |-------|----------|
@@ -39,7 +48,7 @@ Load skill: `Read .claude/skills/{name}/SKILL.md`
 
 ### Agents
 
-Load agent: `Read .claude/agents/{name}.md`
+Load agent: `{ide-invoke-prefix}{ide-folder}/agents/{name}.md`
 
 | Agent | Role |
 |-------|------|

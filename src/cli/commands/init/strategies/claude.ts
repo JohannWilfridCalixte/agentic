@@ -1,6 +1,7 @@
 import { join } from 'node:path';
 import { Err, Ok } from '../../../../lib/monads';
 import { TEMPLATES_DIR } from '../../../paths';
+import { processTemplate } from '../../../utils';
 import type { IdeSetupStrategy } from '../types';
 
 export const claudeStrategy: IdeSetupStrategy = {
@@ -11,6 +12,7 @@ export const claudeStrategy: IdeSetupStrategy = {
 
     try {
       const template = await Bun.file(templatePath).text();
+      const processed = processTemplate(template, 'claude', { outputFolder: '' });
       const claudeMdFile = Bun.file(claudeMdPath);
 
       if (await claudeMdFile.exists()) {
@@ -21,10 +23,10 @@ export const claudeStrategy: IdeSetupStrategy = {
           return Ok(undefined);
         }
 
-        await Bun.write(claudeMdPath, `${existing}\n\n${template}`);
+        await Bun.write(claudeMdPath, `${existing}\n\n${processed}`);
         console.log('  Appended to CLAUDE.md');
       } else {
-        await Bun.write(claudeMdPath, template);
+        await Bun.write(claudeMdPath, processed);
         console.log('  Created CLAUDE.md');
       }
 

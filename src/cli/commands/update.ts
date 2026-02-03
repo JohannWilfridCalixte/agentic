@@ -60,7 +60,7 @@ export async function update(options: UpdateOptions = {}): Promise<Result<void, 
 
   console.log('\nUpdated:');
   for (const targetIde of ides) {
-    console.log(`  .${targetIde}/: agents/, skills/, commands/, workflows/, scripts/`);
+    console.log(`  .${targetIde}/: agents/, skills/`);
   }
 
   return Ok(undefined);

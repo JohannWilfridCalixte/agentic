@@ -79,21 +79,38 @@ describe('IDE strategies', () => {
       expect(cursorStrategy.ide).toBe('cursor');
     });
 
-    it('creates .cursor/rules/agentic.mdc', async () => {
+    it('creates AGENTS.md when not exists', async () => {
       const result = await cursorStrategy.setup(TEST_DIR);
 
       expect(isOk(result)).toBe(true);
-      expect(existsSync(join(TEST_DIR, '.cursor', 'rules', 'agentic.mdc'))).toBe(true);
+      expect(existsSync(join(TEST_DIR, 'AGENTS.md'))).toBe(true);
     });
 
-    it('creates nested directories if needed', async () => {
-      const cursorRulesDir = join(TEST_DIR, '.cursor', 'rules');
+    it('appends to existing AGENTS.md without agentic section', async () => {
+      const existingPath = join(TEST_DIR, 'AGENTS.md');
+      await Bun.write(existingPath, '# Existing Content\n');
 
-      expect(existsSync(cursorRulesDir)).toBe(false);
+      const result = await cursorStrategy.setup(TEST_DIR);
 
-      await cursorStrategy.setup(TEST_DIR);
+      expect(isOk(result)).toBe(true);
 
-      expect(existsSync(cursorRulesDir)).toBe(true);
+      const content = await Bun.file(existingPath).text();
+
+      expect(content).toContain('# Existing Content');
+      expect(content).toContain('# Agentic Framework');
+    });
+
+    it('skips when AGENTS.md already has agentic section', async () => {
+      const existingPath = join(TEST_DIR, 'AGENTS.md');
+      await Bun.write(existingPath, '# Content\n\n# Agentic Framework\nExisting.');
+
+      const result = await cursorStrategy.setup(TEST_DIR);
+
+      expect(isOk(result)).toBe(true);
+
+      const content = await Bun.file(existingPath).text();
+
+      expect(content).toBe('# Content\n\n# Agentic Framework\nExisting.');
     });
   });
 });

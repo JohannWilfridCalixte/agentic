@@ -37,7 +37,7 @@ describe('processTemplate', () => {
     const content = 'Output: .{ide-folder}/{output-folder}/task/epic';
     const result = processTemplate(content, 'claude', { outputFolder: 'my-output' });
 
-    expect(result).toBe('Output: claude/my-output/task/epic');
+    expect(result).toBe('Output: .claude/my-output/task/epic');
   });
 
   it('replaces multiple variables in content', () => {
@@ -50,7 +50,7 @@ Output: .{ide-folder}/{output-folder}/task
 
     expect(result).toContain('# Agent: claude');
     expect(result).toContain('Load with: Read .claude/agents/cpo.md');
-    expect(result).toContain('Output: claude/_agentic_output/task');
+    expect(result).toContain('Output: .claude/_agentic_output/task');
   });
 
   it('leaves content unchanged when no variables', () => {
