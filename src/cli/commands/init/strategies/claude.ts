@@ -8,7 +8,7 @@ export const claudeStrategy: IdeSetupStrategy = {
   ide: 'claude',
   setup: async (projectRoot) => {
     const claudeMdPath = join(projectRoot, 'CLAUDE.md');
-    const templatePath = join(TEMPLATES_DIR, 'claude.md.template');
+    const templatePath = join(TEMPLATES_DIR, 'agents.md.template');
 
     try {
       const template = await Bun.file(templatePath).text();
@@ -18,7 +18,7 @@ export const claudeStrategy: IdeSetupStrategy = {
       if (await claudeMdFile.exists()) {
         const existing = await claudeMdFile.text();
 
-        if (existing.includes('## Agentic Framework')) {
+        if (existing.includes('# Agentic Framework')) {
           console.log('  CLAUDE.md already has agentic section, skipping');
           return Ok(undefined);
         }

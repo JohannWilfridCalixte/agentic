@@ -57,12 +57,12 @@ describe('IDE strategies', () => {
       const content = await Bun.file(existingPath).text();
 
       expect(content).toContain('# Existing Content');
-      expect(content).toContain('## Agentic Framework');
+      expect(content).toContain('# Agentic Framework');
     });
 
     it('skips when CLAUDE.md already has agentic section', async () => {
       const existingPath = join(TEST_DIR, 'CLAUDE.md');
-      await Bun.write(existingPath, '# Content\n\n## Agentic Framework\nExisting.');
+      await Bun.write(existingPath, '# Content\n\n# Agentic Framework\nExisting.');
 
       const result = await claudeStrategy.setup(TEST_DIR);
 
@@ -70,7 +70,7 @@ describe('IDE strategies', () => {
 
       const content = await Bun.file(existingPath).text();
 
-      expect(content).toBe('# Content\n\n## Agentic Framework\nExisting.');
+      expect(content).toBe('# Content\n\n# Agentic Framework\nExisting.');
     });
   });
 
