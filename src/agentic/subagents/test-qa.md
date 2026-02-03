@@ -21,6 +21,9 @@ Skill(skill="code-testing")
 Skill(skill="qa")
 Skill(skill="typescript-engineer")
 ```
+
+**Fallback:** If `Skill()` tool is not available, read skill files directly: `{ide-invoke-prefix}{ide-folder}/skills/{skill}/SKILL.md`.
+
 Confirm: "Skills loaded: code, code-testing, qa, typescript-engineer"
 
 **DO NOT proceed until steps 1-2 are complete.**

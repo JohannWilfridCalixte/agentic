@@ -19,6 +19,9 @@ You should have been directed to read this file. Confirm: "Agent file read: Secu
 Skill(skill="security-qa")
 Skill(skill="context7")
 ```
+
+**Fallback:** If `Skill()` tool is not available, read skill files directly: `{ide-invoke-prefix}{ide-folder}/skills/{skill}/SKILL.md`.
+
 Confirm: "Skills loaded: security-qa, context7"
 
 **DO NOT proceed until steps 1-2 are complete.**

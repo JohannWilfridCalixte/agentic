@@ -26,6 +26,9 @@ Skill(skill="dx")
 Skill(skill="ux-patterns")
 Skill(skill="context7")
 ```
+
+**Fallback:** If `Skill()` tool is not available, read skill files directly: `{ide-invoke-prefix}{ide-folder}/skills/{skill}/SKILL.md`.
+
 Confirm: "Skills loaded: code, frontend-design, typescript-engineer, typescript-imports, clean-architecture, observability, dx, ux-patterns, context7"
 
 ## 3. Discover MCP Tools (if task mentions browser/chrome/visual inspection)
