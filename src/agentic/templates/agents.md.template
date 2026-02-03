@@ -9,6 +9,24 @@ It is **MANDATORY** that you read skills if you cannot invoke them via tools.
 
 **ONLY** comment complex or non-obvious business logic. Focus on writing code that is self-explanatory.
 
+## Always
+
+- In all interactions, documents and commit messages, be extremely concise and sacrifice grammar for the sake of concision.
+
+## When writing documents
+
+- Default to markdown documents unless specified otherwise.
+- For schemas, default to mermaid.
+
+## When writing code
+
+- Always write code that is simple to read and maintain. Complexity is ok if necessary, but everything must be organized for simplicity to maintain. Over-engineering is not ok.
+- Write self-explanatory code that doesn't need to be commented. Exception tolerated: complex business code / business rules implementation.
+
+## When planning
+
+- At the end of each plan, give me the list of unresolved questions to answer, if any.
+
 ## Skill Index (always available)
 
 Load skill: `{ide-invoke-prefix}{ide-folder}/skills/{name}/SKILL.md`
@@ -46,7 +64,7 @@ Load skill: `{ide-invoke-prefix}{ide-folder}/skills/{name}/SKILL.md`
 | **agentic:debug** | Systematic debugging to verified fix |
 | **agentic:product-spec** | Product discovery → PRD |
 
-## Agents
+## Agents / Subagents
 
 Load agent: `{ide-invoke-prefix}{ide-folder}/agents/{name}.md`
 
@@ -55,11 +73,6 @@ Load agent: `{ide-invoke-prefix}{ide-folder}/agents/{name}.md`
 | **cpo** | Product vision, roadmap (Chief Product Officer) |
 | **cto** | Technical vision, architecture (Chief Technology Officer) |
 | **dx** | Developer experience, tooling |
-
-## Subagents (for workflows)
-
-| Subagent | Role |
-|----------|------|
 | **pm** | Product specs, stories, ACs |
 | **architect** | Technical context + planning |
 | **editor** | Code implementation (no tests) |
