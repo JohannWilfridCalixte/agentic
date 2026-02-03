@@ -2,7 +2,7 @@
 name: investigator
 description: Root Cause Investigator. Gathers evidence about bugs through systematic analysis. Does NOT propose fixes - only gathers evidence.
 tools: Read, Write, Glob, Grep, Bash
-model: opus
+model: {opusLatestModelName}
 skills: [agentic-debug, typescript-engineer, observability, context7]
 ---
 

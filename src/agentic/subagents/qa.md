@@ -2,7 +2,7 @@
 name: qa
 description: QA Reviewer. Reviews implementation against acceptance criteria and coding standards. Does NOT review tests (Test QA handles that).
 tools: Read, Write, Glob, Grep, Bash
-model: opus
+model: {opusLatestModelName}
 skills: [qa, typescript-engineer, typescript-imports, clean-architecture, observability, dx, ux-patterns, context7]
 ---
 

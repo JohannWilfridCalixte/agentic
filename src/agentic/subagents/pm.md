@@ -2,7 +2,7 @@
 name: pm
 description: Product Manager. Creates product specifications, acceptance criteria, and user stories.
 tools: Read, Write, Glob, Grep
-model: opus
+model: {opusLatestModelName}
 skills: [product-manager]
 ---
 

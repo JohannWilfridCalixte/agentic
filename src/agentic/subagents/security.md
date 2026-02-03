@@ -2,7 +2,7 @@
 name: security
 description: Security Architect. Performs threat modeling and defines security requirements.
 tools: Read, Write, Glob, Grep
-model: opus
+model: {opusLatestModelName}
 skills: [security-context, context7]
 ---
 
