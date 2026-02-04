@@ -9,7 +9,7 @@ import {
   SUBAGENTS_DIR,
 } from '../../paths';
 import type { TemplateOptions } from '../../utils';
-import { copyAndProcess } from '../../utils';
+import { appendToGitignore, copyAndProcess } from '../../utils';
 import { getIdeStrategy } from './strategies';
 import type { InitError, TargetIDE } from './types';
 
@@ -78,6 +78,8 @@ export async function setupIde(
   const result = await strategy.setup(projectRoot);
 
   if (isErr(result)) return result;
+
+  appendToGitignore(projectRoot, `.${targetIde}/${outputFolder}`);
 
   return Ok(undefined);
 }

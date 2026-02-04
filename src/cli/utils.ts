@@ -1,8 +1,23 @@
-import { existsSync, mkdirSync, readdirSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, appendFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Result } from '../lib/monads';
 import { Err, Ok } from '../lib/monads';
 import type { IDE } from './constants';
+
+export function appendToGitignore(projectRoot: string, entry: string): void {
+  const gitignorePath = join(projectRoot, '.gitignore');
+
+  if (existsSync(gitignorePath)) {
+    const content = readFileSync(gitignorePath, 'utf-8');
+    const lines = content.split('\n').map(line => line.trim());
+    if (lines.includes(entry)) return;
+
+    const needsNewline = content.length > 0 && !content.endsWith('\n');
+    appendFileSync(gitignorePath, `${needsNewline ? '\n' : ''}${entry}\n`);
+  } else {
+    appendFileSync(gitignorePath, `${entry}\n`);
+  }
+}
 
 interface CopyDirError {
   readonly code: 'COPY_DIR_FAILED';
