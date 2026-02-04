@@ -1,5 +1,6 @@
-import { chmodSync, existsSync, mkdirSync, readdirSync, statSync } from 'node:fs';
+import { chmod, mkdir, readdir, stat } from 'node:fs/promises';
 import { join } from 'node:path';
+
 import type { Result } from '../../../lib/monads';
 import { Err, isErr, Ok } from '../../../lib/monads';
 import type { IDE } from '../../constants';
@@ -15,22 +16,26 @@ import type { InitError, TargetIDE } from './types';
 
 export const DEFAULT_OUTPUT_FOLDER = '_agentic_output';
 
-function makeScriptsExecutableRecursive(dir: string) {
-  if (!existsSync(dir)) return;
+async function makeScriptsExecutableRecursive(dir: string) {
+  try {
+    const entries = await readdir(dir);
 
-  for (const entry of readdirSync(dir)) {
-    const fullPath = join(dir, entry);
-    const stat = statSync(fullPath);
+    for (const entry of entries) {
+      const fullPath = join(dir, entry);
+      const fileStat = await stat(fullPath);
 
-    if (stat.isDirectory()) {
-      makeScriptsExecutableRecursive(fullPath);
-    } else if (entry.endsWith('.sh')) {
-      try {
-        chmodSync(fullPath, 0o755);
-      } catch {
-        // Ignore chmod errors
+      if (fileStat.isDirectory()) {
+        await makeScriptsExecutableRecursive(fullPath);
+      } else if (entry.endsWith('.sh')) {
+        try {
+          await chmod(fullPath, 0o755);
+        } catch {
+          // Ignore chmod errors
+        }
       }
     }
+  } catch {
+    // Directory doesn't exist, skip
   }
 }
 
@@ -46,9 +51,7 @@ export async function setupIde(
   const ideDir = join(projectRoot, `.${targetIde}`);
   const outputFolder = options.outputFolder ?? DEFAULT_OUTPUT_FOLDER;
 
-  if (!existsSync(ideDir)) {
-    mkdirSync(ideDir, { recursive: true });
-  }
+  await mkdir(ideDir, { recursive: true });
 
   const templateOptions: TemplateOptions = { outputFolder };
 
@@ -72,14 +75,14 @@ export async function setupIde(
 
   console.log(`  Copied to .${targetIde}/agents/, skills/`);
 
-  makeScriptsExecutableRecursive(join(ideDir, 'skills'));
+  await makeScriptsExecutableRecursive(join(ideDir, 'skills'));
 
   const strategy = getIdeStrategy(targetIde);
   const result = await strategy.setup(projectRoot);
 
   if (isErr(result)) return result;
 
-  appendToGitignore(projectRoot, `.${targetIde}/${outputFolder}`);
+  await appendToGitignore(projectRoot, `.${targetIde}/${outputFolder}`);
 
   return Ok(undefined);
 }

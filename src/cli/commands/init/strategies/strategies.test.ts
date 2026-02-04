@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
-import { existsSync, mkdirSync, rmSync } from 'node:fs';
+import { mkdir, rm, stat } from 'node:fs/promises';
 import { join } from 'node:path';
+
 import { isOk } from '../../../../lib/monads';
 import { claudeStrategy } from './claude';
 import { cursorStrategy } from './cursor';
@@ -8,17 +9,26 @@ import { getIdeStrategy } from './index';
 
 const TEST_DIR = join(import.meta.dir, '../../../../../.tmp/test-strategies');
 
+async function exists(path: string): Promise<boolean> {
+  try {
+    await stat(path);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 describe('IDE strategies', () => {
-  beforeEach(() => {
-    if (existsSync(TEST_DIR)) {
-      rmSync(TEST_DIR, { recursive: true });
+  beforeEach(async () => {
+    if (await exists(TEST_DIR)) {
+      await rm(TEST_DIR, { recursive: true });
     }
-    mkdirSync(TEST_DIR, { recursive: true });
+    await mkdir(TEST_DIR, { recursive: true });
   });
 
-  afterEach(() => {
-    if (existsSync(TEST_DIR)) {
-      rmSync(TEST_DIR, { recursive: true });
+  afterEach(async () => {
+    if (await exists(TEST_DIR)) {
+      await rm(TEST_DIR, { recursive: true });
     }
   });
 
@@ -43,7 +53,7 @@ describe('IDE strategies', () => {
       const result = await claudeStrategy.setup(TEST_DIR);
 
       expect(isOk(result)).toBe(true);
-      expect(existsSync(join(TEST_DIR, 'CLAUDE.md'))).toBe(true);
+      expect(await exists(join(TEST_DIR, 'CLAUDE.md'))).toBe(true);
     });
 
     it('appends to existing CLAUDE.md without agentic section', async () => {
@@ -83,7 +93,7 @@ describe('IDE strategies', () => {
       const result = await cursorStrategy.setup(TEST_DIR);
 
       expect(isOk(result)).toBe(true);
-      expect(existsSync(join(TEST_DIR, 'AGENTS.md'))).toBe(true);
+      expect(await exists(join(TEST_DIR, 'AGENTS.md'))).toBe(true);
     });
 
     it('appends to existing AGENTS.md without agentic section', async () => {

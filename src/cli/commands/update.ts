@@ -1,4 +1,4 @@
-import { existsSync } from 'node:fs';
+import { stat } from 'node:fs/promises';
 import { join } from 'node:path';
 
 import type { Result } from '../../lib/monads';
@@ -18,11 +18,20 @@ export interface UpdateOptions {
   outputFolder?: string;
 }
 
-function detectIdes(projectRoot: string) {
-  const detected = [] satisfies TargetIDE[];
+async function directoryExists(path: string): Promise<boolean> {
+  try {
+    const s = await stat(path);
+    return s.isDirectory();
+  } catch {
+    return false;
+  }
+}
 
-  if (existsSync(join(projectRoot, '.claude'))) detected.push('claude');
-  if (existsSync(join(projectRoot, '.cursor'))) detected.push('cursor');
+async function detectIdes(projectRoot: string) {
+  const detected: TargetIDE[] = [];
+
+  if (await directoryExists(join(projectRoot, '.claude'))) detected.push('claude');
+  if (await directoryExists(join(projectRoot, '.cursor'))) detected.push('cursor');
 
   return detected;
 }
@@ -35,7 +44,7 @@ export async function update(options: UpdateOptions = {}): Promise<Result<void, 
     ? options.ide === 'both'
       ? ['claude', 'cursor']
       : [options.ide]
-    : detectIdes(projectRoot);
+    : await detectIdes(projectRoot);
 
   if (ides.length === 0) {
     return Err({

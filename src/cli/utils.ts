@@ -1,21 +1,23 @@
-import { existsSync, mkdirSync, readdirSync, readFileSync, appendFileSync } from 'node:fs';
+import { mkdir, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
+
 import type { Result } from '../lib/monads';
 import { Err, Ok } from '../lib/monads';
 import type { IDE } from './constants';
 
-export function appendToGitignore(projectRoot: string, entry: string): void {
+export async function appendToGitignore(projectRoot: string, entry: string): Promise<void> {
   const gitignorePath = join(projectRoot, '.gitignore');
+  const gitignoreFile = Bun.file(gitignorePath);
 
-  if (existsSync(gitignorePath)) {
-    const content = readFileSync(gitignorePath, 'utf-8');
+  if (await gitignoreFile.exists()) {
+    const content = await gitignoreFile.text();
     const lines = content.split('\n').map(line => line.trim());
     if (lines.includes(entry)) return;
 
     const needsNewline = content.length > 0 && !content.endsWith('\n');
-    appendFileSync(gitignorePath, `${needsNewline ? '\n' : ''}${entry}\n`);
+    await Bun.write(gitignorePath, `${content}${needsNewline ? '\n' : ''}${entry}\n`);
   } else {
-    appendFileSync(gitignorePath, `${entry}\n`);
+    await Bun.write(gitignorePath, `${entry}\n`);
   }
 }
 
@@ -57,11 +59,9 @@ export async function copyAndProcess(
   options: TemplateOptions,
 ): Promise<Result<void, CopyDirError>> {
   try {
-    if (!existsSync(destination)) {
-      mkdirSync(destination, { recursive: true });
-    }
+    await mkdir(destination, { recursive: true });
 
-    const entries = readdirSync(source, { withFileTypes: true });
+    const entries = await readdir(source, { withFileTypes: true });
 
     for (const entry of entries) {
       const sourcePath = join(source, entry.name);
