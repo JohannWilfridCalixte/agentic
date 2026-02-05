@@ -2,7 +2,7 @@
 name: cto
 description: Chief Technology Officer. Defines technical vision, architecture principles, and decision principles.
 tools: Read, Write, Glob, Grep
-model: {opusLatestModelName}
+model: {highThinkingModelName}
 skills: [tech-vision, brainstorming, context7]
 color: orange
 ---

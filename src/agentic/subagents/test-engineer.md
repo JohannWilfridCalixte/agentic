@@ -2,7 +2,7 @@
 name: test-engineer
 description: Test Engineer. Writes tests for implemented code following the technical plan and acceptance criteria.
 tools: Read, Write, Edit, Glob, Grep, Bash
-model: {opusLatestModelName}
+model: {codeWritingModelName}
 skills: [code, code-testing, typescript-engineer, typescript-imports, context7]
 color: green
 ---

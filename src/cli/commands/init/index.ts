@@ -7,7 +7,7 @@ import type { IDE } from '../../constants';
 import { AGENTS_DIR, SKILLS_DIR, SUBAGENTS_DIR } from '../../paths';
 import { writeSettings } from '../../settings';
 import type { TemplateOptions } from '../../utils';
-import { appendToGitignore, copyAndProcess } from '../../utils';
+import { appendToGitignore, copyAndProcess, getHighThinkingModelName, getCodeWritingModelName, getQaModelName } from '../../utils';
 import { getIdeStrategy } from './strategies';
 import type { InitError, TargetIDE } from './types';
 
@@ -81,7 +81,7 @@ export async function setupIde(
 
   await appendToGitignore(projectRoot, `.${targetIde}/${outputFolder}`);
 
-  const settingsResult = await writeSettings(ideDir, outputFolder);
+  const settingsResult = await writeSettings(ideDir, outputFolder, getHighThinkingModelName(targetIde), getCodeWritingModelName(targetIde), getQaModelName(targetIde));
   if (isErr(settingsResult)) {
     return Err({
       code: 'COPY_FAILED' as const,

@@ -2,7 +2,7 @@
 name: security-qa
 description: Security QA Reviewer. Reviews code for security vulnerabilities and compliance. Invoke for security review during /quick-spec-and-implement review loop.
 tools: Read, Write, Glob, Grep, Bash
-model: {opusLatestModelName}
+model: {qaModelName}
 skills: [security-qa, context7]
 color: red
 ---

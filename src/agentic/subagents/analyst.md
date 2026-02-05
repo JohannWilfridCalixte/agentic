@@ -2,7 +2,7 @@
 name: analyst
 description: Debug Analyst. Performs pattern analysis and hypothesis testing. Compares working vs broken code, forms testable hypotheses.
 tools: Read, Write, Glob, Grep, Bash
-model: {opusLatestModelName}
+model: {highThinkingModelName}
 skills: [agentic-debug, code, typescript-engineer, clean-architecture, context7]
 color: purple
 ---

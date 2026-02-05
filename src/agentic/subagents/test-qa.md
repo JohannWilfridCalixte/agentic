@@ -2,7 +2,7 @@
 name: test-qa
 description: Test QA Reviewer. Reviews test quality, coverage, and adherence to testing best practices.
 tools: Read, Write, Glob, Grep, Bash
-model: {opusLatestModelName}
+model: {qaModelName}
 skills: [code, code-testing, qa, typescript-engineer]
 color: green
 ---

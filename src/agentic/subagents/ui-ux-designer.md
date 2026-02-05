@@ -2,7 +2,7 @@
 name: ui-ux-designer
 description: UI/UX Designer. Creates visual design decisions, style guidelines, and UX patterns.
 tools: Read, Write, Glob, Grep
-model: {opusLatestModelName}
+model: {highThinkingModelName}
 skills: [frontend-design, ux-patterns, refactoring-ui]
 color: pink
 ---

@@ -34,15 +34,38 @@ const IDE_TEMPLATE_VARS = {
     'ide-folder': '.claude',
     'ide-invoke-prefix': 'Read ',
     subagentTypeGeneralPurpose: 'general-purpose',
-    opusLatestModelName: 'opus',
   },
   cursor: {
     'ide-folder': '.cursor',
     'ide-invoke-prefix': '@',
     subagentTypeGeneralPurpose: 'generalPurpose',
-    opusLatestModelName: 'claude-4.5-opus-high-thinking',
   },
 } as const satisfies Record<TargetIDE, Record<string, string>>;
+
+const IDE_SETTINGS_DEFAULTS = {
+  claude: {
+    highThinkingModelName: 'opus',
+    codeWritingModelName: 'opus',
+    qaModelName: 'opus',
+  },
+  cursor: {
+    highThinkingModelName: 'claude-4.6-opus-high-thinking',
+    codeWritingModelName: 'claude-4.6-opus-high-thinking',
+    qaModelName: 'claude-4.6-opus-high-thinking',
+  },
+} as const satisfies Record<TargetIDE, Record<string, string>>;
+
+export function getHighThinkingModelName(ide: TargetIDE) {
+  return IDE_SETTINGS_DEFAULTS[ide].highThinkingModelName;
+}
+
+export function getCodeWritingModelName(ide: TargetIDE) {
+  return IDE_SETTINGS_DEFAULTS[ide].codeWritingModelName;
+}
+
+export function getQaModelName(ide: TargetIDE) {
+  return IDE_SETTINGS_DEFAULTS[ide].qaModelName;
+}
 
 export interface TemplateOptions {
   outputFolder: string;

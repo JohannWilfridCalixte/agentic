@@ -2,7 +2,7 @@
 name: frontend-developer
 description: Frontend Developer. Implements UI following design decisions and technical plan.
 tools: Read, Write, Edit, Glob, Grep, Bash
-model: {opusLatestModelName}
+model: {codeWritingModelName}
 skills: [frontend-design, ux-patterns, refactoring-ui, code, typescript-engineer, typescript-imports, clean-architecture, observability, dx, context7]
 color: cyan
 ---

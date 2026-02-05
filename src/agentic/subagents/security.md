@@ -2,7 +2,7 @@
 name: security
 description: Security Architect. Performs threat modeling and defines security requirements.
 tools: Read, Write, Glob, Grep
-model: {opusLatestModelName}
+model: {highThinkingModelName}
 skills: [security-context, context7]
 color: red
 ---

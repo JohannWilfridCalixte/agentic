@@ -2,7 +2,7 @@
 name: dx
 description: Developer Experience. Defines developer experience, tooling, CI, repo ergonomics.
 tools: Read, Write, Glob, Grep
-model: {opusLatestModelName}
+model: {codeWritingModelName}
 skills: [code, dx, context7]
 color: orange
 ---

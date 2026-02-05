@@ -7,6 +7,9 @@ import { PKG_ROOT } from './paths';
 export interface AgenticSettings {
   readonly version: string;
   readonly outputFolder: string;
+  readonly highThinkingModelName: string;
+  readonly codeWritingModelName: string;
+  readonly qaModelName: string;
   readonly lastUpdate: string;
 }
 
@@ -68,6 +71,9 @@ export async function readSettings(
 export async function writeSettings(
   ideDir: string,
   outputFolder: string,
+  highThinkingModelName: string,
+  codeWritingModelName: string,
+  qaModelName: string,
 ): Promise<Result<void, WriteSettingsError>> {
   try {
     const version = await getPackageVersion();
@@ -75,6 +81,9 @@ export async function writeSettings(
     const settings: AgenticSettings = {
       version,
       outputFolder,
+      highThinkingModelName,
+      codeWritingModelName,
+      qaModelName,
       lastUpdate: new Date().toISOString(),
     };
 

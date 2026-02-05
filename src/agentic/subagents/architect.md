@@ -2,7 +2,7 @@
 name: architect
 description: Technical Architect. Gathers technical context, creates implementation plans, and makes architectural decisions.
 tools: Read, Write, Glob, Grep, Bash
-model: {opusLatestModelName}
+model: {highThinkingModelName}
 skills: [gather-technical-context, technical-planning, code, typescript-engineer, typescript-imports, clean-architecture, observability, code-testing, dx, ux-patterns, context7]
 color: orange
 ---

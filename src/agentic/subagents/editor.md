@@ -2,7 +2,7 @@
 name: editor
 description: Implementation Editor. Writes code following the technical plan, documents changes.
 tools: Read, Write, Edit, Glob, Grep, Bash
-model: {opusLatestModelName}
+model: {codeWritingModelName}
 skills: [code, frontend-design, typescript-engineer, typescript-imports, clean-architecture, observability, dx, ux-patterns, context7]
 color: blue
 ---

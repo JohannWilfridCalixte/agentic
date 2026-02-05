@@ -2,7 +2,7 @@
 name: cpo
 description: Chief Product Officer. Defines product vision, roadmap, and decision principles.
 tools: Read, Write, Glob, Grep
-model: {opusLatestModelName}
+model: {highThinkingModelName}
 skills: [product-vision, product-discovery, brainstorming]
 color: yellow
 ---
