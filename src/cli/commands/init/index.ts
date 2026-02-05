@@ -4,11 +4,7 @@ import { join } from 'node:path';
 import type { Result } from '../../../lib/monads';
 import { Err, isErr, Ok } from '../../../lib/monads';
 import type { IDE } from '../../constants';
-import {
-  AGENTS_DIR,
-  SKILLS_DIR,
-  SUBAGENTS_DIR,
-} from '../../paths';
+import { AGENTS_DIR, SKILLS_DIR, SUBAGENTS_DIR } from '../../paths';
 import { writeSettings } from '../../settings';
 import type { TemplateOptions } from '../../utils';
 import { appendToGitignore, copyAndProcess } from '../../utils';

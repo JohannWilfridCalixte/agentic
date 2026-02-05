@@ -18,7 +18,7 @@ export interface UpdateOptions {
   outputFolder?: string;
 }
 
-async function directoryExists(path: string): Promise<boolean> {
+export async function directoryExists(path: string): Promise<boolean> {
   try {
     const s = await stat(path);
     return s.isDirectory();
@@ -27,7 +27,7 @@ async function directoryExists(path: string): Promise<boolean> {
   }
 }
 
-async function detectIdes(projectRoot: string) {
+export async function detectIdes(projectRoot: string) {
   const detected: TargetIDE[] = [];
 
   if (await directoryExists(join(projectRoot, '.claude'))) detected.push('claude');
@@ -36,7 +36,9 @@ async function detectIdes(projectRoot: string) {
   return detected;
 }
 
-export async function update(options: UpdateOptions = {}): Promise<Result<void, UpdateError | InitError>> {
+export async function update(
+  options: UpdateOptions = {},
+): Promise<Result<void, UpdateError | InitError>> {
   const projectRoot = process.cwd();
   const outputFolder = options.outputFolder ?? DEFAULT_OUTPUT_FOLDER;
 

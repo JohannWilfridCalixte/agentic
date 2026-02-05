@@ -6,6 +6,7 @@ Usage:
   agentic init|install [options]  Setup in current project
   agentic update [options]        Update existing setup
   agentic list                    List available agents/scripts
+  agentic version                 Show installed version per IDE
   agentic help                    Show this help
 
 Options:
@@ -14,5 +15,6 @@ Options:
                     update: defaults to auto-detect
   --output <folder> Output folder for workflow artifacts
                     defaults to _agentic_output
+  --version         Show installed version (alias for version command)
 `);
 }

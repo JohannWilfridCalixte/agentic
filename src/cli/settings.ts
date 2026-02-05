@@ -16,10 +16,53 @@ interface WriteSettingsError {
   readonly cause: unknown;
 }
 
+interface ReadSettingsError {
+  readonly code: 'READ_SETTINGS_FAILED' | 'PARSE_FAILED';
+  readonly message: string;
+  readonly cause?: unknown;
+}
+
 async function getPackageVersion(): Promise<string> {
   const packageJsonPath = join(PKG_ROOT, 'package.json');
   const packageJson = await Bun.file(packageJsonPath).json();
   return packageJson.version;
+}
+
+export async function readSettings(
+  ideDir: string,
+): Promise<Result<AgenticSettings, ReadSettingsError>> {
+  const settingsPath = join(ideDir, '.agentic.settings.json');
+
+  try {
+    const file = Bun.file(settingsPath);
+    const exists = await file.exists();
+
+    if (!exists) {
+      return Err({
+        code: 'READ_SETTINGS_FAILED' as const,
+        message: `Settings file not found at ${settingsPath}`,
+      });
+    }
+
+    const content = await file.text();
+
+    try {
+      const settings = JSON.parse(content) as AgenticSettings;
+      return Ok(settings);
+    } catch (parseError) {
+      return Err({
+        code: 'PARSE_FAILED' as const,
+        message: `Failed to parse settings at ${settingsPath}`,
+        cause: parseError,
+      });
+    }
+  } catch (error) {
+    return Err({
+      code: 'READ_SETTINGS_FAILED' as const,
+      message: `Failed to read settings from ${settingsPath}`,
+      cause: error,
+    });
+  }
 }
 
 export async function writeSettings(

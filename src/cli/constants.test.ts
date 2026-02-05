@@ -21,9 +21,10 @@ describe('COMMANDS', () => {
     expect(COMMANDS).toContain('list');
     expect(COMMANDS).toContain('help');
     expect(COMMANDS).toContain('update');
+    expect(COMMANDS).toContain('version');
   });
 
-  it('has 4 commands', () => {
-    expect(COMMANDS).toHaveLength(4);
+  it('has 5 commands', () => {
+    expect(COMMANDS).toHaveLength(5);
   });
 });

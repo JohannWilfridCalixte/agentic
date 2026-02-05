@@ -7,5 +7,4 @@ export function list() {
   }
 
   console.log('\nSkills with scripts:');
-  console.log('  - github (sync-to-github.sh, sync-from-github.sh, sync-all.sh, create-pr.sh, resolve-parent.sh)');
 }

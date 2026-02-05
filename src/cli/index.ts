@@ -1,12 +1,14 @@
 import { isErr } from '../lib/monads';
-import { help, init, list, update } from './commands';
+import { help, init, list, update, version } from './commands';
 import type { IDE } from './constants';
 
-function parseCommand(arg: string | undefined) {
+function parseCommand(arg: string | undefined, args: readonly string[]) {
+  if (arg === '--version' || arg === '-V' || args.includes('--version')) return 'version' as const;
   if (!arg || arg === 'help' || arg === '--help' || arg === '-h') return 'help' as const;
   if (arg === 'init' || arg === 'install') return 'init' as const;
   if (arg === 'list') return 'list' as const;
   if (arg === 'update') return 'update' as const;
+  if (arg === 'version') return 'version' as const;
 
   return 'help' as const;
 }
@@ -47,7 +49,7 @@ function parseOutputOption(args: readonly string[]): string | undefined {
 }
 
 export async function run(args: readonly string[]) {
-  const command = parseCommand(args[0]);
+  const command = parseCommand(args[0], args);
 
   switch (command) {
     case 'help':
@@ -75,6 +77,17 @@ export async function run(args: readonly string[]) {
       const ide = parseIdeOptionOptional(args);
       const outputFolder = parseOutputOption(args);
       const result = await update({ ide, outputFolder });
+
+      if (isErr(result)) {
+        console.error(`Error: ${result.data.message}`);
+        process.exit(1);
+      }
+
+      process.exit(0);
+    }
+
+    case 'version': {
+      const result = await version();
 
       if (isErr(result)) {
         console.error(`Error: ${result.data.message}`);
