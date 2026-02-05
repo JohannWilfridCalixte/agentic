@@ -84,6 +84,7 @@ Skills in `.claude/skills/` - load with `Read .claude/skills/{name}/SKILL.md`
 | **agentic:auto-implement** | Autonomous spec/PRD/plan → PR without interaction |
 | **agentic:quick-spec-and-implement** | Interactive idea → spec → PR with collaboration |
 | **agentic:product-spec** | Product discovery → PRD |
+| **agentic:frontend-development** | Frontend features - design decisions → UX → implementation |
 | **code-testing** | Writing tests, test strategy, mocking, flaky test debugging |
 | **brainstorming** | Turning ideas into designs |
 | **product-discovery** | Exploring new product idea |
@@ -95,6 +96,7 @@ Skills in `.claude/skills/` - load with `Read .claude/skills/{name}/SKILL.md`
 | **security-context** | Security/privacy constraints |
 | **dx** | Tooling, linting, CI, repo ergonomics |
 | **ux-patterns** | Forms, inputs, modals, loading states |
+| **refactoring-ui** | Visual hierarchy, colors, typography, spacing, depth |
 | **context7** | Fetching up-to-date library docs |
 | **github** | GitHub operations - syncing docs, PRs, issues, gh CLI |
 
@@ -116,3 +118,5 @@ Skills in `.claude/skills/` - load with `Read .claude/skills/{name}/SKILL.md`
 - `security-qa` - Security QA
 - `investigator` - Root cause investigation
 - `analyst` - Pattern analysis
+- `ui-ux-designer` - Visual design + UX patterns
+- `frontend-developer` - Frontend implementation
