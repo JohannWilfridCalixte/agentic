@@ -20,7 +20,7 @@ Skill(skill="security-qa")
 Skill(skill="context7")
 ```
 
-**Fallback:** If `Skill()` tool is not available, read skill files directly: `{ide-invoke-prefix}{ide-folder}/skills/{skill}/SKILL.md`.
+**Fallback:** If `Skill()` tool is not available, read skill files directly: `{ide-folder}/skills/{skill}/SKILL.md`.
 
 Confirm: "Skills loaded: security-qa, context7"
 

@@ -6,7 +6,7 @@
 
 **You MUST delegate this step using the Task tool. Do NOT write tests yourself.**
 
-The Test Engineer subagent will read its own instructions from `.{ide-folder}/agents/test-engineer.md`.
+The Test Engineer subagent will read its own instructions from `{ide-folder}/agents/test-engineer.md`.
 
 ### Delegate
 

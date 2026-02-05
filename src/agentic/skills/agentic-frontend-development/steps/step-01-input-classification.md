@@ -91,7 +91,7 @@ session_id = "FE-{YYYYMMDD}-{HHMMSS}-{random4chars}"
 ### 1.4 Create Session Directory
 
 ```bash
-mkdir -p .{ide-folder}/{output-folder}/frontend/{session_id}
+mkdir -p {outputFolder}/frontend/{session_id}
 ```
 
 ### 1.5 Initialize Workflow State
@@ -108,7 +108,7 @@ input_source: {path | url | null}
 input_class: {full_feature | component | enhancement}
 
 session_id: {session_id}
-session_path: .{ide-folder}/{output-folder}/frontend/{session_id}
+session_path: {outputFolder}/frontend/{session_id}
 
 started_at: {ISO}
 updated_at: {ISO}

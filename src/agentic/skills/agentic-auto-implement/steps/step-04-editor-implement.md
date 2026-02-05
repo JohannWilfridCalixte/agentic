@@ -6,7 +6,7 @@
 
 **You MUST delegate this step using the Task tool. Do NOT write code yourself.**
 
-The Editor subagent will read its own instructions from `.{ide-folder}/agents/editor.md`.
+The Editor subagent will read its own instructions from `{ide-folder}/agents/editor.md`.
 
 ### Delegate
 

@@ -6,7 +6,7 @@
 
 **You MUST delegate this step using the Task tool. Do NOT gather context yourself.**
 
-The Architect subagent will read its own instructions from `.{ide-folder}/agents/architect.md` (Phase 1: Context Gathering).
+The Architect subagent will read its own instructions from `{ide-folder}/agents/architect.md` (Phase 1: Context Gathering).
 
 ### Delegate
 

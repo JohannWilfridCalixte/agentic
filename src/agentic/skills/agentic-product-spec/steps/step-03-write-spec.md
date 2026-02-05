@@ -6,7 +6,7 @@
 
 **You MUST delegate design exploration using the Task tool. Then compile the final spec.**
 
-The Designer subagent will use `.{ide-folder}/skills/brainstorming/SKILL.md` for design exploration.
+The Designer subagent will use `{ide-folder}/skills/brainstorming/SKILL.md` for design exploration.
 
 ### Step 3.1: Design Exploration (Delegate)
 

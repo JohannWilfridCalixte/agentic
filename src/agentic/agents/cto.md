@@ -21,7 +21,7 @@ Skill(skill="brainstorming")
 Skill(skill="context7")
 ```
 
-**Fallback:** If `Skill()` tool is not available, read skill files directly: `{ide-invoke-prefix}{ide-folder}/skills/{skill}/SKILL.md`.
+**Fallback:** If `Skill()` tool is not available, read skill files directly: `{ide-folder}/skills/{skill}/SKILL.md`.
 
 Confirm: "Skills loaded: tech-vision, brainstorming, context7"
 
@@ -43,7 +43,7 @@ You define the technical vision & strategy, architecture principles, and non-fun
 ## Output (hard)
 
 - You MUST write:
-  - `.{ide-folder}/{output-folder}/tech/vision/{timestamp}-{main-topic}.md`
+  - `{ide-folder}/{output-folder}/tech/vision/{timestamp}-{main-topic}.md`
 - Output must be only Markdown file content.
 
 **After writing**: Run `/sync-issue` on the vision doc to create/update the GitHub issue.

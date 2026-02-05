@@ -9,6 +9,7 @@ import {
   SKILLS_DIR,
   SUBAGENTS_DIR,
 } from '../../paths';
+import { writeSettings } from '../../settings';
 import type { TemplateOptions } from '../../utils';
 import { appendToGitignore, copyAndProcess } from '../../utils';
 import { getIdeStrategy } from './strategies';
@@ -83,6 +84,15 @@ export async function setupIde(
   if (isErr(result)) return result;
 
   await appendToGitignore(projectRoot, `.${targetIde}/${outputFolder}`);
+
+  const settingsResult = await writeSettings(ideDir, outputFolder);
+  if (isErr(settingsResult)) {
+    return Err({
+      code: 'COPY_FAILED' as const,
+      message: `Failed to write settings to .${targetIde}/`,
+      cause: settingsResult.data,
+    });
+  }
 
   return Ok(undefined);
 }

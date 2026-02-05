@@ -6,7 +6,7 @@
 
 **You MUST delegate this step using the Task tool. Do NOT create the plan yourself.**
 
-The Architect subagent will read its own instructions from `.{ide-folder}/agents/architect.md` (Phase 2: Technical Planning).
+The Architect subagent will read its own instructions from `{ide-folder}/agents/architect.md` (Phase 2: Technical Planning).
 
 ### Delegate
 

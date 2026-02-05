@@ -23,7 +23,7 @@ Skill(skill="clean-architecture")
 Skill(skill="context7")
 ```
 
-**Fallback:** If `Skill()` tool is not available, read skill files directly: `{ide-invoke-prefix}{ide-folder}/skills/{skill}/SKILL.md`.
+**Fallback:** If `Skill()` tool is not available, read skill files directly: `{ide-folder}/skills/{skill}/SKILL.md`.
 
 Confirm: "Skills loaded: agentic-debug, code, typescript-engineer, clean-architecture, context7"
 

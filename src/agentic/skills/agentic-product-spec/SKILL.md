@@ -40,7 +40,7 @@ Execute steps in order. Each step file contains detailed instructions.
 
 ## Subagent References
 
-Each subagent reads its own instructions from `.{ide-folder}/skills/{skill}/SKILL.md`.
+Each subagent reads its own instructions from `{ide-folder}/skills/{skill}/SKILL.md`.
 
 Invoke: `Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="You are the {Agent} agent. {ide-invoke-prefix}{ide-folder}/skills/{skill}/SKILL.md for your full instructions. ...")`
 
@@ -146,7 +146,7 @@ If any step fails:
 
 ## Artifacts
 
-All outputs: `.{ide-folder}/{output-folder}/product/specs/`
+All outputs: `{outputFolder}/product/specs/`
 - `workflow-state.yaml`
 - `decision-log.md` (auto mode)
 - `discovery-{topic}.md`

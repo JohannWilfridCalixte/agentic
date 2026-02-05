@@ -5,7 +5,7 @@ description: Use when interacting with GitHub - syncing docs to issues, creating
 
 # GitHub Operations
 
-Scripts in `.{ide-folder}/skills/github/scripts/`.
+Scripts in `{ide-folder}/skills/github/scripts/`.
 
 ## Available Scripts
 
@@ -20,7 +20,7 @@ Scripts in `.{ide-folder}/skills/github/scripts/`.
 ## Sync to GitHub
 
 ```bash
-.{ide-folder}/skills/github/scripts/sync-to-github.sh <markdown-file>
+{ide-folder}/skills/github/scripts/sync-to-github.sh <markdown-file>
 ```
 
 Creates/updates issue with:
@@ -35,7 +35,7 @@ Adds `**GitHub Issue:** #N` to file after first sync.
 ## Sync All Docs
 
 ```bash
-.{ide-folder}/skills/github/scripts/sync-all.sh [--dry-run]
+{ide-folder}/skills/github/scripts/sync-all.sh [--dry-run]
 ```
 
 Syncs in order: Vision → Epics → User Stories → Task Docs.
@@ -43,7 +43,7 @@ Syncs in order: Vision → Epics → User Stories → Task Docs.
 ## Create PR
 
 ```bash
-.{ide-folder}/skills/github/scripts/create-pr.sh <implementation-log.md> [--base main]
+{ide-folder}/skills/github/scripts/create-pr.sh <implementation-log.md> [--base main]
 ```
 
 Creates PR with log as description, auto-closes related issue.

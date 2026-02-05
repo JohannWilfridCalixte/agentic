@@ -6,14 +6,14 @@ const defaultOptions = { outputFolder: '_agentic_output' };
 
 describe('processTemplate', () => {
   it('replaces {ide-folder} for claude', () => {
-    const content = 'path/.{ide-folder}/agents';
+    const content = 'path/{ide-folder}/agents';
     const result = processTemplate(content, 'claude', defaultOptions);
 
     expect(result).toBe('path/.claude/agents');
   });
 
   it('replaces {ide-folder} for cursor', () => {
-    const content = 'path/.{ide-folder}/agents';
+    const content = 'path/{ide-folder}/agents';
     const result = processTemplate(content, 'cursor', defaultOptions);
 
     expect(result).toBe('path/.cursor/agents');
@@ -34,7 +34,7 @@ describe('processTemplate', () => {
   });
 
   it('replaces {output-folder} variable', () => {
-    const content = 'Output: .{ide-folder}/{output-folder}/task/epic';
+    const content = 'Output: {ide-folder}/{output-folder}/task/epic';
     const result = processTemplate(content, 'claude', { outputFolder: 'my-output' });
 
     expect(result).toBe('Output: .claude/my-output/task/epic');
@@ -44,7 +44,7 @@ describe('processTemplate', () => {
     const content = `
 # Agent: {ide-folder}
 Load with: {ide-invoke-prefix}{ide-folder}/agents/cpo.md
-Output: .{ide-folder}/{output-folder}/task
+Output: {ide-folder}/{output-folder}/task
 `;
     const result = processTemplate(content, 'claude', defaultOptions);
 

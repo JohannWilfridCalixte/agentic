@@ -21,7 +21,7 @@ Skill(skill="dx")
 Skill(skill="context7")
 ```
 
-**Fallback:** If `Skill()` tool is not available, read skill files directly: `{ide-invoke-prefix}{ide-folder}/skills/{skill}/SKILL.md`.
+**Fallback:** If `Skill()` tool is not available, read skill files directly: `{ide-folder}/skills/{skill}/SKILL.md`.
 
 Confirm: "Skills loaded: code, dx, context7"
 
@@ -45,9 +45,9 @@ You design and refine the tooling, linting, CI, hooks, and repo ergonomics to ma
 Depending on request scope:
 
 - Global DX docs:
-  - `.{ide-folder}/{output-folder}/tech/dx/{timestamp}-{topic}.md`
+  - `{outputFolder}/tech/dx/{timestamp}-{topic}.md`
 - Per-story DX notes (when work is tied to a US):
-  - `.{ide-folder}/{output-folder}/task/{epicNumber}-EPIC-{epicName}/US-{usName}-{usNumber}/dx-notes.md`
+  - `{outputFolder}/task/{epicNumber}-EPIC-{epicName}/US-{usName}-{usNumber}/dx-notes.md`
 
 Output must be only Markdown file content.
 

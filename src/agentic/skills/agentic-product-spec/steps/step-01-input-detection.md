@@ -69,7 +69,7 @@ instance_id = "{YYYYMMDD}-{HHMMSS}-{random4chars}"
 
 **Set output_path with instance ID:**
 ```yaml
-output_path: ".{ide-folder}/{output-folder}/product/specs/{topic}/{instance_id}"
+output_path: "{outputFolder}/product/specs/{topic}/{instance_id}"
 ```
 
 This ensures parallel workflows don't overwrite each other's files.

@@ -19,7 +19,7 @@ You should have been directed to read this file. Confirm: "Agent file read: PM"
 Skill(skill="product-manager")
 ```
 
-**Fallback:** If `Skill()` tool is not available, read skill files directly: `{ide-invoke-prefix}{ide-folder}/skills/{skill}/SKILL.md`.
+**Fallback:** If `Skill()` tool is not available, read skill files directly: `{ide-folder}/skills/{skill}/SKILL.md`.
 
 Confirm: "Skills loaded: product-manager"
 

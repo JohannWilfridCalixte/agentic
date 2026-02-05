@@ -30,8 +30,8 @@ interface CopyDirError {
 type TargetIDE = Exclude<IDE, 'both'>;
 
 const IDE_TEMPLATE_VARS = {
-  claude: { 'ide-folder': 'claude', 'ide-invoke-prefix': 'Read .', 'subagentTypeGeneralPurpose': 'general-purpose', 'opusLatestModelName': 'opus' },
-  cursor: { 'ide-folder': 'cursor', 'ide-invoke-prefix': '@.', 'subagentTypeGeneralPurpose': 'generalPurpose', 'opusLatestModelName': 'claude-4.5-opus-high-thinking' },
+  claude: { 'ide-folder': '.claude', 'ide-invoke-prefix': 'Read ', 'subagentTypeGeneralPurpose': 'general-purpose', 'opusLatestModelName': 'opus' },
+  cursor: { 'ide-folder': '.cursor', 'ide-invoke-prefix': '@', 'subagentTypeGeneralPurpose': 'generalPurpose', 'opusLatestModelName': 'claude-4.5-opus-high-thinking' },
 } as const satisfies Record<TargetIDE, Record<string, string>>;
 
 export interface TemplateOptions {

@@ -50,7 +50,7 @@ If you catch yourself doing agent work instead of delegating, STOP and use the T
 
 ## Subagent Invocation Pattern
 
-Subagent instructions live in `.{ide-folder}/agents/`. Each subagent reads its own file.
+Subagent instructions live in `{ide-folder}/agents/`. Each subagent reads its own file.
 
 Always use `{subagentTypeGeneralPurpose}` subagent type:
 
@@ -111,7 +111,7 @@ Execute each step in order by reading the corresponding step file.
 
 ## ARTIFACTS
 
-All outputs go to: `.{ide-folder}/{output-folder}/task/{epic_id}-EPIC-{epic_name}/US-{story_id}/`
+All outputs go to: `{outputFolder}/task/{epic_id}-EPIC-{epic_name}/US-{story_id}/`
 
 | Artifact | Description |
 |----------|-------------|

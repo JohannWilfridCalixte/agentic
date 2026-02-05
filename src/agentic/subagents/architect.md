@@ -29,7 +29,7 @@ Skill(skill="ux-patterns")
 Skill(skill="context7")
 ```
 
-**Fallback:** If `Skill()` tool is not available, read skill files directly: `{ide-invoke-prefix}{ide-folder}/skills/{skill}/SKILL.md`.
+**Fallback:** If `Skill()` tool is not available, read skill files directly: `{ide-folder}/skills/{skill}/SKILL.md`.
 
 Confirm: "Skills loaded: gather-technical-context, technical-planning, code, typescript-engineer, typescript-imports, clean-architecture, observability, code-testing, dx, ux-patterns, context7"
 

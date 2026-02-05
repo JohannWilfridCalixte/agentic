@@ -63,7 +63,7 @@ Use these to push back on weak answers:
 
 ## Output
 
-After discovery is complete, produce: `.{ide-folder}/{output-folder}/product/discovery/YYYY-MM-DD-<topic>.md`
+After discovery is complete, produce: `{outputFolder}/product/discovery/YYYY-MM-DD-<topic>.md`
 
 ```markdown
 # Discovery: <Topic>

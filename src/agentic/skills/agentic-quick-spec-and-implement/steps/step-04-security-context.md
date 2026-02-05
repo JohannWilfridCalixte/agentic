@@ -6,7 +6,7 @@
 
 **You MUST delegate this step using the Task tool. Do NOT create the threat model yourself.**
 
-The Security subagent will read its own instructions from `.{ide-folder}/agents/security.md`.
+The Security subagent will read its own instructions from `{ide-folder}/agents/security.md`.
 
 ### Delegate
 

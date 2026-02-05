@@ -6,7 +6,7 @@
 
 **You MUST delegate this step using the Task tool. Do NOT create the spec yourself.**
 
-The PM subagent will read its own instructions from `.{ide-folder}/agents/pm.md`.
+The PM subagent will read its own instructions from `{ide-folder}/agents/pm.md`.
 
 ### Delegate
 

@@ -39,7 +39,7 @@ If you catch yourself thinking:
 
 ## Agent References
 
-Each subagent reads instructions from `.{ide-folder}/agents/{agent}.md`.
+Each subagent reads instructions from `{ide-folder}/agents/{agent}.md`.
 
 Invoke: `Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="You are the {Agent} agent. {ide-invoke-prefix}{ide-folder}/agents/{agent}.md for your full instructions. ...")`
 
@@ -150,7 +150,7 @@ Create `{session_path}/escalation.md` with:
 
 ## Artifacts
 
-All outputs: `.{ide-folder}/{output-folder}/frontend/{session_id}/`
+All outputs: `{outputFolder}/frontend/{session_id}/`
 
 | Artifact | Purpose |
 |----------|---------|

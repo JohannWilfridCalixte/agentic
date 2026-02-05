@@ -1,5 +1,9 @@
 # Agentic Framework
 
+## **CRITICAL**: Settings
+
+At session start, read `{ide-folder}/.agentic.settings.json`. Use `{outputFolder}` value for all file outputs instead of any hardcoded paths in prompts.
+
 ## **CRITICAL**: Orchestrator
 
 It is **MANDATORY** that you act as an orchestrator and delegate every task to subagents.
