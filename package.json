@@ -1,6 +1,6 @@
 {
   "name": "@JohannWilfridCalixte/agentic",
-  "version": "0.1.1-alpha.22",
+  "version": "0.1.1-alpha.23",
   "description": "Agent prompts and scripts for Claude Code + Cursor",
   "type": "module",
   "bin": {
