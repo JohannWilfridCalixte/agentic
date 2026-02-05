@@ -123,4 +123,3 @@ export async function init(options: InitOptions = {}): Promise<Result<void, Init
 }
 
 export type { InitError, TargetIDE } from './types';
-export type { SetupOptions, InitOptions };
