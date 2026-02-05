@@ -59,7 +59,7 @@ export async function update(
   console.log(`  Output folder: ${outputFolder}`);
 
   for (const targetIde of ides) {
-    const result = await setupIde(targetIde, projectRoot, { outputFolder });
+    const result = await setupIde(targetIde, projectRoot, { outputFolder, mode: 'update' });
     if (isErr(result)) {
       return Err({
         code: 'UPDATE_FAILED' as const,
@@ -72,6 +72,17 @@ export async function update(
   console.log('\nUpdated:');
   for (const targetIde of ides) {
     console.log(`  .${targetIde}/: agents/, skills/`);
+  }
+
+  const backupHints: string[] = [];
+  if (ides.includes('claude')) backupHints.push('  diff CLAUDE.backup.md CLAUDE.md');
+  if (ides.includes('cursor')) backupHints.push('  diff AGENTS.backup.md AGENTS.md');
+
+  if (backupHints.length > 0) {
+    console.log('\nBackups created. Check for changes:');
+    for (const hint of backupHints) {
+      console.log(hint);
+    }
   }
 
   return Ok(undefined);

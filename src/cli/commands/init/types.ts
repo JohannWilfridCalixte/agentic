@@ -8,7 +8,13 @@ export interface InitError {
 
 export type TargetIDE = 'claude' | 'cursor';
 
+export type SetupMode = 'init' | 'update';
+
+export interface StrategySetupOptions {
+  readonly mode?: SetupMode;
+}
+
 export interface IdeSetupStrategy {
   readonly ide: TargetIDE;
-  readonly setup: (projectRoot: string) => Promise<Result<void, InitError>>;
+  readonly setup: (projectRoot: string, options?: StrategySetupOptions) => Promise<Result<void, InitError>>;
 }

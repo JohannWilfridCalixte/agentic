@@ -9,7 +9,7 @@ import { writeSettings } from '../../settings';
 import type { TemplateOptions } from '../../utils';
 import { appendToGitignore, copyAndProcess, getHighThinkingModelName, getCodeWritingModelName, getQaModelName } from '../../utils';
 import { getIdeStrategy } from './strategies';
-import type { InitError, TargetIDE } from './types';
+import type { InitError, SetupMode, TargetIDE } from './types';
 
 export const DEFAULT_OUTPUT_FOLDER = '_agentic_output';
 
@@ -38,6 +38,7 @@ async function makeScriptsExecutableRecursive(dir: string) {
 
 export interface SetupOptions {
   outputFolder?: string;
+  mode?: SetupMode;
 }
 
 export async function setupIde(
@@ -75,7 +76,7 @@ export async function setupIde(
   await makeScriptsExecutableRecursive(join(ideDir, 'skills'));
 
   const strategy = getIdeStrategy(targetIde);
-  const result = await strategy.setup(projectRoot);
+  const result = await strategy.setup(projectRoot, { mode: options.mode ?? 'init' });
 
   if (isErr(result)) return result;
 
