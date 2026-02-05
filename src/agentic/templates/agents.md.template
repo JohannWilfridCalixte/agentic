@@ -2,7 +2,7 @@
 
 ## **CRITICAL**: Settings
 
-At session start, read `{ide-folder}/.agentic.settings.json`. Use `{outputFolder}` value for all file outputs instead of any hardcoded paths in prompts.
+At session start create a variable `{outputFolder}` = `{ide-folder}/${cat {ide-folder}/.agentic.settings.json | jq .outputFolder}` and use its value for all file outputs instead of any hardcoded paths in prompts.
 
 ## **CRITICAL**: Orchestrator
 
