@@ -2,16 +2,19 @@
 
 Multi-agent framework for Claude Code + Cursor. Agents, skills, workflows and scripts for spec-driven development.
 
+## ⚠️ Experimental
+
+This is an experimental project for me to understand how to use AI agents to build software.
+
+There's no strong guarantees that no breaking changes will be introduced.
+
+If you decide to use it, you do so at your own risk.
+
 ## Setup
-
-This package is hosted on GitHub Packages. One-time auth setup required:
-
-1. Create a [GitHub PAT](https://github.com/settings/tokens) with `read:packages` scope
-2. Add to `~/.npmrc`:
+1. Add to `~/.npmrc`:
 
 ```
 @JohannWilfridCalixte:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
 ```
 
 ## Install
@@ -34,15 +37,16 @@ bunx @JohannWilfridCalixte/agentic@alpha init --output docs   # custom output fo
 bunx @JohannWilfridCalixte/agentic@alpha update
 ```
 
-Auto-detects existing IDE setups and updates them. Supports same `--ide` and `--output` options.
+Auto-detects existing IDE setups and updates them. Backs up `CLAUDE.md`/`AGENTS.md` before overwriting. Supports same `--ide` and `--output` options.
 
 ## What It Does
 
-1. Creates `.claude/` and/or `.cursor/` with agents and skills
-2. Template-processes files (`.md`, `.yaml`, `.sh`) with IDE paths and output folder
+1. Creates `.claude/` and/or `.cursor/` with agents, subagents, and skills
+2. Template-processes files (`.md`, `.yaml`, `.sh`) with IDE-specific paths, models, and output folder
 3. Sets up `CLAUDE.md` and/or `.cursor/rules/agentic.mdc`
+4. Adds output folder to `.gitignore`
 
-Workflow artifacts (specs, plans, logs) go to the configured output folder (`_agentic_output` by default).
+Workflow artifacts (specs, plans, logs) go to the configured output folder (`_agentic_output/` by default).
 
 ## Usage
 
@@ -50,14 +54,11 @@ Workflow artifacts (specs, plans, logs) go to the configured output folder (`_ag
 
 | Workflow | Description |
 |----------|-------------|
-| `agentic:quick-spec-and-implement` | Spec-to-PR: PM → Architect → Security → Editor → QA → PR |
+| `agentic:quick-spec-and-implement` | Interactive spec-to-PR: PM → Architect → Security → Editor → QA → PR |
 | `agentic:auto-implement` | Autonomous implementation from spec/plan to PR |
 | `agentic:product-spec` | Product discovery → PRD |
 | `agentic:debug` | Systematic debugging to verified fix |
-
-**quick-spec-and-implement** runs interactively (asks for clarification, pauses at review).
-
-**auto-implement** classifies input (product/technical-plan/mixed) and routes through agents automatically.
+| `agentic:frontend-development` | UI/UX design → visual decisions → frontend implementation |
 
 ### Agents
 
@@ -86,12 +87,13 @@ Specialized agents invoked by workflows:
 | `security-qa` | Security vulnerability review |
 | `investigator` | Root cause debugging |
 | `analyst` | Pattern analysis |
+| `ui-ux-designer` | Visual design & UX patterns |
+| `frontend-developer` | Frontend implementation |
 
 ### Skills
 
-Reusable skill definitions:
-
 **Development:**
+
 | Skill | Purpose |
 |-------|---------|
 | `typescript-engineer` | TypeScript patterns, types, error handling |
@@ -105,6 +107,7 @@ Reusable skill definitions:
 | `context7` | Up-to-date library documentation lookup |
 
 **Product & Planning:**
+
 | Skill | Purpose |
 |-------|---------|
 | `product-manager` | Epics, user stories, acceptance criteria |
@@ -115,12 +118,14 @@ Reusable skill definitions:
 | `brainstorming` | Dialogue-based design |
 
 **Cross-Cutting:**
+
 | Skill | Purpose |
 |-------|---------|
 | `security-context` | Threat modeling constraints |
 | `tech-vision` | CTO-level technical direction |
 | `dx` | Developer experience tooling |
-| `ux-patterns` | UI/UX patterns |
+| `ux-patterns` | UI/UX patterns (forms, modals, loading states) |
+| `refactoring-ui` | Visual hierarchy, colors, typography, spacing |
 | `github` | GitHub integration (with shell scripts) |
 
 ### GitHub Scripts
@@ -140,13 +145,14 @@ Located in `skills/github/scripts/`:
 ```bash
 agentic init|install [options]  # Setup in project
 agentic update [options]        # Update existing setup
-agentic list                    # List agents/scripts
+agentic list                    # List agents/skills
+agentic version                 # Show installed version per IDE
 agentic help                    # Show help
 ```
 
 Options:
-- `--ide <claude|cursor|both>` - Target IDE (init: both, update: auto-detect)
-- `--output <folder>` - Output folder for workflow artifacts (default: `_agentic_output`)
+- `--ide <claude|cursor|both>` — target IDE (init: both, update: auto-detect)
+- `--output <folder>` — output folder for workflow artifacts (default: `_agentic_output`)
 
 ## Project Structure After Init
 
@@ -154,17 +160,20 @@ Options:
 your-project/
 ├── .claude/                 # if --ide claude or both
 │   ├── agents/              # Strategic agents + subagents
-│   └── skills/              # Skill definitions (incl. workflows, scripts)
+│   ├── skills/              # Skill definitions (incl. workflows, scripts)
+│   └── .agentic.settings.json
 ├── .cursor/                 # if --ide cursor or both
 │   ├── agents/              # Strategic agents + subagents
 │   ├── skills/              # Skill definitions (incl. workflows, scripts)
-│   └── rules/
-│       └── agentic.mdc      # Cursor rules
-├── _agentic_output/         # Workflow artifacts (configurable via --output)
+│   ├── rules/
+│   │   └── agentic.mdc      # Cursor rules
+│   └── .agentic.settings.json
+├── _agentic_output/         # Workflow artifacts (configurable)
 │   ├── product/             # PRDs, specs, designs
-│   ├── task/                # Technical plans, implementation logs
+│   ├── task/                # Technical plans, implementation logs, QA reports
 │   └── tech/                # Vision docs, DX docs
 ├── CLAUDE.md                # Claude Code config (if claude)
+└── AGENTS.md                # Cursor agents config (if cursor)
 ```
 
 ## Development
@@ -173,15 +182,15 @@ Requires [Bun](https://bun.sh).
 
 ```bash
 bun install
-bun run bin/agentic.ts
+bun test
+bun run bin/agentic.ts          # run CLI
+cd .tmp && bun run ../bin/agentic.ts init   # manual testing
 ```
 
 ## Publishing
 
-Use the bump script to update version, commit, tag, and push:
+Push a `v*` tag to auto-publish to GitHub Packages:
 
 ```bash
-bun run bump v0.1.1-alpha.16
+bun run bump <version>          # bumps, commits, tags, pushes
 ```
-
-This triggers GitHub Actions to publish to GitHub Packages.
