@@ -17,7 +17,7 @@ Review code change for security compliance against technical plan and security a
 
 ## Output
 
-`{outputFolder}/task/{epicNumber}-EPIC-{epicName}/US-{usName}-{usNumber}/security-{secNumber}.md`
+`{ide-folder}/{outputFolder}/task/{epicNumber}-EPIC-{epicName}/US-{usName}-{usNumber}/security-{secNumber}.md`
 
 ## Evidence Policy (HARD)
 

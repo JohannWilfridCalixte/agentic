@@ -9,7 +9,7 @@ Define technical vision, architecture principles, and non-functional requirement
 
 ## Output
 
-`{outputFolder}/tech/vision/{timestamp}-{main-topic}.md`
+`{ide-folder}/{outputFolder}/tech/vision/{timestamp}-{main-topic}.md`
 
 ## Required Structure
 

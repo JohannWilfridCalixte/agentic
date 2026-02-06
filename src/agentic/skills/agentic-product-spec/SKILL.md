@@ -146,7 +146,7 @@ If any step fails:
 
 ## Artifacts
 
-All outputs: `{outputFolder}/product/specs/`
+All outputs: `{ide-folder}/{outputFolder}/product/specs/`
 - `workflow-state.yaml`
 - `decision-log.md` (auto mode)
 - `discovery-{topic}.md`

@@ -192,4 +192,4 @@ Status: {COMPLETED | ESCALATED}
 
 ## WORKFLOW COMPLETE
 
-All artifacts in `{outputFolder}/frontend/{session_id}/`
+All artifacts in `{ide-folder}/{outputFolder}/frontend/{session_id}/`

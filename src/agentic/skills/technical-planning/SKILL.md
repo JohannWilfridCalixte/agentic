@@ -9,13 +9,13 @@ Produce a precise, implementable technical plan. Do NOT write implementation cod
 
 ## Inputs
 
-- Tech vision docs (`{outputFolder}/tech/vision/...`)
-- PRD (`{outputFolder}/product/prd/{epicNumber}-EPIC-{epicName}/US-{usName}-{usNumber}.md`)
-- Technical context (`{outputFolder}/task/.../technical-context.md`)
+- Tech vision docs (`{ide-folder}/{outputFolder}/tech/vision/...`)
+- PRD (`{ide-folder}/{outputFolder}/product/prd/{epicNumber}-EPIC-{epicName}/US-{usName}-{usNumber}.md`)
+- Technical context (`{ide-folder}/{outputFolder}/task/.../technical-context.md`)
 
 ## Output
 
-`{outputFolder}/task/{epicNumber}-EPIC-{epicName}/US-{usName}-{usNumber}/technical-plan.md`
+`{ide-folder}/{outputFolder}/task/{epicNumber}-EPIC-{epicName}/US-{usName}-{usNumber}/technical-plan.md`
 
 ## Required Structure
 

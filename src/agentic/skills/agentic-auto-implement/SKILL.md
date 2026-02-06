@@ -180,7 +180,7 @@ Append to `decision-log.md` for every autonomous decision:
 
 ## Artifacts
 
-All outputs: `{outputFolder}/task/{epic_id}-EPIC-{epic_name}/US-{story_id}/`
+All outputs: `{ide-folder}/{outputFolder}/task/{epic_id}-EPIC-{epic_name}/US-{story_id}/`
 
 | Artifact | Description |
 |----------|-------------|

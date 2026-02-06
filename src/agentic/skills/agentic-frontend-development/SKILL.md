@@ -150,7 +150,7 @@ Create `{session_path}/escalation.md` with:
 
 ## Artifacts
 
-All outputs: `{outputFolder}/frontend/{session_id}/`
+All outputs: `{ide-folder}/{outputFolder}/frontend/{session_id}/`
 
 | Artifact | Purpose |
 |----------|---------|
