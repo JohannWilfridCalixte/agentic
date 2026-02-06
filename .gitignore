@@ -6,3 +6,5 @@ bmad*
 .cursor
 .claude/_agentic_output
 .cursor/_agentic_output
+
+node_modules
