@@ -1,5 +1,5 @@
 import { isErr } from '../lib/monads';
-import { help, init, list, update, version } from './commands';
+import { help, init, list, settings, update, version } from './commands';
 import type { IDE } from './constants';
 
 function parseCommand(arg: string | undefined, args: readonly string[]) {
@@ -8,6 +8,7 @@ function parseCommand(arg: string | undefined, args: readonly string[]) {
   if (arg === 'init' || arg === 'install') return 'init' as const;
   if (arg === 'list') return 'list' as const;
   if (arg === 'update') return 'update' as const;
+  if (arg === 'settings') return 'settings' as const;
   if (arg === 'version') return 'version' as const;
 
   return 'help' as const;
@@ -77,6 +78,18 @@ export async function run(args: readonly string[]) {
       const ide = parseIdeOptionOptional(args);
       const outputFolder = parseOutputOption(args);
       const result = await update({ ide, outputFolder });
+
+      if (isErr(result)) {
+        console.error(`Error: ${result.data.message}`);
+        process.exit(1);
+      }
+
+      process.exit(0);
+    }
+
+    case 'settings': {
+      const subcommand = args[1];
+      const result = await settings(subcommand, args.slice(2));
 
       if (isErr(result)) {
         console.error(`Error: ${result.data.message}`);

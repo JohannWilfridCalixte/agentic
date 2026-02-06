@@ -51,7 +51,12 @@ export async function setupIde(
 
   await mkdir(ideDir, { recursive: true });
 
-  const templateOptions: TemplateOptions = { outputFolder };
+  const templateOptions: TemplateOptions = {
+    outputFolder,
+    highThinkingModelName: getHighThinkingModelName(targetIde),
+    codeWritingModelName: getCodeWritingModelName(targetIde),
+    qaModelName: getQaModelName(targetIde),
+  };
 
   const copies: readonly [string, string][] = [
     [AGENTS_DIR, join(ideDir, 'agents')],

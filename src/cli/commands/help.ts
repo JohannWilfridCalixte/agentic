@@ -3,18 +3,21 @@ export function help() {
 agentic - Agent prompts and scripts for Claude Code + Cursor
 
 Usage:
-  agentic init|install [options]  Setup in current project
-  agentic update [options]        Update existing setup
-  agentic list                    List available agents/scripts
-  agentic version                 Show installed version per IDE
-  agentic help                    Show this help
+  agentic init|install [options]    Setup in current project
+  agentic update [options]          Update existing setup
+  agentic settings apply [options]  Update settings & reinstall agents
+  agentic list                      List available agents/scripts
+  agentic version                   Show installed version per IDE
+  agentic help                      Show this help
 
 Options:
-  --ide <type>      Target IDE: claude, cursor, or both
-                    init: defaults to both
-                    update: defaults to auto-detect
-  --output <folder> Output folder for workflow artifacts
-                    defaults to _agentic_output
-  --version         Show installed version (alias for version command)
+  --ide <type>                Target IDE: claude, cursor, or both
+                              init: defaults to both
+                              update/settings: defaults to auto-detect
+  --output <folder>           Output folder (default: _agentic_output)
+  --high-thinking-model <id>  Model for high-thinking agents
+  --code-writing-model <id>   Model for code-writing agents
+  --qa-model <id>             Model for QA agents
+  --version                   Show installed version
 `);
 }

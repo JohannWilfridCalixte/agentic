@@ -69,12 +69,19 @@ export function getQaModelName(ide: TargetIDE) {
 
 export interface TemplateOptions {
   outputFolder: string;
+  highThinkingModelName: string;
+  codeWritingModelName: string;
+  qaModelName: string;
 }
 
 export function processTemplate(content: string, ide: TargetIDE, options: TemplateOptions) {
   const vars = {
     ...IDE_TEMPLATE_VARS[ide],
     'output-folder': options.outputFolder,
+    outputFolder: options.outputFolder,
+    highThinkingModelName: options.highThinkingModelName,
+    codeWritingModelName: options.codeWritingModelName,
+    qaModelName: options.qaModelName,
   };
   let result = content;
 

@@ -1,12 +1,5 @@
 # Agentic Framework
 
-## **CRITICAL**: Settings
-
-At session start create a variable `{outputFolder}` = `{ide-folder}/${cat {ide-folder}/.agentic.settings.json | jq .outputFolder}` and use its value for all file outputs instead of any hardcoded paths in prompts.
-At session start create a variable `{highThinkingModelName}` = `cat {ide-folder}/.agentic.settings.json | jq -r .highThinkingModelName` and use its value when you see {highThinkingModelName} in agents/subagents markdown.
-At session start create a variable `{codeWritingModelName}` = `cat {ide-folder}/.agentic.settings.json | jq -r .codeWritingModelName` and use its value when you see {codeWritingModelName} in agents/subagents markdown.
-At session start create a variable `{qaModelName}` = `cat {ide-folder}/.agentic.settings.json | jq -r .qaModelName` and use its value when you see {qaModelName} in agents/subagents markdown.
-
 ## **CRITICAL**: Orchestrator
 
 It is **MANDATORY** that you act as an orchestrator and delegate every task to subagents.

@@ -22,9 +22,10 @@ describe('COMMANDS', () => {
     expect(COMMANDS).toContain('help');
     expect(COMMANDS).toContain('update');
     expect(COMMANDS).toContain('version');
+    expect(COMMANDS).toContain('settings');
   });
 
-  it('has 5 commands', () => {
-    expect(COMMANDS).toHaveLength(5);
+  it('has 6 commands', () => {
+    expect(COMMANDS).toHaveLength(6);
   });
 });

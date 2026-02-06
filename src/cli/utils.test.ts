@@ -2,7 +2,12 @@ import { describe, expect, it } from 'bun:test';
 
 import { processTemplate } from './utils';
 
-const defaultOptions = { outputFolder: '_agentic_output' };
+const defaultOptions = {
+  outputFolder: '_agentic_output',
+  highThinkingModelName: 'opus',
+  codeWritingModelName: 'opus',
+  qaModelName: 'opus',
+};
 
 describe('processTemplate', () => {
   it('replaces {ide-folder} for claude', () => {
@@ -23,19 +28,24 @@ describe('processTemplate', () => {
     const content = 'Use {ide-invoke-prefix}agents/cpo.md';
     const result = processTemplate(content, 'claude', defaultOptions);
 
-    expect(result).toBe('Use Read .agents/cpo.md');
+    expect(result).toBe('Use Read agents/cpo.md');
   });
 
   it('replaces {ide-invoke-prefix} for cursor', () => {
     const content = 'Use {ide-invoke-prefix}agents/cpo.md';
     const result = processTemplate(content, 'cursor', defaultOptions);
 
-    expect(result).toBe('Use @.agents/cpo.md');
+    expect(result).toBe('Use @agents/cpo.md');
   });
 
   it('replaces {output-folder} variable', () => {
     const content = 'Output: {ide-folder}/{output-folder}/task/epic';
-    const result = processTemplate(content, 'claude', { outputFolder: 'my-output' });
+    const result = processTemplate(content, 'claude', {
+      outputFolder: 'my-output',
+      highThinkingModelName: 'opus',
+      codeWritingModelName: 'opus',
+      qaModelName: 'opus',
+    });
 
     expect(result).toBe('Output: .claude/my-output/task/epic');
   });
@@ -48,7 +58,7 @@ Output: {ide-folder}/{output-folder}/task
 `;
     const result = processTemplate(content, 'claude', defaultOptions);
 
-    expect(result).toContain('# Agent: claude');
+    expect(result).toContain('# Agent: .claude');
     expect(result).toContain('Load with: Read .claude/agents/cpo.md');
     expect(result).toContain('Output: .claude/_agentic_output/task');
   });
