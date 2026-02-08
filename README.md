@@ -6,9 +6,7 @@ Multi-agent framework for Claude Code + Cursor. Agents, skills, workflows and sc
 
 This is an experimental project for me to understand how to use AI agents to build software.
 
-There's no strong guarantees that no breaking changes will be introduced.
-
-If you decide to use it, you do so at your own risk.
+I do not provide any guarantee of any kind nor any support. If you decide to use it, you do so at your own risk.
 
 ## Setup
 1. Add to `~/.npmrc`:
