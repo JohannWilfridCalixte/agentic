@@ -83,6 +83,7 @@ Skills in `.claude/skills/` - load with `Read .claude/skills/{name}/SKILL.md`
 | **agentic:debug** | Bug reports, CI failures, runtime errors, flaky tests |
 | **agentic:auto-implement** | Autonomous spec/PRD/plan → PR without interaction |
 | **agentic:quick-spec-and-implement** | Interactive idea → spec → PR with collaboration |
+| **agentic:technical-planning** | Spec/PRD/story → detailed technical plan with all decisions resolved |
 | **agentic:product-spec** | Product discovery → PRD |
 | **agentic:frontend-development** | Frontend features - design decisions → UX → implementation |
 | **code-testing** | Writing tests, test strategy, mocking, flaky test debugging |

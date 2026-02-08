@@ -61,6 +61,7 @@ Load skill: `{ide-invoke-prefix}{ide-folder}/skills/{name}/SKILL.md`
 |-------|----------|
 | **agentic:auto-implement** | Autonomous spec/PRD/plan → PR without interaction |
 | **agentic:quick-spec-and-implement** | Interactive idea → spec → PR with collaboration |
+| **agentic:technical-planning** | Spec/PRD/story → detailed technical plan with all decisions resolved |
 | **agentic:debug** | Systematic debugging to verified fix |
 | **agentic:product-spec** | Product discovery → PRD |
 

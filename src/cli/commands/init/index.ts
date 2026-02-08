@@ -126,6 +126,7 @@ export async function init(options: InitOptions = {}): Promise<Result<void, Init
 
   console.log('\nUsage:');
   console.log('  /agentic:product-spec [--auto] [input]');
+  console.log('  /agentic:technical-planning [input]');
   console.log('  /agentic:quick-spec-and-implement [--auto] [input]');
   console.log('  /agentic:auto-implement [input]');
   console.log('  /agentic:debug [input]');
