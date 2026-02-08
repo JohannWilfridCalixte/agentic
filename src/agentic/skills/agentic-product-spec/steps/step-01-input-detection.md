@@ -86,7 +86,7 @@ mkdir -p {output_path}
 
 ```yaml
 workflow: product-spec
-version: "1.0.0"
+version: "2.0.0"
 
 # Workflow configuration
 mode: {workflow_mode}
@@ -107,9 +107,19 @@ status: "in_progress"
 current_step: 1
 steps_completed: []
 
+# Discovery confirmation loop
+discovery_attempts: 0
+discovery_confirmed: false
+
+# Product questioning
+questions_asked: 0
+critical_open_questions: 0
+decisions_logged: 0
+
 # Artifacts
 artifacts:
   discovery: null
+  product_decisions: null
   spec: null
   decision_log: null
 
@@ -117,6 +127,8 @@ artifacts:
 validation:
   discovery_complete: false
   required_sections_present: false
+  discovery_confirmed: false
+  gate_passed: false
 ```
 
 ### 1.7 Initialize Decision Log (Auto Mode)

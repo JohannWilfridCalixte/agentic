@@ -1,9 +1,9 @@
 # Workflow State Template
 # Tracks progress through product-spec workflow
-# Location: {ide-folder}/{outputFolder}/product/specs/workflow-state.yaml
+# Location: {output_path}/workflow-state.yaml
 
 workflow: product-spec
-version: "1.0.0"
+version: "2.0.0"
 
 # Workflow configuration
 mode: "interactive" # or "auto"
@@ -12,7 +12,8 @@ input_source: null # path or null
 
 # Topic identification
 topic: "" # kebab-case topic slug
-output_path: "{ide-folder}/{outputFolder}/product/specs"
+instance_id: "" # YYYYMMDD-HHMMSS-XXXX
+output_path: "" # {ide-folder}/{outputFolder}/product/specs/{topic}/{instance_id}
 
 # Timing
 started_at: "" # ISO timestamp
@@ -31,11 +32,21 @@ steps_completed: []
 #   - step: 2
 #     name: "product-discovery"
 #     completed_at: "2024-01-15T10:30:00Z"
-#     output: "{ide-folder}/{outputFolder}/product/specs/discovery-auth-flow.md"
+#     output: ".../discovery-auth-flow.md"
+
+# Discovery confirmation loop
+discovery_attempts: 0
+discovery_confirmed: false
+
+# Product questioning
+questions_asked: 0
+critical_open_questions: 0
+decisions_logged: 0
 
 # Artifacts created
 artifacts:
   discovery: null # discovery-{topic}.md
+  product_decisions: null # product-decisions.md
   spec: null # spec-{topic}.md
   decision_log: null # auto mode only
 
@@ -43,3 +54,5 @@ artifacts:
 validation:
   discovery_complete: false
   required_sections_present: false
+  discovery_confirmed: false
+  gate_passed: false

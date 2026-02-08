@@ -86,12 +86,14 @@ current_step: 3
 updated_at: {ISO_timestamp}
 ```
 
-**Interactive mode:** Present discovery summary, ask if ready to proceed to spec writing.
+**Interactive mode:** Proceed to confirmation step.
 
-**Auto mode:** Continue immediately.
+**Auto mode:** Skip step 3 and 4, go directly to step 5.
 
 ---
 
 ## NEXT STEP
 
-Load `step-03-write-spec.md`
+**Interactive mode:** Load `step-03-confirm-discovery.md`
+
+**Auto mode:** Load `step-05-write-spec.md`
