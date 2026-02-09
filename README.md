@@ -54,6 +54,7 @@ Workflow artifacts (specs, plans, logs) go to the configured output folder (`_ag
 |----------|-------------|
 | `agentic:quick-spec-and-implement` | Interactive spec-to-PR: PM → Architect → Security → Editor → QA → PR |
 | `agentic:auto-implement` | Autonomous implementation from spec/plan to PR |
+| `agentic:implement` | Technical plan → implementation + tests + review, optional PR |
 | `agentic:technical-planning` | Spec/PRD/story → detailed technical plan with all decisions resolved |
 | `agentic:product-spec` | Product discovery → PRD |
 | `agentic:debug` | Systematic debugging to verified fix |

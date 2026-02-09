@@ -82,6 +82,7 @@ Skills in `.claude/skills/` - load with `Read .claude/skills/{name}/SKILL.md`
 | **security-qa** | Reviewing code for security/privacy |
 | **agentic:debug** | Bug reports, CI failures, runtime errors, flaky tests |
 | **agentic:auto-implement** | Autonomous spec/PRD/plan → PR without interaction |
+| **agentic:implement** | Technical plan → implementation + tests + review, optional PR |
 | **agentic:quick-spec-and-implement** | Interactive idea → spec → PR with collaboration |
 | **agentic:technical-planning** | Spec/PRD/story → detailed technical plan with all decisions resolved |
 | **agentic:product-spec** | Product discovery → PRD |
