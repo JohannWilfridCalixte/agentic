@@ -28,7 +28,7 @@ You are the **main agent** orchestrating this workflow. You:
 4. Invoke subagents via Task tool
 5. Handle handoffs between agents
 6. Manage review loop
-7. Create final PR
+7. Ask developer about optional PR creation
 
 **You do NOT:**
 - Make technical decisions (that's Architect)
@@ -102,7 +102,7 @@ Execute steps in order based on route. Read step file before executing each step
 | 4 | `steps/step-04-editor-implement.md` | Implement code changes (Editor) |
 | 4b | `steps/step-04b-test-engineer.md` | Write tests (Test Engineer) |
 | 5 | `steps/step-05-review-loop.md` | QA + Test QA + Security review loop |
-| 6 | `steps/step-06-create-pr.md` | Create branch, commit, push, open PR |
+| 6 | `steps/step-06-create-pr.md` | **Optional** — ask developer, create branch/commit/PR |
 
 **Execution pattern:**
 1. Read current step file
@@ -117,9 +117,10 @@ Execute steps in order based on route. Read step file before executing each step
 
 ### Critical Principles
 - ONE STEP AT A TIME: complete each step before proceeding
-- NO SKIPPING: execute all steps in determined route
+- NO SKIPPING: execute all steps in determined route (except step 6 which is optional)
 - TRACK STATE: update `workflow-state.yaml` after each step
-- NEVER ASK USER: log decisions and open questions instead
+- AUTONOMOUS for steps 1-5: log decisions, don't ask user
+- INTERACTIVE for step 6: ask developer about PR creation
 - STAY IN LANE: each agent decides within their authority
 
 ### Decision Making
@@ -168,8 +169,8 @@ Append to `decision-log.md` for every autonomous decision:
 
 ### Max Review Iterations
 1. Log state
-2. Create draft PR
-3. List unresolved issues in PR description
+2. Ask developer how to proceed (this is NOT autonomous)
+3. Options: create draft PR, keep fixing, or stop
 
 ### Step Failure
 1. Log error in workflow-state.yaml
@@ -249,7 +250,11 @@ All outputs: `{ide-folder}/{outputFolder}/task/{epic_id}-EPIC-{epic_name}/US-{st
                                 |
                                 v
                 +-------------------------------+
-                |  STEP 6: Create PR            |
+                |  STEP 6: PR (optional)        |
+                |  Ask developer:               |
+                |  - Create branch? (name?)     |
+                |  - Commit (conventional)       |
+                |  - Create PR? (title?)        |
                 +-------------------------------+
                                 |
                                 v
