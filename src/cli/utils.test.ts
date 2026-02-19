@@ -25,17 +25,17 @@ describe('processTemplate', () => {
   });
 
   it('replaces {ide-invoke-prefix} for claude', () => {
-    const content = 'Use {ide-invoke-prefix}agents/cpo.md';
+    const content = 'Use {ide-invoke-prefix}agents/agentic-agent-cpo.md';
     const result = processTemplate(content, 'claude', defaultOptions);
 
-    expect(result).toBe('Use Read agents/cpo.md');
+    expect(result).toBe('Use Read agents/agentic-agent-cpo.md');
   });
 
   it('replaces {ide-invoke-prefix} for cursor', () => {
-    const content = 'Use {ide-invoke-prefix}agents/cpo.md';
+    const content = 'Use {ide-invoke-prefix}agents/agentic-agent-cpo.md';
     const result = processTemplate(content, 'cursor', defaultOptions);
 
-    expect(result).toBe('Use @agents/cpo.md');
+    expect(result).toBe('Use @agents/agentic-agent-cpo.md');
   });
 
   it('replaces {output-folder} variable', () => {
@@ -53,13 +53,13 @@ describe('processTemplate', () => {
   it('replaces multiple variables in content', () => {
     const content = `
 # Agent: {ide-folder}
-Load with: {ide-invoke-prefix}{ide-folder}/agents/cpo.md
+Load with: {ide-invoke-prefix}{ide-folder}/agents/agentic-agent-cpo.md
 Output: {ide-folder}/{output-folder}/task
 `;
     const result = processTemplate(content, 'claude', defaultOptions);
 
     expect(result).toContain('# Agent: .claude');
-    expect(result).toContain('Load with: Read .claude/agents/cpo.md');
+    expect(result).toContain('Load with: Read .claude/agents/agentic-agent-cpo.md');
     expect(result).toContain('Output: .claude/_agentic_output/task');
   });
 

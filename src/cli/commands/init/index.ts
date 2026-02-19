@@ -125,12 +125,12 @@ export async function init(options: InitOptions = {}): Promise<Result<void, Init
   }
 
   console.log('\nUsage:');
-  console.log('  /agentic:product-spec [--auto] [input]');
-  console.log('  /agentic:technical-planning [input]');
-  console.log('  /agentic:quick-spec-and-implement [--auto] [input]');
-  console.log('  /agentic:auto-implement [input]');
-  console.log('  /agentic:debug [input]');
-  console.log('  /agentic:frontend-development [input]');
+  console.log('  /agentic:workflow:product-spec [--auto] [input]');
+  console.log('  /agentic:workflow:technical-planning [input]');
+  console.log('  /agentic:workflow:quick-spec-and-implement [--auto] [input]');
+  console.log('  /agentic:workflow:auto-implement [input]');
+  console.log('  /agentic:workflow:debug [input]');
+  console.log('  /agentic:workflow:frontend-development [input]');
 
   return Ok(undefined);
 }

@@ -52,13 +52,13 @@ Workflow artifacts (specs, plans, logs) go to the configured output folder (`_ag
 
 | Workflow | Description |
 |----------|-------------|
-| `agentic:quick-spec-and-implement` | Interactive spec-to-PR: PM → Architect → Security → Editor → QA → PR |
-| `agentic:auto-implement` | Autonomous implementation from spec/plan to PR |
-| `agentic:implement` | Technical plan → implementation + tests + review, optional PR |
-| `agentic:technical-planning` | Spec/PRD/story → detailed technical plan with all decisions resolved |
-| `agentic:product-spec` | Product discovery → PRD |
-| `agentic:debug` | Systematic debugging to verified fix |
-| `agentic:frontend-development` | UI/UX design → visual decisions → frontend implementation |
+| `agentic:workflow:quick-spec-and-implement` | Interactive spec-to-PR: PM → Architect → Security → Editor → QA → PR |
+| `agentic:workflow:auto-implement` | Autonomous implementation from spec/plan to PR |
+| `agentic:workflow:implement` | Technical plan → implementation + tests + review, optional PR |
+| `agentic:workflow:technical-planning` | Spec/PRD/story → detailed technical plan with all decisions resolved |
+| `agentic:workflow:product-spec` | Product discovery → PRD |
+| `agentic:workflow:debug` | Systematic debugging to verified fix |
+| `agentic:workflow:frontend-development` | UI/UX design → visual decisions → frontend implementation |
 
 ### Agents
 
@@ -66,10 +66,10 @@ Strategic agents defining team roles:
 
 | Agent | Role |
 |-------|------|
-| `cpo` | Product vision & roadmap |
-| `cto` | Technical vision & architecture principles |
-| `dx` | Developer experience, tooling, CI |
-| `team-and-workflow` | Multi-agent team structure & collaboration rules |
+| `agentic:agent:cpo` | Product vision & roadmap |
+| `agentic:agent:cto` | Technical vision & architecture principles |
+| `agentic:agent:dx` | Developer experience, tooling, CI |
+| `agentic:agent:team-and-workflow` | Multi-agent team structure & collaboration rules |
 
 ### Subagents
 
@@ -77,18 +77,18 @@ Specialized agents invoked by workflows:
 
 | Subagent | Role |
 |----------|------|
-| `pm` | Product specs: epics, user stories, acceptance criteria |
-| `architect` | Context gathering + technical planning |
-| `editor` | Code implementation following technical plan |
-| `test-engineer` | Test writing |
-| `qa` | Code quality review |
-| `test-qa` | Test quality review |
-| `security` | Threat modeling & security requirements |
-| `security-qa` | Security vulnerability review |
-| `investigator` | Root cause debugging |
-| `analyst` | Pattern analysis |
-| `ui-ux-designer` | Visual design & UX patterns |
-| `frontend-developer` | Frontend implementation |
+| `agentic:agent:pm` | Product specs: epics, user stories, acceptance criteria |
+| `agentic:agent:architect` | Context gathering + technical planning |
+| `agentic:agent:editor` | Code implementation following technical plan |
+| `agentic:agent:test-engineer` | Test writing |
+| `agentic:agent:qa` | Code quality review |
+| `agentic:agent:test-qa` | Test quality review |
+| `agentic:agent:security` | Threat modeling & security requirements |
+| `agentic:agent:security-qa` | Security vulnerability review |
+| `agentic:agent:investigator` | Root cause debugging |
+| `agentic:agent:analyst` | Pattern analysis |
+| `agentic:agent:ui-ux-designer` | Visual design & UX patterns |
+| `agentic:agent:frontend-developer` | Frontend implementation |
 
 ### Skills
 
@@ -96,37 +96,37 @@ Specialized agents invoked by workflows:
 
 | Skill | Purpose |
 |-------|---------|
-| `typescript-engineer` | TypeScript patterns, types, error handling |
-| `typescript-imports` | Import ordering, grouping, type imports |
-| `code` | Code implementation patterns |
-| `code-testing` | Test strategy, mocking, flaky test debugging |
-| `clean-architecture` | Decoupling, services, domain-driven design |
-| `observability` | Logging, tracing, instrumentation |
-| `qa` | Quality assurance review |
-| `security-qa` | Security & privacy code review |
-| `context7` | Up-to-date library documentation lookup |
+| `agentic:skill:typescript-engineer` | TypeScript patterns, types, error handling |
+| `agentic:skill:typescript-imports` | Import ordering, grouping, type imports |
+| `agentic:skill:code` | Code implementation patterns |
+| `agentic:skill:code-testing` | Test strategy, mocking, flaky test debugging |
+| `agentic:skill:clean-architecture` | Decoupling, services, domain-driven design |
+| `agentic:skill:observability` | Logging, tracing, instrumentation |
+| `agentic:skill:qa` | Quality assurance review |
+| `agentic:skill:security-qa` | Security & privacy code review |
+| `agentic:skill:context7` | Up-to-date library documentation lookup |
 
 **Product & Planning:**
 
 | Skill | Purpose |
 |-------|---------|
-| `product-manager` | Epics, user stories, acceptance criteria |
-| `product-discovery` | New feature exploration |
-| `product-vision` | CPO-level direction |
-| `gather-technical-context` | Codebase analysis before planning |
-| `technical-planning` | Task breakdown, verification matrix |
-| `brainstorming` | Dialogue-based design |
+| `agentic:skill:product-manager` | Epics, user stories, acceptance criteria |
+| `agentic:skill:product-discovery` | New feature exploration |
+| `agentic:skill:product-vision` | CPO-level direction |
+| `agentic:skill:gather-technical-context` | Codebase analysis before planning |
+| `agentic:skill:technical-planning` | Task breakdown, verification matrix |
+| `agentic:skill:brainstorming` | Dialogue-based design |
 
 **Cross-Cutting:**
 
 | Skill | Purpose |
 |-------|---------|
-| `security-context` | Threat modeling constraints |
-| `tech-vision` | CTO-level technical direction |
-| `dx` | Developer experience tooling |
-| `ux-patterns` | UI/UX patterns (forms, modals, loading states) |
-| `refactoring-ui` | Visual hierarchy, colors, typography, spacing |
-| `github` | GitHub integration (with shell scripts) |
+| `agentic:skill:security-context` | Threat modeling constraints |
+| `agentic:skill:tech-vision` | CTO-level technical direction |
+| `agentic:skill:dx` | Developer experience tooling |
+| `agentic:skill:ux-patterns` | UI/UX patterns (forms, modals, loading states) |
+| `agentic:skill:refactoring-ui` | Visual hierarchy, colors, typography, spacing |
+| `agentic:skill:github` | GitHub integration (with shell scripts) |
 
 ### GitHub Scripts
 

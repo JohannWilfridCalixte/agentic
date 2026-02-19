@@ -40,11 +40,10 @@ src/
 │   ├── monads/             # Result, Option monads
 │   └── logger/             # Pino-based logging
 └── agentic/                # Content assets
-    ├── agents/             # Agent prompts
-    ├── subagents/          # Sub-agent prompts
-    ├── skills/             # Skill definitions
-    ├── templates/          # IDE config templates
-    └── personas/           # Persona definitions
+    ├── agents/             # Agent prompts (agentic-agent-{name}.md)
+    ├── subagents/          # Sub-agent prompts (agentic-agent-{name}.md)
+    ├── skills/             # Skill definitions (agentic-skill-{name}/, agentic-workflow-{name}/)
+    └── templates/          # IDE config templates
 ```
 
 **Flow**: `bin/agentic.ts` → `src/cli/index.ts:run()` → `src/cli/commands/*.ts`
@@ -66,59 +65,60 @@ cd .tmp && bun run ../bin/agentic.ts init
 
 ## Agentic Framework
 
-Agents in `.claude/agents/` - load with `Read .claude/agents/{agent}.md`
-Skills in `.claude/skills/` - load with `Read .claude/skills/{name}/SKILL.md`
+Agents in `.claude/agents/` - load with `Read .claude/agents/agentic-agent-{name}.md`
+Skills in `.claude/skills/` - load with `Read .claude/skills/agentic-skill-{name}/SKILL.md`
 
 ### Skill Index (always available)
 
 | Skill | Use When |
 |-------|----------|
-| **typescript-engineer** | Writing TypeScript code - types, error handling, patterns |
-| **typescript-imports** | Writing imports - ordering, grouping, type imports |
-| **clean-architecture** | Services with business logic needing decoupling |
-| **observability** | Adding logging, tracing, instrumentation |
-| **code** | Implementing code per technical plan |
-| **qa** | Reviewing implementation against plan/ACs |
-| **security-qa** | Reviewing code for security/privacy |
-| **agentic:debug** | Bug reports, CI failures, runtime errors, flaky tests |
-| **agentic:auto-implement** | Autonomous spec/PRD/plan → PR without interaction |
-| **agentic:implement** | Technical plan → implementation + tests + review, optional PR |
-| **agentic:quick-spec-and-implement** | Interactive idea → spec → PR with collaboration |
-| **agentic:technical-planning** | Spec/PRD/story → detailed technical plan with all decisions resolved |
-| **agentic:product-spec** | Product discovery → PRD |
-| **agentic:frontend-development** | Frontend features - design decisions → UX → implementation |
-| **code-testing** | Writing tests, test strategy, mocking, flaky test debugging |
-| **brainstorming** | Turning ideas into designs |
-| **product-discovery** | Exploring new product idea |
-| **product-manager** | Producing epics, user stories, ACs |
-| **gather-technical-context** | Extracting context before planning |
-| **technical-planning** | Producing technical plans |
-| **product-vision** | Product direction (CPO-level) |
-| **tech-vision** | Technical vision (CTO-level) |
-| **security-context** | Security/privacy constraints |
-| **dx** | Tooling, linting, CI, repo ergonomics |
-| **ux-patterns** | Forms, inputs, modals, loading states |
-| **refactoring-ui** | Visual hierarchy, colors, typography, spacing, depth |
-| **context7** | Fetching up-to-date library docs |
-| **github** | GitHub operations - syncing docs, PRs, issues, gh CLI |
+| **agentic:skill:typescript-engineer** | Writing TypeScript code - types, error handling, patterns |
+| **agentic:skill:typescript-imports** | Writing imports - ordering, grouping, type imports |
+| **agentic:skill:clean-architecture** | Services with business logic needing decoupling |
+| **agentic:skill:observability** | Adding logging, tracing, instrumentation |
+| **agentic:skill:code** | Implementing code per technical plan |
+| **agentic:skill:qa** | Reviewing implementation against plan/ACs |
+| **agentic:skill:security-qa** | Reviewing code for security/privacy |
+| **agentic:skill:frontend-design** | Frontend design - distinctive, production-grade interfaces |
+| **agentic:workflow:debug** | Bug reports, CI failures, runtime errors, flaky tests |
+| **agentic:workflow:auto-implement** | Autonomous spec/PRD/plan → PR without interaction |
+| **agentic:workflow:implement** | Technical plan → implementation + tests + review, optional PR |
+| **agentic:workflow:quick-spec-and-implement** | Interactive idea → spec → PR with collaboration |
+| **agentic:workflow:technical-planning** | Spec/PRD/story → detailed technical plan with all decisions resolved |
+| **agentic:workflow:product-spec** | Product discovery → PRD |
+| **agentic:workflow:frontend-development** | Frontend features - design decisions → UX → implementation |
+| **agentic:skill:code-testing** | Writing tests, test strategy, mocking, flaky test debugging |
+| **agentic:skill:brainstorming** | Turning ideas into designs |
+| **agentic:skill:product-discovery** | Exploring new product idea |
+| **agentic:skill:product-manager** | Producing epics, user stories, ACs |
+| **agentic:skill:gather-technical-context** | Extracting context before planning |
+| **agentic:skill:technical-planning** | Producing technical plans |
+| **agentic:skill:product-vision** | Product direction (CPO-level) |
+| **agentic:skill:tech-vision** | Technical vision (CTO-level) |
+| **agentic:skill:security-context** | Security/privacy constraints |
+| **agentic:skill:dx** | Tooling, linting, CI, repo ergonomics |
+| **agentic:skill:ux-patterns** | Forms, inputs, modals, loading states |
+| **agentic:skill:refactoring-ui** | Visual hierarchy, colors, typography, spacing, depth |
+| **agentic:skill:context7** | Fetching up-to-date library docs |
+| **agentic:skill:github** | GitHub operations - syncing docs, PRs, issues, gh CLI |
 
 ### Agents
 
-- `cpo` - Chief Product Officer
-- `cto` - Chief Technology Officer
-- `dx` - Developer experience
+- `agentic:agent:cpo` - Chief Product Officer
+- `agentic:agent:cto` - Chief Technology Officer
+- `agentic:agent:dx` - Developer experience
 
 ### Subagents (for workflows)
 
-- `pm` - Product Manager
-- `architect` - Technical context + planning
-- `editor` - Code implementation (no tests)
-- `test-engineer` - Test writing
-- `qa` - Code quality assurance (no test review)
-- `test-qa` - Test quality assurance
-- `security` - Threat modeling
-- `security-qa` - Security QA
-- `investigator` - Root cause investigation
-- `analyst` - Pattern analysis
-- `ui-ux-designer` - Visual design + UX patterns
-- `frontend-developer` - Frontend implementation
+- `agentic:agent:pm` - Product Manager
+- `agentic:agent:architect` - Technical context + planning
+- `agentic:agent:editor` - Code implementation (no tests)
+- `agentic:agent:test-engineer` - Test writing
+- `agentic:agent:qa` - Code quality assurance (no test review)
+- `agentic:agent:test-qa` - Test quality assurance
+- `agentic:agent:security` - Threat modeling
+- `agentic:agent:security-qa` - Security QA
+- `agentic:agent:investigator` - Root cause investigation
+- `agentic:agent:analyst` - Pattern analysis
+- `agentic:agent:ui-ux-designer` - Visual design + UX patterns
+- `agentic:agent:frontend-developer` - Frontend implementation

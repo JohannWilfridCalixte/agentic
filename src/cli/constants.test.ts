@@ -4,10 +4,10 @@ import { AGENTS, COMMANDS } from './constants';
 
 describe('AGENTS', () => {
   it('contains expected agents', () => {
-    expect(AGENTS).toContain('cpo');
-    expect(AGENTS).toContain('cto');
-    expect(AGENTS).toContain('dx');
-    expect(AGENTS).toContain('team-and-workflow');
+    expect(AGENTS).toContain('agentic-agent-cpo');
+    expect(AGENTS).toContain('agentic-agent-cto');
+    expect(AGENTS).toContain('agentic-agent-dx');
+    expect(AGENTS).toContain('agentic-agent-team-and-workflow');
   });
 
   it('has 4 agents', () => {

@@ -67,7 +67,7 @@ describe('init', () => {
 
     expect(await exists(join(claudeDir, 'agents'))).toBe(true);
     expect(await exists(join(claudeDir, 'skills'))).toBe(true);
-    expect(await exists(join(claudeDir, 'skills', 'github', 'scripts'))).toBe(true);
+    expect(await exists(join(claudeDir, 'skills', 'agentic-skill-github', 'scripts'))).toBe(true);
   });
 
   it('creates expected directory structure for cursor', async () => {
@@ -77,7 +77,7 @@ describe('init', () => {
 
     expect(await exists(join(cursorDir, 'agents'))).toBe(true);
     expect(await exists(join(cursorDir, 'skills'))).toBe(true);
-    expect(await exists(join(cursorDir, 'skills', 'github', 'scripts'))).toBe(true);
+    expect(await exists(join(cursorDir, 'skills', 'agentic-skill-github', 'scripts'))).toBe(true);
   });
 
   it('uses custom output folder', async () => {
@@ -87,7 +87,7 @@ describe('init', () => {
 
     // Verify output-folder was replaced in template files
     const claudeDir = join(TEST_DIR, '.claude');
-    const skillFile = Bun.file(join(claudeDir, 'skills', 'qa', 'SKILL.md'));
+    const skillFile = Bun.file(join(claudeDir, 'skills', 'agentic-skill-qa', 'SKILL.md'));
     const content = await skillFile.text();
 
     expect(content).toContain('custom_output/');
