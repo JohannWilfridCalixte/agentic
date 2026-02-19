@@ -51,6 +51,14 @@ function parseOutputOption(args: readonly string[]): string | undefined {
   return args[outputIndex + 1];
 }
 
+export function parseWorkflowsOption(args: readonly string[]): string[] | undefined {
+  let index = args.indexOf('--workflows');
+  if (index === -1) index = args.indexOf('-w');
+  if (index === -1 || !args[index + 1]) return undefined;
+
+  return args[index + 1].split(',').map(w => w.trim()).filter(Boolean);
+}
+
 export function parseNamespaceOption(args: readonly string[]): string | undefined {
   let index = args.indexOf('--namespace');
   if (index === -1) index = args.indexOf('-n');
@@ -82,7 +90,8 @@ export async function run(args: readonly string[]) {
       const ide = parseIdeOption(args);
       const outputFolder = parseOutputOption(args);
       const namespace = parseNamespaceOption(args);
-      const result = await init({ ide, outputFolder, namespace });
+      const workflows = parseWorkflowsOption(args);
+      const result = await init({ ide, outputFolder, namespace, workflows });
 
       if (isErr(result)) {
         console.error(`Error: ${result.data.message}`);
@@ -96,7 +105,8 @@ export async function run(args: readonly string[]) {
       const ide = parseIdeOptionOptional(args);
       const outputFolder = parseOutputOption(args);
       const namespace = parseNamespaceOption(args);
-      const result = await update({ ide, outputFolder, namespace });
+      const workflows = parseWorkflowsOption(args);
+      const result = await update({ ide, outputFolder, namespace, workflows });
 
       if (isErr(result)) {
         console.error(`Error: ${result.data.message}`);

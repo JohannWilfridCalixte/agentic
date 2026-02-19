@@ -14,6 +14,11 @@ Options:
   --namespace, -n <name>      Namespace prefix (default: agentic)
                               Renames files/refs: agentic-* → <name>-*
                               Must be lowercase, start with letter, 2-30 chars
+  --workflows, -w <list>      Install only specified workflows + deps
+                              Comma-separated: -w product-spec,implement
+                              Available: product-spec, technical-planning,
+                              auto-implement, implement, debug,
+                              quick-spec-and-implement, frontend-development
   --ide <type>                Target IDE: claude, cursor, or both
                               init: defaults to both
                               update/settings: defaults to auto-detect

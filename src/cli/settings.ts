@@ -12,6 +12,7 @@ export interface AgenticSettings {
   readonly codeWritingModelName: string;
   readonly qaModelName: string;
   readonly lastUpdate: string;
+  readonly workflows?: readonly string[];
 }
 
 interface WriteSettingsError {
@@ -77,6 +78,7 @@ export async function writeSettings(
   highThinkingModelName: string,
   codeWritingModelName: string,
   qaModelName: string,
+  workflows?: readonly string[],
 ): Promise<Result<void, WriteSettingsError>> {
   try {
     const version = await getPackageVersion();
@@ -89,6 +91,7 @@ export async function writeSettings(
       codeWritingModelName,
       qaModelName,
       lastUpdate: new Date().toISOString(),
+      ...(workflows ? { workflows } : {}),
     };
 
     const settingsPath = join(ideDir, '.agentic.settings.json');

@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import type { Result } from '../../lib/monads';
 import { Err, isErr, Ok } from '../../lib/monads';
 import type { IDE } from '../constants';
+import { cleanupStaleFiles, KNOWN_WORKFLOWS, resolveWorkflowDependencies, validateWorkflows } from '../dependencies';
 import { readSettings } from '../settings';
 import type { InitError, TargetIDE } from './init';
 import { getDefaultOutputFolder, setupIde } from './init';
@@ -18,6 +19,7 @@ export interface UpdateOptions {
   readonly ide?: IDE;
   readonly namespace?: string;
   readonly outputFolder?: string;
+  readonly workflows?: readonly string[];
 }
 
 export async function directoryExists(path: string): Promise<boolean> {
@@ -41,6 +43,7 @@ export async function detectIdes(projectRoot: string) {
 interface SettingsDefaults {
   readonly namespace: string;
   readonly outputFolder: string;
+  readonly workflows?: readonly string[];
 }
 
 async function readDefaultsFromSettings(projectRoot: string, ides: readonly TargetIDE[]): Promise<SettingsDefaults> {
@@ -51,6 +54,7 @@ async function readDefaultsFromSettings(projectRoot: string, ides: readonly Targ
       return {
         namespace: result.data.namespace,
         outputFolder: result.data.outputFolder,
+        workflows: result.data.workflows,
       };
     }
   }
@@ -79,17 +83,36 @@ export async function update(
   const namespace = options.namespace ?? defaults.namespace;
   const outputFolder = options.outputFolder ?? defaults.outputFolder;
 
+  let workflows: readonly string[] | undefined;
+  if (options.workflows) {
+    const validation = validateWorkflows(options.workflows);
+    if (isErr(validation)) {
+      return Err({ code: 'UPDATE_FAILED' as const, message: validation.data.message });
+    }
+    workflows = validation.data;
+  } else {
+    workflows = defaults.workflows ? [...defaults.workflows] : undefined;
+  }
+
   console.log(`Updating ${namespace}...\n`);
   console.log(`  Output folder: ${outputFolder}`);
 
   for (const targetIde of ides) {
-    const result = await setupIde(targetIde, projectRoot, { namespace, outputFolder, mode: 'update' });
+    const result = await setupIde(targetIde, projectRoot, { namespace, outputFolder, mode: 'update', workflows });
     if (isErr(result)) {
       return Err({
         code: 'UPDATE_FAILED' as const,
         message: `Failed to update .${targetIde}/`,
         cause: result.data,
       });
+    }
+
+    if (workflows) {
+      const oldWorkflows = defaults.workflows ?? KNOWN_WORKFLOWS;
+      const oldDeps = resolveWorkflowDependencies(oldWorkflows);
+      const newDeps = resolveWorkflowDependencies(workflows);
+      const ideDir = join(projectRoot, `.${targetIde}`);
+      await cleanupStaleFiles(ideDir, oldDeps, newDeps, namespace);
     }
   }
 

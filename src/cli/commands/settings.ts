@@ -7,9 +7,10 @@ import type { InitError, TargetIDE } from './init';
 
 import { Err, isErr, Ok } from '../../lib/monads';
 import { NAMESPACE_PATTERN } from '../constants';
+import { cleanupStaleFiles, KNOWN_WORKFLOWS, resolveWorkflowDependencies, validateWorkflows } from '../dependencies';
 import { AGENTS_DIR, SKILLS_DIR, SUBAGENTS_DIR } from '../paths';
 import { readSettings, writeSettings } from '../settings';
-import { copyAndProcess } from '../utils';
+import { copyAndProcess, copyFileAndProcess, rewriteNamespace } from '../utils';
 import { detectIdes } from './update';
 
 interface SettingsError {
@@ -25,6 +26,7 @@ export interface SettingsUpdateOptions {
   codeWritingModelName?: string;
   qaModelName?: string;
   outputFolder?: string;
+  workflows?: readonly string[];
 }
 
 export function parseSettingsArgs(args: readonly string[]): SettingsUpdateOptions {
@@ -56,6 +58,9 @@ export function parseSettingsArgs(args: readonly string[]): SettingsUpdateOption
       }
       options.namespace = next;
       i++;
+    } else if ((arg === '--workflows' || arg === '-w') && next) {
+      options.workflows = next.split(',').map(w => w.trim()).filter(Boolean);
+      i++;
     }
   }
 
@@ -66,23 +71,44 @@ async function reinstallAgents(
   targetIde: TargetIDE,
   projectRoot: string,
   templateOptions: TemplateOptions,
+  workflows?: readonly string[],
 ): Promise<Result<void, InitError>> {
   const ideDir = join(projectRoot, `.${targetIde}`);
 
-  const copies: readonly [string, string][] = [
-    [AGENTS_DIR, join(ideDir, 'agents')],
-    [SUBAGENTS_DIR, join(ideDir, 'agents')],
-    [SKILLS_DIR, join(ideDir, 'skills')],
-  ];
+  if (workflows && workflows.length > 0) {
+    const deps = resolveWorkflowDependencies(workflows);
 
-  for (const [source, destination] of copies) {
-    const result = await copyAndProcess(source, destination, targetIde, templateOptions);
-    if (isErr(result)) {
-      return Err({
-        code: 'COPY_FAILED' as const,
-        message: `Failed to copy to .${targetIde}/`,
-        cause: result.data,
-      });
+    for (const agentFile of deps.agents) {
+      const sourcePath = join(SUBAGENTS_DIR, agentFile);
+      const destName = rewriteNamespace(agentFile, templateOptions.namespace);
+      const destPath = join(ideDir, 'agents', destName);
+      const result = await copyFileAndProcess(sourcePath, destPath, targetIde, templateOptions);
+      if (isErr(result)) {
+        return Err({ code: 'COPY_FAILED' as const, message: `Failed to copy agent ${agentFile}`, cause: result.data });
+      }
+    }
+
+    for (const dirName of [...deps.skills, ...deps.workflows]) {
+      const sourcePath = join(SKILLS_DIR, dirName);
+      const destName = rewriteNamespace(dirName, templateOptions.namespace);
+      const destPath = join(ideDir, 'skills', destName);
+      const result = await copyAndProcess(sourcePath, destPath, targetIde, templateOptions);
+      if (isErr(result)) {
+        return Err({ code: 'COPY_FAILED' as const, message: `Failed to copy ${dirName}`, cause: result.data });
+      }
+    }
+  } else {
+    const copies: readonly [string, string][] = [
+      [AGENTS_DIR, join(ideDir, 'agents')],
+      [SUBAGENTS_DIR, join(ideDir, 'agents')],
+      [SKILLS_DIR, join(ideDir, 'skills')],
+    ];
+
+    for (const [source, destination] of copies) {
+      const result = await copyAndProcess(source, destination, targetIde, templateOptions);
+      if (isErr(result)) {
+        return Err({ code: 'COPY_FAILED' as const, message: `Failed to copy to .${targetIde}/`, cause: result.data });
+      }
     }
   }
 
@@ -93,6 +119,15 @@ export async function settingsUpdate(
   options: SettingsUpdateOptions = {},
 ): Promise<Result<void, SettingsError | InitError>> {
   const projectRoot = process.cwd();
+
+  let validatedWorkflows: readonly string[] | undefined;
+  if (options.workflows) {
+    const validation = validateWorkflows(options.workflows);
+    if (isErr(validation)) {
+      return Err({ code: 'SETTINGS_UPDATE_FAILED' as const, message: validation.data.message });
+    }
+    validatedWorkflows = validation.data;
+  }
 
   const ides: readonly TargetIDE[] = options.ide
     ? options.ide === 'both'
@@ -124,8 +159,8 @@ export async function settingsUpdate(
     const highThinkingModelName = options.highThinkingModelName ?? s.highThinkingModelName;
     const codeWritingModelName = options.codeWritingModelName ?? s.codeWritingModelName;
     const qaModelName = options.qaModelName ?? s.qaModelName;
-
     const namespace = options.namespace ?? s.namespace ?? 'agentic';
+    const workflows = validatedWorkflows ?? (s.workflows ? [...s.workflows] : undefined);
 
     const templateOptions: TemplateOptions = {
       namespace,
@@ -135,7 +170,7 @@ export async function settingsUpdate(
       qaModelName,
     };
 
-    const copyResult = await reinstallAgents(targetIde, projectRoot, templateOptions);
+    const copyResult = await reinstallAgents(targetIde, projectRoot, templateOptions, workflows);
     if (isErr(copyResult)) {
       return Err({
         code: 'SETTINGS_UPDATE_FAILED' as const,
@@ -144,7 +179,14 @@ export async function settingsUpdate(
       });
     }
 
-    const writeResult = await writeSettings(ideDir, namespace, outputFolder, highThinkingModelName, codeWritingModelName, qaModelName);
+    if (workflows) {
+      const oldWorkflows = s.workflows ?? KNOWN_WORKFLOWS;
+      const oldDeps = resolveWorkflowDependencies(oldWorkflows);
+      const newDeps = resolveWorkflowDependencies(workflows);
+      await cleanupStaleFiles(ideDir, oldDeps, newDeps, namespace);
+    }
+
+    const writeResult = await writeSettings(ideDir, namespace, outputFolder, highThinkingModelName, codeWritingModelName, qaModelName, workflows);
     if (isErr(writeResult)) {
       return Err({
         code: 'SETTINGS_UPDATE_FAILED' as const,

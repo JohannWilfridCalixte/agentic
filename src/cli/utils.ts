@@ -173,6 +173,34 @@ export async function copyAndProcess(
   }
 }
 
+export async function copyFileAndProcess(
+  sourcePath: string,
+  destinationPath: string,
+  ide: TargetIDE,
+  options: TemplateOptions,
+): Promise<Result<void, CopyDirError>> {
+  try {
+    const dir = destinationPath.substring(0, destinationPath.lastIndexOf('/'));
+    await mkdir(dir, { recursive: true });
+
+    if (isTemplateFile(sourcePath)) {
+      const content = await Bun.file(sourcePath).text();
+      await Bun.write(destinationPath, processTemplate(content, ide, options));
+    } else {
+      const content = await Bun.file(sourcePath).arrayBuffer();
+      await Bun.write(destinationPath, content);
+    }
+
+    return Ok(undefined);
+  } catch (error) {
+    return Err({
+      code: 'COPY_DIR_FAILED' as const,
+      message: `Failed to copy ${sourcePath} to ${destinationPath}`,
+      cause: error,
+    });
+  }
+}
+
 function isTemplateFile(filename: string) {
   return (
     filename.endsWith('.md') ||

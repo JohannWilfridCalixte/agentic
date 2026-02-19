@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
 import { mkdir, readdir, rm, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 
-import { isOk } from '../../../lib/monads';
+import { isErr, isOk } from '../../../lib/monads';
 import { init } from './index';
 
 const TEST_DIR = join(import.meta.dir, '../../../../.tmp/test-init');
@@ -269,6 +269,154 @@ describe('init', () => {
       const claudeMdContent = await Bun.file(join(TEST_DIR, 'CLAUDE.md')).text();
 
       expect(claudeMdContent).toContain('agentic:');
+    });
+  });
+
+  describe('with --workflows (selective install)', () => {
+    it('installs only product-spec workflow deps', async () => {
+      const result = await init({ ide: 'claude', workflows: ['product-spec'] });
+
+      expect(isOk(result)).toBe(true);
+
+      const skillsDir = join(TEST_DIR, '.claude', 'skills');
+      const entries = await readdir(skillsDir);
+
+      // product-spec has skills: product-discovery, brainstorming + workflow dir
+      expect(entries).toContain('agentic-skill-product-discovery');
+      expect(entries).toContain('agentic-skill-brainstorming');
+      expect(entries).toContain('agentic-workflow-product-spec');
+
+      // Should NOT have other workflows or skills
+      expect(entries).not.toContain('agentic-skill-code');
+      expect(entries).not.toContain('agentic-workflow-implement');
+      expect(entries).toHaveLength(3);
+    });
+
+    it('installs no top-level agents when -w is used', async () => {
+      const result = await init({ ide: 'claude', workflows: ['product-spec'] });
+
+      expect(isOk(result)).toBe(true);
+
+      const agentsDir = join(TEST_DIR, '.claude', 'agents');
+
+      // product-spec has no agents, so agents dir may not exist or be empty
+      const agentsDirExists = await exists(agentsDir);
+      if (agentsDirExists) {
+        const files = await readdir(agentsDir);
+        // No top-level agents (cpo, cto, dx, team) and no subagents for product-spec
+        expect(files).toHaveLength(0);
+      }
+    });
+
+    it('installs subagents for implement workflow', async () => {
+      const result = await init({ ide: 'claude', workflows: ['implement'] });
+
+      expect(isOk(result)).toBe(true);
+
+      const agentsDir = join(TEST_DIR, '.claude', 'agents');
+      const files = await readdir(agentsDir);
+
+      // implement: editor, test-engineer, qa, test-qa, security-qa
+      expect(files).toContain('agentic-agent-editor.md');
+      expect(files).toContain('agentic-agent-test-engineer.md');
+      expect(files).toContain('agentic-agent-qa.md');
+      expect(files).toContain('agentic-agent-test-qa.md');
+      expect(files).toContain('agentic-agent-security-qa.md');
+      expect(files).toHaveLength(5);
+
+      // No top-level agents
+      expect(files).not.toContain('agentic-agent-cpo.md');
+      expect(files).not.toContain('agentic-agent-cto.md');
+    });
+
+    it('unions deps from multiple workflows', async () => {
+      const result = await init({ ide: 'claude', workflows: ['product-spec', 'implement'] });
+
+      expect(isOk(result)).toBe(true);
+
+      const skillsDir = join(TEST_DIR, '.claude', 'skills');
+      const entries = await readdir(skillsDir);
+
+      // From product-spec
+      expect(entries).toContain('agentic-skill-product-discovery');
+      expect(entries).toContain('agentic-skill-brainstorming');
+      expect(entries).toContain('agentic-workflow-product-spec');
+
+      // From implement
+      expect(entries).toContain('agentic-skill-code');
+      expect(entries).toContain('agentic-workflow-implement');
+    });
+
+    it('works with namespace + workflows combined', async () => {
+      const result = await init({ ide: 'claude', namespace: 'foo', workflows: ['product-spec'] });
+
+      expect(isOk(result)).toBe(true);
+
+      const skillsDir = join(TEST_DIR, '.claude', 'skills');
+      const entries = await readdir(skillsDir);
+
+      // Should use foo- prefix
+      expect(entries).toContain('foo-skill-product-discovery');
+      expect(entries).toContain('foo-skill-brainstorming');
+      expect(entries).toContain('foo-workflow-product-spec');
+
+      // No agentic- prefixed entries
+      const agenticEntries = entries.filter(e => e.startsWith('agentic-'));
+      expect(agenticEntries).toHaveLength(0);
+    });
+
+    it('persists workflows in settings', async () => {
+      const result = await init({ ide: 'claude', workflows: ['product-spec', 'implement'] });
+
+      expect(isOk(result)).toBe(true);
+
+      const settingsContent = await Bun.file(
+        join(TEST_DIR, '.claude', '.agentic.settings.json'),
+      ).text();
+      const settings = JSON.parse(settingsContent);
+
+      expect(settings.workflows).toEqual(['product-spec', 'implement']);
+    });
+
+    it('omits workflows from settings when not specified', async () => {
+      const result = await init({ ide: 'claude' });
+
+      expect(isOk(result)).toBe(true);
+
+      const settingsContent = await Bun.file(
+        join(TEST_DIR, '.claude', '.agentic.settings.json'),
+      ).text();
+      const settings = JSON.parse(settingsContent);
+
+      expect(settings.workflows).toBeUndefined();
+    });
+
+    it('returns error when all workflows are unknown', async () => {
+      const result = await init({ ide: 'claude', workflows: ['nonexistent', 'also-fake'] });
+
+      expect(isErr(result)).toBe(true);
+      if (isErr(result)) {
+        expect(result.data.message).toContain('nonexistent');
+        expect(result.data.message).toContain('Available:');
+      }
+    });
+
+    it('full install regression: no --workflows installs everything', async () => {
+      const result = await init({ ide: 'claude' });
+
+      expect(isOk(result)).toBe(true);
+
+      const agentsDir = join(TEST_DIR, '.claude', 'agents');
+      const files = await readdir(agentsDir);
+
+      // Full install includes top-level agents + subagents
+      expect(files.length).toBeGreaterThan(5);
+
+      // Should have top-level agents (cpo, cto, etc.)
+      const topLevelAgents = files.filter(f =>
+        f.includes('cpo') || f.includes('cto') || f.includes('dx-engineer'),
+      );
+      expect(topLevelAgents.length).toBeGreaterThan(0);
     });
   });
 });

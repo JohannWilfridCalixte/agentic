@@ -4,10 +4,12 @@ import { join } from 'node:path';
 import type { Result } from '../../../lib/monads';
 import { Err, isErr, Ok } from '../../../lib/monads';
 import type { IDE } from '../../constants';
+import type { ResolvedDependencies } from '../../dependencies';
+import { resolveWorkflowDependencies, validateWorkflows } from '../../dependencies';
 import { AGENTS_DIR, SKILLS_DIR, SUBAGENTS_DIR } from '../../paths';
 import { writeSettings } from '../../settings';
 import type { TemplateOptions } from '../../utils';
-import { appendToGitignore, copyAndProcess, getHighThinkingModelName, getCodeWritingModelName, getQaModelName } from '../../utils';
+import { appendToGitignore, copyAndProcess, copyFileAndProcess, getHighThinkingModelName, getCodeWritingModelName, getQaModelName, rewriteNamespace } from '../../utils';
 import { getIdeStrategy } from './strategies';
 import type { InitError, SetupMode, TargetIDE } from './types';
 
@@ -38,10 +40,55 @@ async function makeScriptsExecutableRecursive(dir: string) {
   }
 }
 
+async function selectiveCopy(
+  workflows: readonly string[],
+  ideDir: string,
+  targetIde: TargetIDE,
+  templateOptions: TemplateOptions,
+): Promise<Result<void, InitError>> {
+  const deps = resolveWorkflowDependencies(workflows);
+
+  // Copy resolved subagent files
+  for (const agentFile of deps.agents) {
+    const sourcePath = join(SUBAGENTS_DIR, agentFile);
+    const destName = rewriteNamespace(agentFile, templateOptions.namespace);
+    const destPath = join(ideDir, 'agents', destName);
+    const result = await copyFileAndProcess(sourcePath, destPath, targetIde, templateOptions);
+
+    if (isErr(result)) {
+      return Err({
+        code: 'COPY_FAILED' as const,
+        message: `Failed to copy agent ${agentFile} to .${targetIde}/`,
+        cause: result.data,
+      });
+    }
+  }
+
+  // Copy resolved skill + workflow directories
+  const allDirs = [...deps.skills, ...deps.workflows];
+  for (const dirName of allDirs) {
+    const sourcePath = join(SKILLS_DIR, dirName);
+    const destName = rewriteNamespace(dirName, templateOptions.namespace);
+    const destPath = join(ideDir, 'skills', destName);
+    const result = await copyAndProcess(sourcePath, destPath, targetIde, templateOptions);
+
+    if (isErr(result)) {
+      return Err({
+        code: 'COPY_FAILED' as const,
+        message: `Failed to copy ${dirName} to .${targetIde}/`,
+        cause: result.data,
+      });
+    }
+  }
+
+  return Ok(undefined);
+}
+
 export interface SetupOptions {
   readonly namespace?: string;
   readonly outputFolder?: string;
   readonly mode?: SetupMode;
+  readonly workflows?: readonly string[];
 }
 
 export async function setupIde(
@@ -63,21 +110,26 @@ export async function setupIde(
     qaModelName: getQaModelName(targetIde),
   };
 
-  const copies: readonly [string, string][] = [
-    [AGENTS_DIR, join(ideDir, 'agents')],
-    [SUBAGENTS_DIR, join(ideDir, 'agents')],
-    [SKILLS_DIR, join(ideDir, 'skills')],
-  ];
+  if (options.workflows && options.workflows.length > 0) {
+    const copyResult = await selectiveCopy(options.workflows, ideDir, targetIde, templateOptions);
+    if (isErr(copyResult)) return copyResult;
+  } else {
+    const copies: readonly [string, string][] = [
+      [AGENTS_DIR, join(ideDir, 'agents')],
+      [SUBAGENTS_DIR, join(ideDir, 'agents')],
+      [SKILLS_DIR, join(ideDir, 'skills')],
+    ];
 
-  for (const [source, destination] of copies) {
-    const result = await copyAndProcess(source, destination, targetIde, templateOptions);
+    for (const [source, destination] of copies) {
+      const result = await copyAndProcess(source, destination, targetIde, templateOptions);
 
-    if (isErr(result)) {
-      return Err({
-        code: 'COPY_FAILED' as const,
-        message: `Failed to copy to .${targetIde}/`,
-        cause: result.data,
-      });
+      if (isErr(result)) {
+        return Err({
+          code: 'COPY_FAILED' as const,
+          message: `Failed to copy to .${targetIde}/`,
+          cause: result.data,
+        });
+      }
     }
   }
 
@@ -92,7 +144,7 @@ export async function setupIde(
 
   await appendToGitignore(projectRoot, `.${targetIde}/${outputFolder}`);
 
-  const settingsResult = await writeSettings(ideDir, namespace, outputFolder, getHighThinkingModelName(targetIde), getCodeWritingModelName(targetIde), getQaModelName(targetIde));
+  const settingsResult = await writeSettings(ideDir, namespace, outputFolder, getHighThinkingModelName(targetIde), getCodeWritingModelName(targetIde), getQaModelName(targetIde), options.workflows);
   if (isErr(settingsResult)) {
     return Err({
       code: 'COPY_FAILED' as const,
@@ -108,6 +160,7 @@ export interface InitOptions {
   readonly ide?: IDE;
   readonly namespace?: string;
   readonly outputFolder?: string;
+  readonly workflows?: readonly string[];
 }
 
 export async function init(options: InitOptions = {}): Promise<Result<void, InitError>> {
@@ -117,11 +170,20 @@ export async function init(options: InitOptions = {}): Promise<Result<void, Init
   const outputFolder = options.outputFolder ?? getDefaultOutputFolder(namespace);
   const ides: readonly TargetIDE[] = ide === 'both' ? ['claude', 'cursor'] : [ide];
 
+  let validatedWorkflows: readonly string[] | undefined;
+  if (options.workflows) {
+    const validation = validateWorkflows(options.workflows);
+    if (isErr(validation)) {
+      return Err({ code: 'COPY_FAILED' as const, message: validation.data.message });
+    }
+    validatedWorkflows = validation.data;
+  }
+
   console.log(`Initializing ${namespace}...\n`);
   console.log(`  Output folder: ${outputFolder}`);
 
   for (const targetIde of ides) {
-    const result = await setupIde(targetIde, projectRoot, { namespace, outputFolder });
+    const result = await setupIde(targetIde, projectRoot, { namespace, outputFolder, workflows: validatedWorkflows });
     if (isErr(result)) return result;
   }
 
