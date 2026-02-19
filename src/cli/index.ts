@@ -1,6 +1,8 @@
-import { isErr } from '../lib/monads';
-import { help, init, list, settings, update, version } from './commands';
 import type { IDE } from './constants';
+
+import { isErr } from '../lib/monads';
+import { NAMESPACE_PATTERN } from './constants';
+import { help, init, list, settings, update, version } from './commands';
 
 function parseCommand(arg: string | undefined, args: readonly string[]) {
   if (arg === '--version' || arg === '-V' || args.includes('--version')) return 'version' as const;
@@ -49,6 +51,21 @@ function parseOutputOption(args: readonly string[]): string | undefined {
   return args[outputIndex + 1];
 }
 
+export function parseNamespaceOption(args: readonly string[]): string | undefined {
+  let index = args.indexOf('--namespace');
+  if (index === -1) index = args.indexOf('-n');
+  if (index === -1 || !args[index + 1]) return undefined;
+
+  const value = args[index + 1];
+
+  if (!NAMESPACE_PATTERN.test(value)) {
+    console.error(`Invalid --namespace value: "${value}". Must be lowercase letters, digits, hyphens; start with letter; 2-30 chars.`);
+    process.exit(1);
+  }
+
+  return value;
+}
+
 export async function run(args: readonly string[]) {
   const command = parseCommand(args[0], args);
 
@@ -64,7 +81,8 @@ export async function run(args: readonly string[]) {
     case 'init': {
       const ide = parseIdeOption(args);
       const outputFolder = parseOutputOption(args);
-      const result = await init({ ide, outputFolder });
+      const namespace = parseNamespaceOption(args);
+      const result = await init({ ide, outputFolder, namespace });
 
       if (isErr(result)) {
         console.error(`Error: ${result.data.message}`);
@@ -77,7 +95,8 @@ export async function run(args: readonly string[]) {
     case 'update': {
       const ide = parseIdeOptionOptional(args);
       const outputFolder = parseOutputOption(args);
-      const result = await update({ ide, outputFolder });
+      const namespace = parseNamespaceOption(args);
+      const result = await update({ ide, outputFolder, namespace });
 
       if (isErr(result)) {
         console.error(`Error: ${result.data.message}`);

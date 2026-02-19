@@ -1,14 +1,16 @@
 import { join } from 'node:path';
 
 import type { Result } from '../../lib/monads';
+import type { IDE } from '../constants';
+import type { TemplateOptions } from '../utils';
+import type { InitError, TargetIDE } from './init';
+
 import { Err, isErr, Ok } from '../../lib/monads';
+import { NAMESPACE_PATTERN } from '../constants';
 import { AGENTS_DIR, SKILLS_DIR, SUBAGENTS_DIR } from '../paths';
 import { readSettings, writeSettings } from '../settings';
-import type { TemplateOptions } from '../utils';
 import { copyAndProcess } from '../utils';
-import type { InitError, TargetIDE } from './init';
 import { detectIdes } from './update';
-import type { IDE } from '../constants';
 
 interface SettingsError {
   readonly code: 'NO_IDE_DETECTED' | 'SETTINGS_UPDATE_FAILED' | 'NO_SUBCOMMAND' | 'UNKNOWN_SUBCOMMAND';
@@ -18,6 +20,7 @@ interface SettingsError {
 
 export interface SettingsUpdateOptions {
   ide?: IDE;
+  namespace?: string;
   highThinkingModelName?: string;
   codeWritingModelName?: string;
   qaModelName?: string;
@@ -45,6 +48,13 @@ export function parseSettingsArgs(args: readonly string[]): SettingsUpdateOption
       i++;
     } else if (arg === '--output' && next) {
       options.outputFolder = next;
+      i++;
+    } else if ((arg === '--namespace' || arg === '-n') && next) {
+      if (!NAMESPACE_PATTERN.test(next)) {
+        console.error(`Invalid --namespace value: "${next}". Must be lowercase letters, digits, hyphens; start with letter; 2-30 chars.`);
+        process.exit(1);
+      }
+      options.namespace = next;
       i++;
     }
   }
@@ -115,7 +125,10 @@ export async function settingsUpdate(
     const codeWritingModelName = options.codeWritingModelName ?? s.codeWritingModelName;
     const qaModelName = options.qaModelName ?? s.qaModelName;
 
+    const namespace = options.namespace ?? s.namespace ?? 'agentic';
+
     const templateOptions: TemplateOptions = {
+      namespace,
       outputFolder,
       highThinkingModelName,
       codeWritingModelName,
@@ -131,7 +144,7 @@ export async function settingsUpdate(
       });
     }
 
-    const writeResult = await writeSettings(ideDir, outputFolder, highThinkingModelName, codeWritingModelName, qaModelName);
+    const writeResult = await writeSettings(ideDir, namespace, outputFolder, highThinkingModelName, codeWritingModelName, qaModelName);
     if (isErr(writeResult)) {
       return Err({
         code: 'SETTINGS_UPDATE_FAILED' as const,

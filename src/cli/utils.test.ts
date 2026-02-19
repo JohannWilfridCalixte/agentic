@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'bun:test';
 
-import { processTemplate } from './utils';
+import { processTemplate, rewriteNamespace } from './utils';
 
 const defaultOptions = {
+  namespace: 'agentic',
   outputFolder: '_agentic_output',
   highThinkingModelName: 'opus',
   codeWritingModelName: 'opus',
@@ -41,6 +42,7 @@ describe('processTemplate', () => {
   it('replaces {output-folder} variable', () => {
     const content = 'Output: {ide-folder}/{output-folder}/task/epic';
     const result = processTemplate(content, 'claude', {
+      namespace: 'agentic',
       outputFolder: 'my-output',
       highThinkingModelName: 'opus',
       codeWritingModelName: 'opus',
@@ -74,5 +76,122 @@ Output: {ide-folder}/{output-folder}/task
     const result = processTemplate('', 'cursor', defaultOptions);
 
     expect(result).toBe('');
+  });
+
+  describe('with custom namespace', () => {
+    const fooOptions = {
+      namespace: 'foo',
+      outputFolder: '_foo_output',
+      highThinkingModelName: 'opus',
+      codeWritingModelName: 'opus',
+      qaModelName: 'opus',
+    };
+
+    it('replaces colon identifiers: agentic:skill: -> foo:skill:', () => {
+      const content = 'Load agentic:skill:code and agentic:workflow:debug';
+      const result = processTemplate(content, 'claude', fooOptions);
+
+      expect(result).toBe('Load foo:skill:code and foo:workflow:debug');
+    });
+
+    it('replaces agent colon identifiers: agentic:agent: -> foo:agent:', () => {
+      const content = 'Use agentic:agent:cpo for product';
+      const result = processTemplate(content, 'claude', fooOptions);
+
+      expect(result).toBe('Use foo:agent:cpo for product');
+    });
+
+    it('replaces slash command references: /agentic: -> /foo:', () => {
+      const content = 'Run /agentic:workflow:debug and /agentic:skill:code';
+      const result = processTemplate(content, 'claude', fooOptions);
+
+      expect(result).toBe('Run /foo:workflow:debug and /foo:skill:code');
+    });
+
+    it('replaces file name references in content', () => {
+      const content = 'Load agentic-agent-cpo.md and agentic-skill-code/ and agentic-workflow-debug/';
+      const result = processTemplate(content, 'claude', fooOptions);
+
+      expect(result).toBe('Load foo-agent-cpo.md and foo-skill-code/ and foo-workflow-debug/');
+    });
+
+    it('replaces section marker with capitalized namespace', () => {
+      const content = '# Agentic Framework\nSome content';
+      const result = processTemplate(content, 'claude', fooOptions);
+
+      expect(result).toBe('# Foo Framework\nSome content');
+    });
+
+    it('replaces output folder reference in content', () => {
+      const content = 'Output: .claude/_agentic_output/task';
+      const result = processTemplate(content, 'claude', fooOptions);
+
+      expect(result).toBe('Output: .claude/_foo_output/task');
+    });
+
+    it('applies all replacements together', () => {
+      const content = [
+        '# Agentic Framework',
+        'Load agentic-agent-cpo.md',
+        'Use agentic:skill:code',
+        'Run /agentic:workflow:debug',
+        'Output: _agentic_output/task',
+      ].join('\n');
+      const result = processTemplate(content, 'claude', fooOptions);
+
+      expect(result).toContain('# Foo Framework');
+      expect(result).toContain('foo-agent-cpo.md');
+      expect(result).toContain('foo:skill:code');
+      expect(result).toContain('/foo:workflow:debug');
+      expect(result).toContain('_foo_output/task');
+      expect(result).not.toContain('agentic');
+    });
+
+    it('skips namespace replacements when namespace is agentic', () => {
+      const content = 'Load agentic-agent-cpo.md and agentic:skill:code';
+      const result = processTemplate(content, 'claude', defaultOptions);
+
+      expect(result).toBe('Load agentic-agent-cpo.md and agentic:skill:code');
+    });
+
+    it('handles hyphenated namespace in section marker', () => {
+      const content = '# Agentic Framework';
+      const result = processTemplate(content, 'claude', {
+        ...fooOptions,
+        namespace: 'my-tools',
+      });
+
+      expect(result).toBe('# My-tools Framework');
+    });
+  });
+});
+
+describe('rewriteNamespace', () => {
+  it('replaces agentic- prefix with custom namespace', () => {
+    expect(rewriteNamespace('agentic-agent-cpo.md', 'foo')).toBe('foo-agent-cpo.md');
+  });
+
+  it('replaces agentic- prefix in directory names', () => {
+    expect(rewriteNamespace('agentic-skill-code', 'foo')).toBe('foo-skill-code');
+  });
+
+  it('replaces agentic- prefix for workflow dirs', () => {
+    expect(rewriteNamespace('agentic-workflow-debug', 'foo')).toBe('foo-workflow-debug');
+  });
+
+  it('returns name unchanged when namespace is agentic', () => {
+    expect(rewriteNamespace('agentic-agent-cpo.md', 'agentic')).toBe('agentic-agent-cpo.md');
+  });
+
+  it('does not replace agentic in the middle of a name', () => {
+    expect(rewriteNamespace('my-agentic-tool.md', 'foo')).toBe('my-agentic-tool.md');
+  });
+
+  it('returns name unchanged when no agentic- prefix', () => {
+    expect(rewriteNamespace('README.md', 'foo')).toBe('README.md');
+  });
+
+  it('handles empty string', () => {
+    expect(rewriteNamespace('', 'foo')).toBe('');
   });
 });

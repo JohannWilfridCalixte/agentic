@@ -12,6 +12,7 @@ export type SetupMode = 'init' | 'update';
 
 export interface StrategySetupOptions {
   readonly mode?: SetupMode;
+  readonly namespace?: string;
 }
 
 export interface IdeSetupStrategy {

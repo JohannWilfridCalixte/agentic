@@ -11,7 +11,9 @@ import { appendToGitignore, copyAndProcess, getHighThinkingModelName, getCodeWri
 import { getIdeStrategy } from './strategies';
 import type { InitError, SetupMode, TargetIDE } from './types';
 
-export const DEFAULT_OUTPUT_FOLDER = '_agentic_output';
+export function getDefaultOutputFolder(namespace: string) {
+  return `_${namespace}_output`;
+}
 
 async function makeScriptsExecutableRecursive(dir: string) {
   try {
@@ -37,8 +39,9 @@ async function makeScriptsExecutableRecursive(dir: string) {
 }
 
 export interface SetupOptions {
-  outputFolder?: string;
-  mode?: SetupMode;
+  readonly namespace?: string;
+  readonly outputFolder?: string;
+  readonly mode?: SetupMode;
 }
 
 export async function setupIde(
@@ -47,11 +50,13 @@ export async function setupIde(
   options: SetupOptions = {},
 ): Promise<Result<void, InitError>> {
   const ideDir = join(projectRoot, `.${targetIde}`);
-  const outputFolder = options.outputFolder ?? DEFAULT_OUTPUT_FOLDER;
+  const namespace = options.namespace ?? 'agentic';
+  const outputFolder = options.outputFolder ?? getDefaultOutputFolder(namespace);
 
   await mkdir(ideDir, { recursive: true });
 
   const templateOptions: TemplateOptions = {
+    namespace,
     outputFolder,
     highThinkingModelName: getHighThinkingModelName(targetIde),
     codeWritingModelName: getCodeWritingModelName(targetIde),
@@ -81,13 +86,13 @@ export async function setupIde(
   await makeScriptsExecutableRecursive(join(ideDir, 'skills'));
 
   const strategy = getIdeStrategy(targetIde);
-  const result = await strategy.setup(projectRoot, { mode: options.mode ?? 'init' });
+  const result = await strategy.setup(projectRoot, { mode: options.mode ?? 'init', namespace });
 
   if (isErr(result)) return result;
 
   await appendToGitignore(projectRoot, `.${targetIde}/${outputFolder}`);
 
-  const settingsResult = await writeSettings(ideDir, outputFolder, getHighThinkingModelName(targetIde), getCodeWritingModelName(targetIde), getQaModelName(targetIde));
+  const settingsResult = await writeSettings(ideDir, namespace, outputFolder, getHighThinkingModelName(targetIde), getCodeWritingModelName(targetIde), getQaModelName(targetIde));
   if (isErr(settingsResult)) {
     return Err({
       code: 'COPY_FAILED' as const,
@@ -100,21 +105,23 @@ export async function setupIde(
 }
 
 export interface InitOptions {
-  ide?: IDE;
-  outputFolder?: string;
+  readonly ide?: IDE;
+  readonly namespace?: string;
+  readonly outputFolder?: string;
 }
 
 export async function init(options: InitOptions = {}): Promise<Result<void, InitError>> {
   const projectRoot = process.cwd();
   const ide = options.ide ?? 'both';
-  const outputFolder = options.outputFolder ?? DEFAULT_OUTPUT_FOLDER;
+  const namespace = options.namespace ?? 'agentic';
+  const outputFolder = options.outputFolder ?? getDefaultOutputFolder(namespace);
   const ides: readonly TargetIDE[] = ide === 'both' ? ['claude', 'cursor'] : [ide];
 
-  console.log('Initializing agentic...\n');
+  console.log(`Initializing ${namespace}...\n`);
   console.log(`  Output folder: ${outputFolder}`);
 
   for (const targetIde of ides) {
-    const result = await setupIde(targetIde, projectRoot, { outputFolder });
+    const result = await setupIde(targetIde, projectRoot, { namespace, outputFolder });
     if (isErr(result)) return result;
   }
 
@@ -125,12 +132,12 @@ export async function init(options: InitOptions = {}): Promise<Result<void, Init
   }
 
   console.log('\nUsage:');
-  console.log('  /agentic:workflow:product-spec [--auto] [input]');
-  console.log('  /agentic:workflow:technical-planning [input]');
-  console.log('  /agentic:workflow:quick-spec-and-implement [--auto] [input]');
-  console.log('  /agentic:workflow:auto-implement [input]');
-  console.log('  /agentic:workflow:debug [input]');
-  console.log('  /agentic:workflow:frontend-development [input]');
+  console.log(`  /${namespace}:workflow:product-spec [--auto] [input]`);
+  console.log(`  /${namespace}:workflow:technical-planning [input]`);
+  console.log(`  /${namespace}:workflow:quick-spec-and-implement [--auto] [input]`);
+  console.log(`  /${namespace}:workflow:auto-implement [input]`);
+  console.log(`  /${namespace}:workflow:debug [input]`);
+  console.log(`  /${namespace}:workflow:frontend-development [input]`);
 
   return Ok(undefined);
 }

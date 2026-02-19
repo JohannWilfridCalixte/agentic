@@ -11,10 +11,13 @@ Usage:
   agentic help                      Show this help
 
 Options:
+  --namespace, -n <name>      Namespace prefix (default: agentic)
+                              Renames files/refs: agentic-* → <name>-*
+                              Must be lowercase, start with letter, 2-30 chars
   --ide <type>                Target IDE: claude, cursor, or both
                               init: defaults to both
                               update/settings: defaults to auto-detect
-  --output <folder>           Output folder (default: _agentic_output)
+  --output <folder>           Output folder (default: _<namespace>_output)
   --high-thinking-model <id>  Model for high-thinking agents
   --code-writing-model <id>   Model for code-writing agents
   --qa-model <id>             Model for QA agents

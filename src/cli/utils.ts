@@ -68,10 +68,45 @@ export function getQaModelName(ide: TargetIDE) {
 }
 
 export interface TemplateOptions {
-  outputFolder: string;
-  highThinkingModelName: string;
-  codeWritingModelName: string;
-  qaModelName: string;
+  readonly namespace: string;
+  readonly outputFolder: string;
+  readonly highThinkingModelName: string;
+  readonly codeWritingModelName: string;
+  readonly qaModelName: string;
+}
+
+function capitalizeFirst(s: string) {
+  if (s.length === 0) return s;
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function applyNamespaceReplacements(content: string, namespace: string) {
+  if (namespace === 'agentic') return content;
+
+  let result = content;
+  const ns = namespace;
+  const capitalized = capitalizeFirst(ns);
+
+  // Colon identifiers: agentic:skill:, agentic:workflow:, agentic:agent:
+  result = result.replaceAll('agentic:skill:', `${ns}:skill:`);
+  result = result.replaceAll('agentic:workflow:', `${ns}:workflow:`);
+  result = result.replaceAll('agentic:agent:', `${ns}:agent:`);
+
+  // Slash command references: /agentic:
+  result = result.replaceAll('/agentic:', `/${ns}:`);
+
+  // File name references: agentic-agent-, agentic-skill-, agentic-workflow-
+  result = result.replaceAll('agentic-agent-', `${ns}-agent-`);
+  result = result.replaceAll('agentic-skill-', `${ns}-skill-`);
+  result = result.replaceAll('agentic-workflow-', `${ns}-workflow-`);
+
+  // Section marker
+  result = result.replaceAll('# Agentic Framework', `# ${capitalized} Framework`);
+
+  // Output folder
+  result = result.replaceAll('_agentic_output', `_${ns}_output`);
+
+  return result;
 }
 
 export function processTemplate(content: string, ide: TargetIDE, options: TemplateOptions) {
@@ -89,7 +124,14 @@ export function processTemplate(content: string, ide: TargetIDE, options: Templa
     result = result.replaceAll(`{${key}}`, value);
   }
 
+  result = applyNamespaceReplacements(result, options.namespace);
+
   return result;
+}
+
+export function rewriteNamespace(name: string, namespace: string) {
+  if (namespace === 'agentic') return name;
+  return name.replace(/^agentic-/, `${namespace}-`);
 }
 
 export async function copyAndProcess(
@@ -105,10 +147,12 @@ export async function copyAndProcess(
 
     for (const entry of entries) {
       const sourcePath = join(source, entry.name);
-      const destinationPath = join(destination, entry.name);
+      const rewrittenName = rewriteNamespace(entry.name, options.namespace);
+      const destinationPath = join(destination, rewrittenName);
 
       if (entry.isDirectory()) {
-        const result = await copyAndProcess(sourcePath, destinationPath, ide, options);
+        const rewrittenDestination = join(destination, rewrittenName);
+        const result = await copyAndProcess(sourcePath, rewrittenDestination, ide, options);
         if (result._type === 'Err') return result;
       } else if (isTemplateFile(entry.name)) {
         const content = await Bun.file(sourcePath).text();

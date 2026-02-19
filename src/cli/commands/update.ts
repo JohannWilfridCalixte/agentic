@@ -4,8 +4,9 @@ import { join } from 'node:path';
 import type { Result } from '../../lib/monads';
 import { Err, isErr, Ok } from '../../lib/monads';
 import type { IDE } from '../constants';
+import { readSettings } from '../settings';
 import type { InitError, TargetIDE } from './init';
-import { DEFAULT_OUTPUT_FOLDER, setupIde } from './init';
+import { getDefaultOutputFolder, setupIde } from './init';
 
 interface UpdateError {
   readonly code: 'NO_IDE_DETECTED' | 'UPDATE_FAILED';
@@ -14,8 +15,9 @@ interface UpdateError {
 }
 
 export interface UpdateOptions {
-  ide?: IDE;
-  outputFolder?: string;
+  readonly ide?: IDE;
+  readonly namespace?: string;
+  readonly outputFolder?: string;
 }
 
 export async function directoryExists(path: string): Promise<boolean> {
@@ -36,11 +38,29 @@ export async function detectIdes(projectRoot: string) {
   return detected;
 }
 
+interface SettingsDefaults {
+  readonly namespace: string;
+  readonly outputFolder: string;
+}
+
+async function readDefaultsFromSettings(projectRoot: string, ides: readonly TargetIDE[]): Promise<SettingsDefaults> {
+  for (const ide of ides) {
+    const ideDir = join(projectRoot, `.${ide}`);
+    const result = await readSettings(ideDir);
+    if (result._type === 'Ok') {
+      return {
+        namespace: result.data.namespace,
+        outputFolder: result.data.outputFolder,
+      };
+    }
+  }
+  return { namespace: 'agentic', outputFolder: getDefaultOutputFolder('agentic') };
+}
+
 export async function update(
   options: UpdateOptions = {},
 ): Promise<Result<void, UpdateError | InitError>> {
   const projectRoot = process.cwd();
-  const outputFolder = options.outputFolder ?? DEFAULT_OUTPUT_FOLDER;
 
   const ides: readonly TargetIDE[] = options.ide
     ? options.ide === 'both'
@@ -55,11 +75,15 @@ export async function update(
     });
   }
 
-  console.log('Updating agentic...\n');
+  const defaults = await readDefaultsFromSettings(projectRoot, ides);
+  const namespace = options.namespace ?? defaults.namespace;
+  const outputFolder = options.outputFolder ?? defaults.outputFolder;
+
+  console.log(`Updating ${namespace}...\n`);
   console.log(`  Output folder: ${outputFolder}`);
 
   for (const targetIde of ides) {
-    const result = await setupIde(targetIde, projectRoot, { outputFolder, mode: 'update' });
+    const result = await setupIde(targetIde, projectRoot, { namespace, outputFolder, mode: 'update' });
     if (isErr(result)) {
       return Err({
         code: 'UPDATE_FAILED' as const,

@@ -5,6 +5,7 @@ import { Err, Ok } from '../lib/monads';
 import { PKG_ROOT } from './paths';
 
 export interface AgenticSettings {
+  readonly namespace: string;
   readonly version: string;
   readonly outputFolder: string;
   readonly highThinkingModelName: string;
@@ -50,7 +51,8 @@ export async function readSettings(
     const content = await file.text();
 
     try {
-      const settings = JSON.parse(content) as AgenticSettings;
+      const parsed = JSON.parse(content);
+      const settings: AgenticSettings = { namespace: 'agentic', ...parsed };
       return Ok(settings);
     } catch (parseError) {
       return Err({
@@ -70,6 +72,7 @@ export async function readSettings(
 
 export async function writeSettings(
   ideDir: string,
+  namespace: string,
   outputFolder: string,
   highThinkingModelName: string,
   codeWritingModelName: string,
@@ -79,6 +82,7 @@ export async function writeSettings(
     const version = await getPackageVersion();
 
     const settings: AgenticSettings = {
+      namespace,
       version,
       outputFolder,
       highThinkingModelName,

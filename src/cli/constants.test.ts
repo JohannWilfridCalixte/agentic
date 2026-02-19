@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 
-import { AGENTS, COMMANDS } from './constants';
+import { AGENTS, COMMANDS, getAgents } from './constants';
 
 describe('AGENTS', () => {
   it('contains expected agents', () => {
@@ -12,6 +12,29 @@ describe('AGENTS', () => {
 
   it('has 4 agents', () => {
     expect(AGENTS).toHaveLength(4);
+  });
+});
+
+describe('getAgents', () => {
+  it('returns agents with custom namespace prefix', () => {
+    const agents = getAgents('foo');
+
+    expect(agents).toContain('foo-agent-cpo');
+    expect(agents).toContain('foo-agent-cto');
+    expect(agents).toContain('foo-agent-dx');
+    expect(agents).toContain('foo-agent-team-and-workflow');
+  });
+
+  it('returns agents with agentic prefix matching AGENTS constant', () => {
+    const agents = getAgents('agentic');
+
+    for (const agent of AGENTS) {
+      expect(agents).toContain(agent);
+    }
+  });
+
+  it('has 4 agents', () => {
+    expect(getAgents('foo')).toHaveLength(4);
   });
 });
 
