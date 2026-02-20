@@ -22,7 +22,13 @@ export const cursorStrategy: IdeSetupStrategy = {
 
     try {
       const template = await Bun.file(templatePath).text();
-      const processed = processTemplate(template, 'cursor', { namespace, outputFolder: '', highThinkingModelName: '', codeWritingModelName: '', qaModelName: '' });
+      const processed = processTemplate(template, 'cursor', {
+        namespace,
+        outputFolder: '',
+        highThinkingModelName: '',
+        codeWritingModelName: '',
+        qaModelName: '',
+      });
       const agentsMdFile = Bun.file(agentsMdPath);
 
       if (!(await agentsMdFile.exists())) {

@@ -17,5 +17,8 @@ export interface StrategySetupOptions {
 
 export interface IdeSetupStrategy {
   readonly ide: TargetIDE;
-  readonly setup: (projectRoot: string, options?: StrategySetupOptions) => Promise<Result<void, InitError>>;
+  readonly setup: (
+    projectRoot: string,
+    options?: StrategySetupOptions,
+  ) => Promise<Result<void, InitError>>;
 }

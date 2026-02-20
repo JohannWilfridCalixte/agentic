@@ -109,7 +109,8 @@ Output: {ide-folder}/{output-folder}/task
     });
 
     it('replaces file name references in content', () => {
-      const content = 'Load agentic-agent-cpo.md and agentic-skill-code/ and agentic-workflow-debug/';
+      const content =
+        'Load agentic-agent-cpo.md and agentic-skill-code/ and agentic-workflow-debug/';
       const result = processTemplate(content, 'claude', fooOptions);
 
       expect(result).toBe('Load foo-agent-cpo.md and foo-skill-code/ and foo-workflow-debug/');

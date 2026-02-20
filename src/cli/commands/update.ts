@@ -4,7 +4,12 @@ import { join } from 'node:path';
 import type { Result } from '../../lib/monads';
 import { Err, isErr, Ok } from '../../lib/monads';
 import type { IDE } from '../constants';
-import { cleanupStaleFiles, KNOWN_WORKFLOWS, resolveWorkflowDependencies, validateWorkflows } from '../dependencies';
+import {
+  cleanupStaleFiles,
+  KNOWN_WORKFLOWS,
+  resolveWorkflowDependencies,
+  validateWorkflows,
+} from '../dependencies';
 import { readSettings } from '../settings';
 import type { InitError, TargetIDE } from './init';
 import { getDefaultOutputFolder, setupIde } from './init';
@@ -46,7 +51,10 @@ interface SettingsDefaults {
   readonly workflows?: readonly string[];
 }
 
-async function readDefaultsFromSettings(projectRoot: string, ides: readonly TargetIDE[]): Promise<SettingsDefaults> {
+async function readDefaultsFromSettings(
+  projectRoot: string,
+  ides: readonly TargetIDE[],
+): Promise<SettingsDefaults> {
   for (const ide of ides) {
     const ideDir = join(projectRoot, `.${ide}`);
     const result = await readSettings(ideDir);
@@ -98,7 +106,12 @@ export async function update(
   console.log(`  Output folder: ${outputFolder}`);
 
   for (const targetIde of ides) {
-    const result = await setupIde(targetIde, projectRoot, { namespace, outputFolder, mode: 'update', workflows });
+    const result = await setupIde(targetIde, projectRoot, {
+      namespace,
+      outputFolder,
+      mode: 'update',
+      workflows,
+    });
     if (isErr(result)) {
       return Err({
         code: 'UPDATE_FAILED' as const,

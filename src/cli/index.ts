@@ -1,8 +1,7 @@
-import type { IDE } from './constants';
-
 import { isErr } from '../lib/monads';
-import { NAMESPACE_PATTERN } from './constants';
 import { help, init, list, settings, update, version } from './commands';
+import type { IDE } from './constants';
+import { NAMESPACE_PATTERN } from './constants';
 
 function parseCommand(arg: string | undefined, args: readonly string[]) {
   if (arg === '--version' || arg === '-V' || args.includes('--version')) return 'version' as const;
@@ -56,7 +55,10 @@ export function parseWorkflowsOption(args: readonly string[]): string[] | undefi
   if (index === -1) index = args.indexOf('-w');
   if (index === -1 || !args[index + 1]) return undefined;
 
-  return args[index + 1].split(',').map(w => w.trim()).filter(Boolean);
+  return args[index + 1]
+    .split(',')
+    .map((w) => w.trim())
+    .filter(Boolean);
 }
 
 export function parseNamespaceOption(args: readonly string[]): string | undefined {
@@ -67,7 +69,9 @@ export function parseNamespaceOption(args: readonly string[]): string | undefine
   const value = args[index + 1];
 
   if (!NAMESPACE_PATTERN.test(value)) {
-    console.error(`Invalid --namespace value: "${value}". Must be lowercase letters, digits, hyphens; start with letter; 2-30 chars.`);
+    console.error(
+      `Invalid --namespace value: "${value}". Must be lowercase letters, digits, hyphens; start with letter; 2-30 chars.`,
+    );
     process.exit(1);
   }
 
@@ -80,11 +84,11 @@ export async function run(args: readonly string[]) {
   switch (command) {
     case 'help':
       help();
-      process.exit(0);
+      return process.exit(0);
 
     case 'list':
       list();
-      process.exit(0);
+      return process.exit(0);
 
     case 'init': {
       const ide = parseIdeOption(args);
@@ -98,7 +102,7 @@ export async function run(args: readonly string[]) {
         process.exit(1);
       }
 
-      process.exit(0);
+      return process.exit(0);
     }
 
     case 'update': {
@@ -113,7 +117,7 @@ export async function run(args: readonly string[]) {
         process.exit(1);
       }
 
-      process.exit(0);
+      return process.exit(0);
     }
 
     case 'settings': {
@@ -125,7 +129,7 @@ export async function run(args: readonly string[]) {
         process.exit(1);
       }
 
-      process.exit(0);
+      return process.exit(0);
     }
 
     case 'version': {
@@ -136,7 +140,7 @@ export async function run(args: readonly string[]) {
         process.exit(1);
       }
 
-      process.exit(0);
+      return process.exit(0);
     }
 
     default:

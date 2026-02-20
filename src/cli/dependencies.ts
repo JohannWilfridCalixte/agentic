@@ -5,8 +5,14 @@ import type { Result } from '../lib/monads';
 import { Err, Ok } from '../lib/monads';
 import { rewriteNamespace } from './utils';
 
-type WorkflowName = 'product-spec' | 'technical-planning' | 'auto-implement'
-  | 'implement' | 'quick-spec-and-implement' | 'debug' | 'frontend-development';
+type WorkflowName =
+  | 'product-spec'
+  | 'technical-planning'
+  | 'auto-implement'
+  | 'implement'
+  | 'quick-spec-and-implement'
+  | 'debug'
+  | 'frontend-development';
 
 interface WorkflowDependencies {
   readonly agents: readonly string[];
@@ -26,39 +32,117 @@ const WORKFLOW_DEPENDENCY_MAP: Record<WorkflowName, WorkflowDependencies> = {
   },
   'technical-planning': {
     agents: ['architect'],
-    skills: ['gather-technical-context', 'technical-planning', 'code', 'typescript-engineer',
-      'typescript-imports', 'clean-architecture', 'observability', 'code-testing',
-      'dx', 'ux-patterns', 'context7'],
+    skills: [
+      'gather-technical-context',
+      'technical-planning',
+      'code',
+      'typescript-engineer',
+      'typescript-imports',
+      'clean-architecture',
+      'observability',
+      'code-testing',
+      'dx',
+      'ux-patterns',
+      'context7',
+    ],
   },
   'auto-implement': {
     agents: ['architect', 'editor', 'test-engineer', 'qa', 'test-qa', 'security-qa'],
-    skills: ['gather-technical-context', 'technical-planning', 'code', 'frontend-design',
-      'typescript-engineer', 'typescript-imports', 'clean-architecture', 'observability',
-      'code-testing', 'dx', 'ux-patterns', 'context7', 'qa', 'security-qa'],
+    skills: [
+      'gather-technical-context',
+      'technical-planning',
+      'code',
+      'frontend-design',
+      'typescript-engineer',
+      'typescript-imports',
+      'clean-architecture',
+      'observability',
+      'code-testing',
+      'dx',
+      'ux-patterns',
+      'context7',
+      'qa',
+      'security-qa',
+    ],
   },
-  'implement': {
+  implement: {
     agents: ['editor', 'test-engineer', 'qa', 'test-qa', 'security-qa'],
-    skills: ['code', 'frontend-design', 'typescript-engineer', 'typescript-imports',
-      'clean-architecture', 'observability', 'code-testing', 'dx', 'ux-patterns',
-      'context7', 'qa', 'security-qa'],
+    skills: [
+      'code',
+      'frontend-design',
+      'typescript-engineer',
+      'typescript-imports',
+      'clean-architecture',
+      'observability',
+      'code-testing',
+      'dx',
+      'ux-patterns',
+      'context7',
+      'qa',
+      'security-qa',
+    ],
   },
   'quick-spec-and-implement': {
-    agents: ['pm', 'architect', 'security', 'editor', 'test-engineer', 'qa', 'test-qa', 'security-qa'],
-    skills: ['product-manager', 'gather-technical-context', 'technical-planning', 'code',
-      'frontend-design', 'typescript-engineer', 'typescript-imports', 'clean-architecture',
-      'observability', 'code-testing', 'dx', 'ux-patterns', 'context7', 'qa',
-      'security-qa', 'security-context'],
+    agents: [
+      'pm',
+      'architect',
+      'security',
+      'editor',
+      'test-engineer',
+      'qa',
+      'test-qa',
+      'security-qa',
+    ],
+    skills: [
+      'product-manager',
+      'gather-technical-context',
+      'technical-planning',
+      'code',
+      'frontend-design',
+      'typescript-engineer',
+      'typescript-imports',
+      'clean-architecture',
+      'observability',
+      'code-testing',
+      'dx',
+      'ux-patterns',
+      'context7',
+      'qa',
+      'security-qa',
+      'security-context',
+    ],
   },
-  'debug': {
+  debug: {
     agents: ['investigator', 'analyst', 'test-engineer', 'editor', 'qa', 'test-qa'],
-    skills: ['code', 'typescript-engineer', 'typescript-imports', 'clean-architecture',
-      'observability', 'code-testing', 'dx', 'ux-patterns', 'context7', 'qa',
-      'frontend-design'],
+    skills: [
+      'code',
+      'typescript-engineer',
+      'typescript-imports',
+      'clean-architecture',
+      'observability',
+      'code-testing',
+      'dx',
+      'ux-patterns',
+      'context7',
+      'qa',
+      'frontend-design',
+    ],
   },
   'frontend-development': {
     agents: ['ui-ux-designer', 'frontend-developer', 'qa'],
-    skills: ['frontend-design', 'ux-patterns', 'refactoring-ui', 'code', 'typescript-engineer',
-      'typescript-imports', 'clean-architecture', 'observability', 'dx', 'context7', 'qa'],
+    skills: [
+      'frontend-design',
+      'ux-patterns',
+      'refactoring-ui',
+      'code',
+      'typescript-engineer',
+      'typescript-imports',
+      'clean-architecture',
+      'observability',
+      'dx',
+      'context7',
+      'qa',
+    ],
   },
 };
 
@@ -76,9 +160,9 @@ export function resolveWorkflowDependencies(workflows: readonly string[]) {
   }
 
   return {
-    agents: [...agents].map(a => `agentic-agent-${a}.md`),
-    skills: [...skills].map(s => `agentic-skill-${s}`),
-    workflows: workflows.map(w => `agentic-workflow-${w}`),
+    agents: [...agents].map((a) => `agentic-agent-${a}.md`),
+    skills: [...skills].map((s) => `agentic-skill-${s}`),
+    workflows: workflows.map((w) => `agentic-workflow-${w}`),
   } satisfies ResolvedDependencies;
 }
 
@@ -123,8 +207,8 @@ export async function cleanupStaleFiles(
   const agentsDir = join(ideDir, 'agents');
   const skillsDir = join(ideDir, 'skills');
 
-  const oldAgentSet = new Set(oldDeps.agents.map(a => rewriteNamespace(a, namespace)));
-  const newAgentSet = new Set(newDeps.agents.map(a => rewriteNamespace(a, namespace)));
+  const oldAgentSet = new Set(oldDeps.agents.map((a) => rewriteNamespace(a, namespace)));
+  const newAgentSet = new Set(newDeps.agents.map((a) => rewriteNamespace(a, namespace)));
 
   for (const agent of oldAgentSet) {
     if (!newAgentSet.has(agent)) {
@@ -133,12 +217,12 @@ export async function cleanupStaleFiles(
   }
 
   const oldDirSet = new Set([
-    ...oldDeps.skills.map(s => rewriteNamespace(s, namespace)),
-    ...oldDeps.workflows.map(w => rewriteNamespace(w, namespace)),
+    ...oldDeps.skills.map((s) => rewriteNamespace(s, namespace)),
+    ...oldDeps.workflows.map((w) => rewriteNamespace(w, namespace)),
   ]);
   const newDirSet = new Set([
-    ...newDeps.skills.map(s => rewriteNamespace(s, namespace)),
-    ...newDeps.workflows.map(w => rewriteNamespace(w, namespace)),
+    ...newDeps.skills.map((s) => rewriteNamespace(s, namespace)),
+    ...newDeps.workflows.map((w) => rewriteNamespace(w, namespace)),
   ]);
 
   for (const dir of oldDirSet) {

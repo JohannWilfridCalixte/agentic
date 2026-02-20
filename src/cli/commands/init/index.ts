@@ -4,12 +4,19 @@ import { join } from 'node:path';
 import type { Result } from '../../../lib/monads';
 import { Err, isErr, Ok } from '../../../lib/monads';
 import type { IDE } from '../../constants';
-import type { ResolvedDependencies } from '../../dependencies';
 import { resolveWorkflowDependencies, validateWorkflows } from '../../dependencies';
 import { AGENTS_DIR, SKILLS_DIR, SUBAGENTS_DIR } from '../../paths';
 import { writeSettings } from '../../settings';
 import type { TemplateOptions } from '../../utils';
-import { appendToGitignore, copyAndProcess, copyFileAndProcess, getHighThinkingModelName, getCodeWritingModelName, getQaModelName, rewriteNamespace } from '../../utils';
+import {
+  appendToGitignore,
+  copyAndProcess,
+  copyFileAndProcess,
+  getCodeWritingModelName,
+  getHighThinkingModelName,
+  getQaModelName,
+  rewriteNamespace,
+} from '../../utils';
 import { getIdeStrategy } from './strategies';
 import type { InitError, SetupMode, TargetIDE } from './types';
 
@@ -144,7 +151,15 @@ export async function setupIde(
 
   await appendToGitignore(projectRoot, `.${targetIde}/${outputFolder}`);
 
-  const settingsResult = await writeSettings(ideDir, namespace, outputFolder, getHighThinkingModelName(targetIde), getCodeWritingModelName(targetIde), getQaModelName(targetIde), options.workflows);
+  const settingsResult = await writeSettings(
+    ideDir,
+    namespace,
+    outputFolder,
+    getHighThinkingModelName(targetIde),
+    getCodeWritingModelName(targetIde),
+    getQaModelName(targetIde),
+    options.workflows,
+  );
   if (isErr(settingsResult)) {
     return Err({
       code: 'COPY_FAILED' as const,
@@ -183,7 +198,11 @@ export async function init(options: InitOptions = {}): Promise<Result<void, Init
   console.log(`  Output folder: ${outputFolder}`);
 
   for (const targetIde of ides) {
-    const result = await setupIde(targetIde, projectRoot, { namespace, outputFolder, workflows: validatedWorkflows });
+    const result = await setupIde(targetIde, projectRoot, {
+      namespace,
+      outputFolder,
+      workflows: validatedWorkflows,
+    });
     if (isErr(result)) return result;
   }
 

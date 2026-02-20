@@ -22,7 +22,13 @@ export const claudeStrategy: IdeSetupStrategy = {
 
     try {
       const template = await Bun.file(templatePath).text();
-      const processed = processTemplate(template, 'claude', { namespace, outputFolder: '', highThinkingModelName: '', codeWritingModelName: '', qaModelName: '' });
+      const processed = processTemplate(template, 'claude', {
+        namespace,
+        outputFolder: '',
+        highThinkingModelName: '',
+        codeWritingModelName: '',
+        qaModelName: '',
+      });
       const claudeMdFile = Bun.file(claudeMdPath);
 
       if (!(await claudeMdFile.exists())) {

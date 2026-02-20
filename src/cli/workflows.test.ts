@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, spyOn } from 'bun:test';
-
-import { parseWorkflowsOption } from './index';
 import { parseSettingsArgs } from './commands/settings';
+import { parseWorkflowsOption } from './index';
 
 describe('parseWorkflowsOption', () => {
   it('returns undefined when no --workflows flag', () => {
@@ -54,9 +53,9 @@ describe('parseWorkflowsOption', () => {
   });
 
   it('works with --workflows at any position in args', () => {
-    expect(parseWorkflowsOption(['--ide', 'claude', '--workflows', 'debug', '--output', 'out'])).toEqual([
-      'debug',
-    ]);
+    expect(
+      parseWorkflowsOption(['--ide', 'claude', '--workflows', 'debug', '--output', 'out']),
+    ).toEqual(['debug']);
   });
 
   it('prefers --workflows over -w when both present', () => {
@@ -104,9 +103,12 @@ describe('parseSettingsArgs --workflows', () => {
 
   it('parses -w alongside other options', () => {
     const options = parseSettingsArgs([
-      '--ide', 'claude',
-      '-w', 'product-spec',
-      '--output', 'custom_out',
+      '--ide',
+      'claude',
+      '-w',
+      'product-spec',
+      '--output',
+      'custom_out',
     ]);
 
     expect(options.workflows).toEqual(['product-spec']);

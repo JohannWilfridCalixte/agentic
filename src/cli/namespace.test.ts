@@ -85,8 +85,6 @@ describe('parseNamespaceOption', () => {
     } catch {
       // expected
     }
-    expect(errorSpy).toHaveBeenCalledWith(
-      expect.stringContaining('Invalid --namespace value'),
-    );
+    expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('Invalid --namespace value'));
   });
 });

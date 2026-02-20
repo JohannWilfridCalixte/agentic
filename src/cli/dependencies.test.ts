@@ -1,5 +1,5 @@
-import { afterEach, beforeEach, describe, expect, it, mock, spyOn } from 'bun:test';
-import { mkdir, readdir, rm, stat, writeFile } from 'node:fs/promises';
+import { afterEach, beforeEach, describe, expect, it, spyOn } from 'bun:test';
+import { mkdir, rm, stat, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 import {
@@ -23,7 +23,7 @@ describe('KNOWN_WORKFLOWS', () => {
       'quick-spec-and-implement',
       'debug',
       'frontend-development',
-    ];
+    ] as const;
 
     for (const name of expected) {
       expect(KNOWN_WORKFLOWS).toContain(name);
@@ -37,10 +37,7 @@ describe('resolveWorkflowDependencies', () => {
 
     expect(result.agents).toHaveLength(0);
     expect(result.skills).toEqual(
-      expect.arrayContaining([
-        'agentic-skill-product-discovery',
-        'agentic-skill-brainstorming',
-      ]),
+      expect.arrayContaining(['agentic-skill-product-discovery', 'agentic-skill-brainstorming']),
     );
     expect(result.skills).toHaveLength(2);
     expect(result.workflows).toEqual(['agentic-workflow-product-spec']);
@@ -114,10 +111,7 @@ describe('resolveWorkflowDependencies', () => {
   it('returns workflows in input order', () => {
     const result = resolveWorkflowDependencies(['debug', 'product-spec']);
 
-    expect(result.workflows).toEqual([
-      'agentic-workflow-debug',
-      'agentic-workflow-product-spec',
-    ]);
+    expect(result.workflows).toEqual(['agentic-workflow-debug', 'agentic-workflow-product-spec']);
   });
 });
 
@@ -170,9 +164,7 @@ describe('validateWorkflows', () => {
     if (result._type === 'Ok') {
       expect(result.data).toEqual(['product-spec']);
     }
-    expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining('nonexistent'),
-    );
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('nonexistent'));
   });
 
   it('filters out unknown workflows from result', () => {

@@ -1,20 +1,28 @@
 import { join } from 'node:path';
 
 import type { Result } from '../../lib/monads';
-import type { IDE } from '../constants';
-import type { TemplateOptions } from '../utils';
-import type { InitError, TargetIDE } from './init';
-
 import { Err, isErr, Ok } from '../../lib/monads';
+import type { IDE } from '../constants';
 import { NAMESPACE_PATTERN } from '../constants';
-import { cleanupStaleFiles, KNOWN_WORKFLOWS, resolveWorkflowDependencies, validateWorkflows } from '../dependencies';
+import {
+  cleanupStaleFiles,
+  KNOWN_WORKFLOWS,
+  resolveWorkflowDependencies,
+  validateWorkflows,
+} from '../dependencies';
 import { AGENTS_DIR, SKILLS_DIR, SUBAGENTS_DIR } from '../paths';
 import { readSettings, writeSettings } from '../settings';
+import type { TemplateOptions } from '../utils';
 import { copyAndProcess, copyFileAndProcess, rewriteNamespace } from '../utils';
+import type { InitError, TargetIDE } from './init';
 import { detectIdes } from './update';
 
 interface SettingsError {
-  readonly code: 'NO_IDE_DETECTED' | 'SETTINGS_UPDATE_FAILED' | 'NO_SUBCOMMAND' | 'UNKNOWN_SUBCOMMAND';
+  readonly code:
+    | 'NO_IDE_DETECTED'
+    | 'SETTINGS_UPDATE_FAILED'
+    | 'NO_SUBCOMMAND'
+    | 'UNKNOWN_SUBCOMMAND';
   readonly message: string;
   readonly cause?: unknown;
 }
@@ -53,13 +61,18 @@ export function parseSettingsArgs(args: readonly string[]): SettingsUpdateOption
       i++;
     } else if ((arg === '--namespace' || arg === '-n') && next) {
       if (!NAMESPACE_PATTERN.test(next)) {
-        console.error(`Invalid --namespace value: "${next}". Must be lowercase letters, digits, hyphens; start with letter; 2-30 chars.`);
+        console.error(
+          `Invalid --namespace value: "${next}". Must be lowercase letters, digits, hyphens; start with letter; 2-30 chars.`,
+        );
         process.exit(1);
       }
       options.namespace = next;
       i++;
     } else if ((arg === '--workflows' || arg === '-w') && next) {
-      options.workflows = next.split(',').map(w => w.trim()).filter(Boolean);
+      options.workflows = next
+        .split(',')
+        .map((w) => w.trim())
+        .filter(Boolean);
       i++;
     }
   }
@@ -84,7 +97,11 @@ async function reinstallAgents(
       const destPath = join(ideDir, 'agents', destName);
       const result = await copyFileAndProcess(sourcePath, destPath, targetIde, templateOptions);
       if (isErr(result)) {
-        return Err({ code: 'COPY_FAILED' as const, message: `Failed to copy agent ${agentFile}`, cause: result.data });
+        return Err({
+          code: 'COPY_FAILED' as const,
+          message: `Failed to copy agent ${agentFile}`,
+          cause: result.data,
+        });
       }
     }
 
@@ -94,7 +111,11 @@ async function reinstallAgents(
       const destPath = join(ideDir, 'skills', destName);
       const result = await copyAndProcess(sourcePath, destPath, targetIde, templateOptions);
       if (isErr(result)) {
-        return Err({ code: 'COPY_FAILED' as const, message: `Failed to copy ${dirName}`, cause: result.data });
+        return Err({
+          code: 'COPY_FAILED' as const,
+          message: `Failed to copy ${dirName}`,
+          cause: result.data,
+        });
       }
     }
   } else {
@@ -107,7 +128,11 @@ async function reinstallAgents(
     for (const [source, destination] of copies) {
       const result = await copyAndProcess(source, destination, targetIde, templateOptions);
       if (isErr(result)) {
-        return Err({ code: 'COPY_FAILED' as const, message: `Failed to copy to .${targetIde}/`, cause: result.data });
+        return Err({
+          code: 'COPY_FAILED' as const,
+          message: `Failed to copy to .${targetIde}/`,
+          cause: result.data,
+        });
       }
     }
   }
@@ -186,7 +211,15 @@ export async function settingsUpdate(
       await cleanupStaleFiles(ideDir, oldDeps, newDeps, namespace);
     }
 
-    const writeResult = await writeSettings(ideDir, namespace, outputFolder, highThinkingModelName, codeWritingModelName, qaModelName, workflows);
+    const writeResult = await writeSettings(
+      ideDir,
+      namespace,
+      outputFolder,
+      highThinkingModelName,
+      codeWritingModelName,
+      qaModelName,
+      workflows,
+    );
     if (isErr(writeResult)) {
       return Err({
         code: 'SETTINGS_UPDATE_FAILED' as const,
@@ -206,11 +239,17 @@ export async function settings(
   args: readonly string[],
 ): Promise<Result<void, SettingsError | InitError>> {
   if (!subcommand) {
-    return Err({ code: 'NO_SUBCOMMAND' as const, message: 'Usage: agentic settings apply [options]' });
+    return Err({
+      code: 'NO_SUBCOMMAND' as const,
+      message: 'Usage: agentic settings apply [options]',
+    });
   }
 
   if (subcommand !== 'apply') {
-    return Err({ code: 'UNKNOWN_SUBCOMMAND' as const, message: `Unknown subcommand: ${subcommand}. Available: apply` });
+    return Err({
+      code: 'UNKNOWN_SUBCOMMAND' as const,
+      message: `Unknown subcommand: ${subcommand}. Available: apply`,
+    });
   }
 
   const options = parseSettingsArgs(args);

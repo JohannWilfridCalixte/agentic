@@ -361,7 +361,7 @@ describe('init', () => {
       expect(entries).toContain('foo-workflow-product-spec');
 
       // No agentic- prefixed entries
-      const agenticEntries = entries.filter(e => e.startsWith('agentic-'));
+      const agenticEntries = entries.filter((e) => e.startsWith('agentic-'));
       expect(agenticEntries).toHaveLength(0);
     });
 
@@ -413,8 +413,8 @@ describe('init', () => {
       expect(files.length).toBeGreaterThan(5);
 
       // Should have top-level agents (cpo, cto, etc.)
-      const topLevelAgents = files.filter(f =>
-        f.includes('cpo') || f.includes('cto') || f.includes('dx-engineer'),
+      const topLevelAgents = files.filter(
+        (f) => f.includes('cpo') || f.includes('cto') || f.includes('dx-engineer'),
       );
       expect(topLevelAgents.length).toBeGreaterThan(0);
     });
