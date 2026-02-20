@@ -88,11 +88,7 @@ async function exists(path: string) {
   }
 }
 
-async function backupOldArtifacts(
-  projectRoot: string,
-  targetIde: TargetIDE,
-  timestamp: string,
-) {
+async function backupOldArtifacts(projectRoot: string, targetIde: TargetIDE, timestamp: string) {
   const ideDir = join(projectRoot, `.${targetIde}`);
   const backupDir = join(projectRoot, `.${targetIde}_backup_${timestamp}`);
   const moved: string[] = [];
@@ -165,7 +161,9 @@ export async function migrate(
         } else {
           backupDirs.push(backupDir);
           for (const path of moved) {
-            console.log(`  Backed up: ${path} -> ${backupDir}/${path.split('/').slice(1).join('/')}`);
+            console.log(
+              `  Backed up: ${path} -> ${backupDir}/${path.split('/').slice(1).join('/')}`,
+            );
           }
         }
       } catch (error) {
