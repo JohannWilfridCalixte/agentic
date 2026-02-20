@@ -5,6 +5,7 @@ agentic - Agent prompts and scripts for Claude Code + Cursor
 Usage:
   agentic init|install [options]    Setup in current project
   agentic update [options]          Update existing setup
+  agentic migrate [options]         Backup old artifacts & reinstall
   agentic settings apply [options]  Update settings & reinstall agents
   agentic list                      List available agents/scripts
   agentic version                   Show installed version per IDE

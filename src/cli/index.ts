@@ -1,5 +1,5 @@
 import { isErr } from '../lib/monads';
-import { help, init, list, settings, update, version } from './commands';
+import { help, init, list, migrate, settings, update, version } from './commands';
 import type { IDE } from './constants';
 import { NAMESPACE_PATTERN } from './constants';
 
@@ -9,6 +9,7 @@ function parseCommand(arg: string | undefined, args: readonly string[]) {
   if (arg === 'init' || arg === 'install') return 'init' as const;
   if (arg === 'list') return 'list' as const;
   if (arg === 'update') return 'update' as const;
+  if (arg === 'migrate') return 'migrate' as const;
   if (arg === 'settings') return 'settings' as const;
   if (arg === 'version') return 'version' as const;
 
@@ -111,6 +112,21 @@ export async function run(args: readonly string[]) {
       const namespace = parseNamespaceOption(args);
       const workflows = parseWorkflowsOption(args);
       const result = await update({ ide, outputFolder, namespace, workflows });
+
+      if (isErr(result)) {
+        console.error(`Error: ${result.data.message}`);
+        process.exit(1);
+      }
+
+      return process.exit(0);
+    }
+
+    case 'migrate': {
+      const ide = parseIdeOptionOptional(args);
+      const outputFolder = parseOutputOption(args);
+      const namespace = parseNamespaceOption(args);
+      const workflows = parseWorkflowsOption(args);
+      const result = await migrate({ ide, outputFolder, namespace, workflows });
 
       if (isErr(result)) {
         console.error(`Error: ${result.data.message}`);

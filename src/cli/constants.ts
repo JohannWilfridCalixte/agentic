@@ -1,6 +1,6 @@
 export type IDE = 'claude' | 'cursor' | 'both';
 
-export type Command = 'init' | 'list' | 'help' | 'update' | 'version' | 'settings';
+export type Command = 'init' | 'list' | 'help' | 'update' | 'migrate' | 'version' | 'settings';
 
 export const NAMESPACE_PATTERN = /^[a-z][a-z0-9-]{1,29}$/;
 
@@ -25,6 +25,7 @@ export const COMMANDS = [
   'list',
   'help',
   'update',
+  'migrate',
   'version',
   'settings',
 ] as const satisfies readonly Command[];

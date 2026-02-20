@@ -44,11 +44,12 @@ describe('COMMANDS', () => {
     expect(COMMANDS).toContain('list');
     expect(COMMANDS).toContain('help');
     expect(COMMANDS).toContain('update');
+    expect(COMMANDS).toContain('migrate');
     expect(COMMANDS).toContain('version');
     expect(COMMANDS).toContain('settings');
   });
 
-  it('has 6 commands', () => {
-    expect(COMMANDS).toHaveLength(6);
+  it('has 7 commands', () => {
+    expect(COMMANDS).toHaveLength(7);
   });
 });

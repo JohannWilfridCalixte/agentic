@@ -9,6 +9,7 @@ Multi-agent framework for **Claude Code** + **Cursor**. Distributes agent prompt
 - [Quick Start](#quick-start)
 - [What It Does](#what-it-does)
 - [CLI Commands](#cli-commands)
+- [Migrating from Older Versions](#migrate)
 - [Options](#options)
 - [Selective Install (`--workflows`)](#selective-install---workflows)
 - [Namespace (`--namespace`)](#namespace---namespace)
@@ -96,6 +97,7 @@ Workflow artifacts (specs, plans, implementation logs, QA reports) go to the con
 ```bash
 agentic init|install [options]    # Setup in current project
 agentic update [options]          # Update existing setup
+agentic migrate [options]         # Migrate from old unprefixed format
 agentic settings apply [options]  # Update settings & reinstall agents
 agentic list                      # List available agents/skills
 agentic version                   # Show installed version per IDE
@@ -113,6 +115,33 @@ bunx @JohannWilfridCalixte/agentic@alpha init --namespace myteam
 bunx @JohannWilfridCalixte/agentic@alpha init --workflows implement,debug
 bunx @JohannWilfridCalixte/agentic@alpha init --output docs
 ```
+
+### `migrate`
+
+Migrates from older versions that used unprefixed artifact names (e.g., `agents/editor.md` instead of `agentic-agent-editor.md`, `skills/code/` instead of `agentic-skill-code/`). Backs up old artifacts to timestamped directories, then runs `init`.
+
+```bash
+bunx @JohannWilfridCalixte/agentic@alpha migrate
+bunx @JohannWilfridCalixte/agentic@alpha migrate --ide cursor
+bunx @JohannWilfridCalixte/agentic@alpha migrate --namespace myteam --workflows implement,debug
+```
+
+**What it does:**
+
+1. Auto-detects IDE setups (or uses `--ide`)
+2. Moves old artifacts to `.{ide}_backup_{timestamp}/` preserving directory structure
+3. Runs `init` with forwarded options
+4. Prints backup dirs for manual review/deletion
+
+**What gets backed up:**
+
+- Old unprefixed agent files (`agents/editor.md`, `agents/qa.md`, ...)
+- Old unprefixed skill dirs (`skills/code/`, `skills/brainstorming/`, ...)
+- Old workflow dirs (`skills/agentic-auto-implement/`, ...)
+- Old aggregated skill dir (`skills/agentic/`)
+- Cursor rule file (`rules/agentic.mdc`)
+
+Accepts all `init` flags (`--ide`, `--namespace`, `--output`, `--workflows`).
 
 ### `update`
 
