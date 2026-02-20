@@ -3,7 +3,7 @@
 # Location: {output_path}/workflow-state.yaml
 
 workflow: product-spec
-version: "2.0.0"
+version: "2.1.0"
 
 # Workflow configuration
 mode: "interactive" # or "auto"
@@ -30,6 +30,10 @@ steps_completed: []
 #     completed_at: "2024-01-15T10:00:00Z"
 #     output: null
 #   - step: 2
+#     name: "context-gathering"
+#     completed_at: "2024-01-15T10:05:00Z"
+#     output: ".../context-auth-flow.md"
+#   - step: 3
 #     name: "product-discovery"
 #     completed_at: "2024-01-15T10:30:00Z"
 #     output: ".../discovery-auth-flow.md"
@@ -45,6 +49,7 @@ decisions_logged: 0
 
 # Artifacts created
 artifacts:
+  context: null # context-{topic}.md
   discovery: null # discovery-{topic}.md
   product_decisions: null # product-decisions.md
   spec: null # spec-{topic}.md
@@ -52,6 +57,7 @@ artifacts:
 
 # Validation flags
 validation:
+  context_gathering_complete: false
   discovery_complete: false
   required_sections_present: false
   discovery_confirmed: false

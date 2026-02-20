@@ -1,4 +1,4 @@
-# Step 2: Product Discovery
+# Step 3: Product Discovery
 
 ---
 
@@ -20,8 +20,11 @@ Workflow mode: {workflow_mode}
 Topic: {topic}
 Output path: {output_path}
 Raw input: {raw_input}
+Context document: {output_path}/context-{topic}.md
 Output to: {output_path}/discovery-{topic}.md
 Decision log: {output_path}/decision-log.md (if auto mode)
+
+IMPORTANT: Read the context document first. It contains existing codebase analysis - architecture, integration points, constraints, and edge cases. Use this to inform your discovery: reference existing patterns, account for integration concerns, and surface edge cases that arise from the existing system.
 
 {If auto mode: IMPORTANT: Do NOT ask user questions. Make reasonable assumptions and log all decisions in decision-log.md.}
 {If interactive mode: Use rigorous one-question-at-a-time approach. Wait for user response before next question.}
@@ -31,6 +34,7 @@ Decision log: {output_path}/decision-log.md (if auto mode)
 ### Inputs to provide
 
 - `raw_input` (from file or user prompt)
+- `context-{topic}.md` (from step 2 - codebase context)
 - `workflow_mode`: interactive or auto
 - `topic`: kebab-case topic slug
 - `output_path`: {ide-folder}/{outputFolder}/product/specs
@@ -44,7 +48,7 @@ The Discovery subagent should produce `discovery-{topic}.md` with:
 3. **Success Metrics** - How we'll measure success
 4. **Scope** - In scope, out of scope, deferred
 5. **Acceptance Criteria** - Numbered list (AC-01, AC-02, ...)
-6. **Edge Cases** - Known edge cases and handling
+6. **Edge Cases** - Known edge cases and handling (including integration edge cases from context)
 7. **Open Questions** - Unresolved questions (if any)
 
 ### Validate Output
@@ -77,23 +81,23 @@ validation:
   required_sections_present: true
 
 steps_completed:
-  - step: 2
+  - step: 3
     name: "product-discovery"
     completed_at: {ISO_timestamp}
     output: "{output_path}/discovery-{topic}.md"
 
-current_step: 3
+current_step: 4
 updated_at: {ISO_timestamp}
 ```
 
 **Interactive mode:** Proceed to confirmation step.
 
-**Auto mode:** Skip step 3 and 4, go directly to step 5.
+**Auto mode:** Skip step 4 and 5, go directly to step 6.
 
 ---
 
 ## NEXT STEP
 
-**Interactive mode:** Load `step-03-confirm-discovery.md`
+**Interactive mode:** Load `step-04-confirm-discovery.md`
 
-**Auto mode:** Load `step-05-write-spec.md`
+**Auto mode:** Load `step-06-write-spec.md`

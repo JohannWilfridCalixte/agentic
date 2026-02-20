@@ -214,4 +214,4 @@ Proceeding with product discovery...
 
 ## NEXT STEP
 
-Load and execute: `step-02-product-discovery.md`
+Load and execute: `step-02-context-gathering.md`

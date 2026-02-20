@@ -1,4 +1,4 @@
-# Step 3: Developer Confirms Discovery
+# Step 4: Developer Confirms Discovery
 
 ---
 
@@ -8,13 +8,13 @@
 
 Present the discovery findings to the developer and require explicit confirmation before proceeding.
 
-**Auto mode:** Skip this step entirely. Go to step 5.
+**Auto mode:** Skip this step entirely. Go to step 6.
 
 ---
 
 ## SEQUENCE
 
-### 3.1 Present Discovery Summary
+### 4.1 Present Discovery Summary
 
 Read `{output_path}/discovery-{topic}.md` and present a structured summary:
 
@@ -54,7 +54,7 @@ Options:
 2. No, here's what's wrong/missing: [describe]
 ```
 
-### 3.2 Process Developer Response
+### 4.2 Process Developer Response
 
 **If CONFIRMED:**
 
@@ -65,7 +65,7 @@ validation:
   discovery_confirmed: true
 ```
 
-Proceed to step 4.
+Proceed to step 5.
 
 **If REJECTED:**
 
@@ -76,9 +76,9 @@ Capture the developer's feedback verbatim as `developer_feedback`.
 discovery_confirmed: false
 ```
 
-**Loop back to step 2** with the developer's feedback. The Discovery subagent will re-run focusing on the developer's corrections.
+**Loop back to step 3** with the developer's feedback. The Discovery subagent will re-run focusing on the developer's corrections.
 
-### 3.3 Loop Guard
+### 4.3 Loop Guard
 
 Track `discovery_attempts` in workflow-state.yaml.
 
@@ -104,7 +104,7 @@ Let me proceed with the current findings and we'll address gaps during the produ
 Remaining concerns will be captured as open questions.
 ```
 
-Force-confirm and proceed to step 4. Log all unresolved concerns in `product-decisions.md`.
+Force-confirm and proceed to step 5. Log all unresolved concerns in `product-decisions.md`.
 
 ---
 
@@ -118,11 +118,11 @@ Update `workflow-state.yaml`:
 discovery_confirmed: true
 
 steps_completed:
-  - step: 3
+  - step: 4
     name: "confirm-discovery"
     completed_at: {ISO_timestamp}
 
-current_step: 4
+current_step: 5
 updated_at: {ISO_timestamp}
 ```
 
@@ -138,4 +138,4 @@ Now I'll ask you product questions to fill in any remaining gaps before writing 
 
 ## NEXT STEP
 
-Load `step-04-product-questioning.md`
+Load `step-05-product-questioning.md`

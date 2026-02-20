@@ -19,13 +19,14 @@ Transform a rough idea into a precise product specification through rigorous que
 ## Workflow Overview
 
 ```text
-1. Input Detection -> 2. Product Discovery (subagent) -> 3. Developer Confirms Discovery [loop if rejected] -> 4. Product Questioning -> 5. Write Spec
+1. Input Detection -> 2. Context Gathering (subagent) -> 3. Product Discovery (subagent) -> 4. Developer Confirms Discovery [loop if rejected] -> 5. Product Questioning -> 6. Write Spec
 ```
 
 ```dot
 digraph workflow {
     rankdir=TB;
     input [label="Input Detection" shape=box];
+    context [label="Context Gathering\n(subagent)" shape=box];
     discovery [label="Product Discovery\n(subagent)" shape=box];
     confirm [label="Developer Confirms\nDiscovery?" shape=diamond];
     refine [label="Re-run Discovery\nwith Feedback\n(subagent)" shape=box];
@@ -34,7 +35,8 @@ digraph workflow {
     spec [label="Write Spec\n(subagent + compile)" shape=box];
     done [label="DONE" shape=doublecircle];
 
-    input -> discovery;
+    input -> context;
+    context -> discovery;
     discovery -> confirm;
     confirm -> questions [label="confirmed"];
     confirm -> refine [label="rejected / corrections"];
@@ -55,10 +57,11 @@ Execute steps in order. Each step file contains detailed instructions.
 | Step | File | Description |
 |------|------|-------------|
 | 1 | `steps/step-01-input-detection.md` | Parse args, init state, generate topic slug |
-| 2 | `steps/step-02-product-discovery.md` | Delegate discovery to subagent |
-| 3 | `steps/step-03-confirm-discovery.md` | Developer confirms discovery; loop if rejected |
-| 4 | `steps/step-04-product-questioning.md` | Ask remaining product questions one at a time |
-| 5 | `steps/step-05-write-spec.md` | Delegate design, compile final spec |
+| 2 | `steps/step-02-context-gathering.md` | Gather product & technical context from codebase |
+| 3 | `steps/step-03-product-discovery.md` | Delegate discovery to subagent (with codebase context) |
+| 4 | `steps/step-04-confirm-discovery.md` | Developer confirms discovery; loop if rejected |
+| 5 | `steps/step-05-product-questioning.md` | Ask remaining product questions one at a time |
+| 6 | `steps/step-06-write-spec.md` | Delegate design, compile final spec |
 
 **Start by reading `steps/step-01-input-detection.md` and follow NEXT STEP at end of each file.**
 
@@ -82,7 +85,7 @@ Available skills: `product-discovery`, `brainstorming`
 
 ## Mandatory Delegation
 
-**You MUST delegate all discovery/design work using the Task tool. NEVER do it inline.**
+**You MUST delegate all discovery/design/context-gathering work using the Task tool. NEVER do it inline.**
 
 You are the orchestrator. You:
 
@@ -91,12 +94,13 @@ You are the orchestrator. You:
 - Invoke subagents in sequence
 - Handle handoffs between agents
 - Validate outputs at each step
-- Run the questioning loop yourself (step 4)
+- Run the questioning loop yourself (step 5)
 - Compile final spec
 
 **You NEVER:**
 
-- Ask discovery questions yourself in step 2 (delegate to Discovery subagent)
+- Gather codebase context yourself in step 2 (delegate to Explore subagent)
+- Ask discovery questions yourself in step 3 (delegate to Discovery subagent)
 - Brainstorm design options yourself (delegate to Designer subagent)
 - Write discovery documents yourself (delegate)
 
@@ -106,7 +110,7 @@ If you catch yourself doing agent work instead of delegating, STOP and use the T
 
 ## THE GATE RULE
 
-**You MUST NOT proceed to step 5 (spec writing) if critical open questions remain.**
+**You MUST NOT proceed to step 6 (spec writing) if critical open questions remain.**
 
 Critical open questions = questions about problem definition, target users, success metrics, scope boundaries, acceptance criteria, or any decision that would change the shape of the spec.
 
@@ -115,8 +119,8 @@ Minor open questions = visual preferences, nice-to-have details, future iteratio
 ```dot
 digraph gate {
     check [label="Any critical\nopen question?" shape=diamond];
-    block [label="BLOCKED\nKeep asking in step 4" shape=box style=filled fillcolor="#ffcccc"];
-    proceed [label="Proceed to step 5\nWrite spec" shape=box style=filled fillcolor="#ccffcc"];
+    block [label="BLOCKED\nKeep asking in step 5" shape=box style=filled fillcolor="#ffcccc"];
+    proceed [label="Proceed to step 6\nWrite spec" shape=box style=filled fillcolor="#ccffcc"];
 
     check -> block [label="yes"];
     check -> proceed [label="no"];
@@ -134,18 +138,20 @@ digraph gate {
 
 **Interactive Mode (default):**
 
-- Discovery subagent asks user questions one at a time
+- Context gathering subagent explores codebase
+- Discovery subagent asks user questions one at a time (informed by context)
 - Challenges vague answers, pushes for specifics
 - Present discoveries for review before proceeding
-- Orchestrator runs questioning loop in step 4
+- Orchestrator runs questioning loop in step 5
 - Gate blocks spec if critical questions remain
 
 **Auto Mode (--auto):**
 
+- Context gathering runs automatically
 - Subagents make autonomous decisions with confidence logging
 - Log ALL decisions and assumptions in `decision-log.md`
 - Flag low confidence (<90%) decisions for review
-- Skip step 3 (confirmation) and step 4 (questioning)
+- Skip step 4 (confirmation) and step 5 (questioning)
 - Continue without human input unless blocked
 
 ---
@@ -235,6 +241,7 @@ All outputs: `{ide-folder}/{outputFolder}/product/specs/{topic}/{instance_id}/`
 
 - `workflow-state.yaml`
 - `decision-log.md` (auto mode)
+- `context-{topic}.md`
 - `discovery-{topic}.md`
 - `product-decisions.md`
 - `spec-{topic}.md`

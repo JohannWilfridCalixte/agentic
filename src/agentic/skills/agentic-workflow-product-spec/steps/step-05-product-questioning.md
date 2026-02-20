@@ -1,4 +1,4 @@
-# Step 4: Product Questioning
+# Step 5: Product Questioning
 
 ---
 
@@ -6,7 +6,7 @@
 
 **You do this step yourself. This is the core of the workflow.**
 
-**Auto mode:** Skip this step entirely. Go to step 5.
+**Auto mode:** Skip this step entirely. Go to step 6.
 
 Ask the developer every product question needed to produce an unambiguous spec. One question at a time. Challenge vague answers. Do not stop until no critical open questions remain.
 
@@ -18,7 +18,8 @@ Ask the developer every product question needed to produce an unambiguous spec. 
 2. **Prefer multiple choice** when options are enumerable.
 3. **Push hard.** Vague answers like "whatever works" or "you decide" get challenged.
 4. **Use discovery context.** Reference specific findings from `discovery-{topic}.md` in your questions.
-5. **Track everything.** Every answer becomes a logged decision.
+5. **Use codebase context.** Reference integration points and constraints from `context-{topic}.md` to ask informed questions about how the feature fits the existing system.
+6. **Track everything.** Every answer becomes a logged decision.
 
 ---
 
@@ -70,14 +71,21 @@ Work through these in order. Skip categories already fully covered by discovery.
 - What are the boundary conditions?
 - What data edge cases exist? (empty, huge, malformed)
 
-### 7. Business Rules & Constraints
+### 7. Integration & Existing System
+
+- How does this feature interact with existing modules identified in `context-{topic}.md`?
+- Are there existing patterns that constrain the solution?
+- What existing behavior might break or need adaptation?
+- Are there data model implications for existing entities?
+
+### 8. Business Rules & Constraints
 
 - Are there compliance/regulatory requirements?
 - Are there business rules not yet captured?
 - Are there SLAs or performance expectations?
 - Are there integration constraints with other teams/systems?
 
-### 8. User Experience Expectations
+### 9. User Experience Expectations
 
 - What's the expected interaction model? (wizard, single page, progressive)
 - What feedback does the user need at each step?
@@ -98,7 +106,7 @@ digraph questioning {
     next [label="More Questions\nin Category?" shape=diamond];
     nextcat [label="More\nCategories?" shape=diamond];
     gate [label="GATE CHECK:\nCritical Open\nQuestions?" shape=diamond style=filled fillcolor="#ffffcc"];
-    done [label="Proceed to Step 5" shape=doublecircle];
+    done [label="Proceed to Step 6" shape=doublecircle];
     blocked [label="BLOCKED\nReturn to asking" shape=box style=filled fillcolor="#ffcccc"];
 
     start -> ask;
@@ -252,12 +260,12 @@ validation:
   gate_passed: true
 
 steps_completed:
-  - step: 4
+  - step: 5
     name: "product-questioning"
     completed_at: {ISO_timestamp}
     output: "{output_path}/product-decisions.md"
 
-current_step: 5
+current_step: 6
 updated_at: {ISO_timestamp}
 ```
 
@@ -265,4 +273,4 @@ updated_at: {ISO_timestamp}
 
 ## NEXT STEP
 
-Load `step-05-write-spec.md`
+Load `step-06-write-spec.md`
