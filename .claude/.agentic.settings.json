@@ -1,0 +1,15 @@
+{
+  "namespace": "agentic",
+  "version": "0.2.0-alpha.3",
+  "outputFolder": "_agentic_output",
+  "highThinkingModelName": "opus",
+  "codeWritingModelName": "opus",
+  "qaModelName": "opus",
+  "lastUpdate": "2026-02-25T23:27:17.981Z",
+  "workflows": [
+    "product-spec",
+    "technical-planning",
+    "implement",
+    "debug"
+  ]
+}

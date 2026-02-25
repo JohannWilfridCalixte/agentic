@@ -1,0 +1,47 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/no-node-ts-node.sh"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/no-npm-yarn-pnpm-install.sh"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/no-npm-yarn-pnpm-run.sh"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/no-npx-pnpx-yarn-dlx.sh"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/no-jest-vitest.sh"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/no-webpack-esbuild.sh"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/no-dotenv.sh"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/no-co-authored-by.sh"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/no-git-push.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

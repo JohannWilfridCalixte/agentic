@@ -1,0 +1,64 @@
+# Workflow State Template
+# Tracks progress through product-spec workflow
+# Location: {output_path}/workflow-state.yaml
+
+workflow: product-spec
+version: "2.1.0"
+
+# Workflow configuration
+mode: "interactive" # or "auto"
+input_type: "user" # or "file"
+input_source: null # path or null
+
+# Topic identification
+topic: "" # kebab-case topic slug
+instance_id: "" # YYYYMMDD-HHMMSS-XXXX
+output_path: "" # .claude/_agentic_output/product/specs/{topic}/{instance_id}
+
+# Timing
+started_at: "" # ISO timestamp
+updated_at: "" # ISO timestamp
+completed_at: null # ISO timestamp when done
+
+# Progress tracking
+status: "pending" # pending | in_progress | completed | failed
+current_step: 0
+steps_completed: []
+# Example:
+#   - step: 1
+#     name: "input-detection"
+#     completed_at: "2024-01-15T10:00:00Z"
+#     output: null
+#   - step: 2
+#     name: "context-gathering"
+#     completed_at: "2024-01-15T10:05:00Z"
+#     output: ".../context-auth-flow.md"
+#   - step: 3
+#     name: "product-discovery"
+#     completed_at: "2024-01-15T10:30:00Z"
+#     output: ".../discovery-auth-flow.md"
+
+# Discovery confirmation loop
+discovery_attempts: 0
+discovery_confirmed: false
+
+# Product questioning
+questions_asked: 0
+critical_open_questions: 0
+decisions_logged: 0
+
+# Artifacts created
+artifacts:
+  context: null # context-{topic}.md
+  discovery: null # discovery-{topic}.md
+  product_decisions: null # product-decisions.md
+  spec: null # spec-{topic}.md
+  decision_log: null # auto mode only
+
+# Validation flags
+validation:
+  context_gathering_complete: false
+  discovery_complete: false
+  required_sections_present: false
+  discovery_confirmed: false
+  gate_passed: false

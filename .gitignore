@@ -2,7 +2,7 @@
 BMAD*
 bmad*
 
-.claude
+.claude/settings.local.json
 .cursor
 .claude/_agentic_output
 .cursor/_agentic_output
