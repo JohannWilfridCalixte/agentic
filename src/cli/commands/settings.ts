@@ -1,3 +1,4 @@
+import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 
 import type { Result } from '../../lib/monads';
@@ -10,10 +11,10 @@ import {
   resolveWorkflowDependencies,
   validateWorkflows,
 } from '../dependencies';
-import { AGENTS_DIR, SKILLS_DIR, SUBAGENTS_DIR } from '../paths';
+import { AGENTS_DIR, SKILLS_DIR, SUBAGENTS_DIR, WORKFLOWS_DIR } from '../paths';
 import { readSettings, writeSettings } from '../settings';
 import type { TemplateOptions } from '../utils';
-import { copyAndProcess, copyFileAndProcess, rewriteNamespace } from '../utils';
+import { addNamePrefix, copyAndProcess, copyFileAndProcess } from '../utils';
 import type { InitError, TargetIDE } from './init';
 import { detectIdes } from './update';
 
@@ -93,9 +94,15 @@ async function reinstallAgents(
 
     for (const agentFile of deps.agents) {
       const sourcePath = join(SUBAGENTS_DIR, agentFile);
-      const destName = rewriteNamespace(agentFile, templateOptions.namespace);
+      const destName = addNamePrefix(agentFile, 'agent', templateOptions.namespace);
       const destPath = join(ideDir, 'agents', destName);
-      const result = await copyFileAndProcess(sourcePath, destPath, targetIde, templateOptions);
+      const result = await copyFileAndProcess(
+        sourcePath,
+        destPath,
+        targetIde,
+        templateOptions,
+        'agent',
+      );
       if (isErr(result)) {
         return Err({
           code: 'COPY_FAILED' as const,
@@ -105,33 +112,88 @@ async function reinstallAgents(
       }
     }
 
-    for (const dirName of [...deps.skills, ...deps.workflows]) {
-      const sourcePath = join(SKILLS_DIR, dirName);
-      const destName = rewriteNamespace(dirName, templateOptions.namespace);
+    for (const skillName of deps.skills) {
+      const sourcePath = join(SKILLS_DIR, skillName);
+      const destName = addNamePrefix(skillName, 'skill', templateOptions.namespace);
       const destPath = join(ideDir, 'skills', destName);
-      const result = await copyAndProcess(sourcePath, destPath, targetIde, templateOptions);
+      const result = await copyAndProcess(
+        sourcePath,
+        destPath,
+        targetIde,
+        templateOptions,
+        'skill',
+      );
       if (isErr(result)) {
         return Err({
           code: 'COPY_FAILED' as const,
-          message: `Failed to copy ${dirName}`,
+          message: `Failed to copy ${skillName}`,
+          cause: result.data,
+        });
+      }
+    }
+
+    for (const workflowName of deps.workflows) {
+      const sourcePath = join(WORKFLOWS_DIR, workflowName);
+      const destName = addNamePrefix(workflowName, 'workflow', templateOptions.namespace);
+      const destPath = join(ideDir, 'skills', destName);
+      const result = await copyAndProcess(
+        sourcePath,
+        destPath,
+        targetIde,
+        templateOptions,
+        'workflow',
+      );
+      if (isErr(result)) {
+        return Err({
+          code: 'COPY_FAILED' as const,
+          message: `Failed to copy ${workflowName}`,
           cause: result.data,
         });
       }
     }
   } else {
-    const copies: readonly [string, string][] = [
-      [AGENTS_DIR, join(ideDir, 'agents')],
-      [SUBAGENTS_DIR, join(ideDir, 'agents')],
-      [SKILLS_DIR, join(ideDir, 'skills')],
-    ];
+    const ns = templateOptions.namespace;
 
-    for (const [source, destination] of copies) {
-      const result = await copyAndProcess(source, destination, targetIde, templateOptions);
-      if (isErr(result)) {
+    for (const srcDir of [AGENTS_DIR, SUBAGENTS_DIR]) {
+      const entries = await readdir(srcDir);
+      for (const entry of entries) {
+        const source = join(srcDir, entry);
+        const dest = join(ideDir, 'agents', addNamePrefix(entry, 'agent', ns));
+        const r = await copyFileAndProcess(source, dest, targetIde, templateOptions, 'agent');
+        if (isErr(r)) {
+          return Err({
+            code: 'COPY_FAILED' as const,
+            message: `Failed to copy agent ${entry}`,
+            cause: r.data,
+          });
+        }
+      }
+    }
+
+    const skillEntries = await readdir(SKILLS_DIR);
+    for (const entry of skillEntries) {
+      const source = join(SKILLS_DIR, entry);
+      const dest = join(ideDir, 'skills', addNamePrefix(entry, 'skill', ns));
+      const r = await copyAndProcess(source, dest, targetIde, templateOptions, 'skill');
+      if (isErr(r)) {
         return Err({
           code: 'COPY_FAILED' as const,
-          message: `Failed to copy to .${targetIde}/`,
-          cause: result.data,
+          message: `Failed to copy skill ${entry}`,
+          cause: r.data,
+        });
+      }
+    }
+
+    const workflowEntries = await readdir(WORKFLOWS_DIR);
+    for (const entry of workflowEntries) {
+      const source = join(WORKFLOWS_DIR, entry);
+      const dest = join(ideDir, 'skills', addNamePrefix(entry, 'workflow', ns));
+      const r = await copyAndProcess(source, dest, targetIde, templateOptions, 'workflow');
+      if (isErr(r)) {
+        return Err({
+          code: 'COPY_FAILED' as const,
+          message: `Failed to copy workflow ${entry}`,
+          cause: r.data,
         });
       }
     }

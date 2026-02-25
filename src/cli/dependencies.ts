@@ -3,7 +3,7 @@ import { join } from 'node:path';
 
 import type { Result } from '../lib/monads';
 import { Err, Ok } from '../lib/monads';
-import { rewriteNamespace } from './utils';
+import { addNamePrefix } from './utils';
 
 type WorkflowName =
   | 'product-spec'
@@ -160,9 +160,9 @@ export function resolveWorkflowDependencies(workflows: readonly string[]) {
   }
 
   return {
-    agents: [...agents].map((a) => `agentic-agent-${a}.md`),
-    skills: [...skills].map((s) => `agentic-skill-${s}`),
-    workflows: workflows.map((w) => `agentic-workflow-${w}`),
+    agents: [...agents].map((a) => `${a}.md`),
+    skills: [...skills],
+    workflows: [...workflows],
   } satisfies ResolvedDependencies;
 }
 
@@ -207,8 +207,8 @@ export async function cleanupStaleFiles(
   const agentsDir = join(ideDir, 'agents');
   const skillsDir = join(ideDir, 'skills');
 
-  const oldAgentSet = new Set(oldDeps.agents.map((a) => rewriteNamespace(a, namespace)));
-  const newAgentSet = new Set(newDeps.agents.map((a) => rewriteNamespace(a, namespace)));
+  const oldAgentSet = new Set(oldDeps.agents.map((a) => addNamePrefix(a, 'agent', namespace)));
+  const newAgentSet = new Set(newDeps.agents.map((a) => addNamePrefix(a, 'agent', namespace)));
 
   for (const agent of oldAgentSet) {
     if (!newAgentSet.has(agent)) {
@@ -217,12 +217,12 @@ export async function cleanupStaleFiles(
   }
 
   const oldDirSet = new Set([
-    ...oldDeps.skills.map((s) => rewriteNamespace(s, namespace)),
-    ...oldDeps.workflows.map((w) => rewriteNamespace(w, namespace)),
+    ...oldDeps.skills.map((s) => addNamePrefix(s, 'skill', namespace)),
+    ...oldDeps.workflows.map((w) => addNamePrefix(w, 'workflow', namespace)),
   ]);
   const newDirSet = new Set([
-    ...newDeps.skills.map((s) => rewriteNamespace(s, namespace)),
-    ...newDeps.workflows.map((w) => rewriteNamespace(w, namespace)),
+    ...newDeps.skills.map((s) => addNamePrefix(s, 'skill', namespace)),
+    ...newDeps.workflows.map((w) => addNamePrefix(w, 'workflow', namespace)),
   ]);
 
   for (const dir of oldDirSet) {

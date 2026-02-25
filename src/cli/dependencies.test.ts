@@ -36,11 +36,9 @@ describe('resolveWorkflowDependencies', () => {
     const result = resolveWorkflowDependencies(['product-spec']);
 
     expect(result.agents).toHaveLength(0);
-    expect(result.skills).toEqual(
-      expect.arrayContaining(['agentic-skill-product-discovery', 'agentic-skill-brainstorming']),
-    );
+    expect(result.skills).toEqual(expect.arrayContaining(['product-discovery', 'brainstorming']));
     expect(result.skills).toHaveLength(2);
-    expect(result.workflows).toEqual(['agentic-workflow-product-spec']);
+    expect(result.workflows).toEqual(['product-spec']);
   });
 
   it('returns correct agents for implement workflow', () => {
@@ -48,11 +46,11 @@ describe('resolveWorkflowDependencies', () => {
 
     expect(result.agents).toEqual(
       expect.arrayContaining([
-        'agentic-agent-editor.md',
-        'agentic-agent-test-engineer.md',
-        'agentic-agent-qa.md',
-        'agentic-agent-test-qa.md',
-        'agentic-agent-security-qa.md',
+        'editor.md',
+        'test-engineer.md',
+        'qa.md',
+        'test-qa.md',
+        'security-qa.md',
       ]),
     );
     expect(result.agents).toHaveLength(5);
@@ -79,39 +77,37 @@ describe('resolveWorkflowDependencies', () => {
 
     // implement has editor, test-engineer, qa, test-qa, security-qa
     // technical-planning has architect
-    expect(result.agents).toContain('agentic-agent-architect.md');
-    expect(result.agents).toContain('agentic-agent-editor.md');
+    expect(result.agents).toContain('architect.md');
+    expect(result.agents).toContain('editor.md');
   });
 
-  it('prefixes agent names with agentic-agent- and .md suffix', () => {
+  it('returns bare agent names with .md suffix', () => {
     const result = resolveWorkflowDependencies(['technical-planning']);
 
     for (const agent of result.agents) {
-      expect(agent).toMatch(/^agentic-agent-.+\.md$/);
+      expect(agent).toMatch(/^[a-z-]+\.md$/);
     }
   });
 
-  it('prefixes skill names with agentic-skill-', () => {
+  it('returns bare skill names without prefix', () => {
     const result = resolveWorkflowDependencies(['product-spec']);
 
     for (const skill of result.skills) {
-      expect(skill).toMatch(/^agentic-skill-.+$/);
+      expect(skill).toMatch(/^[a-z-]+$/);
+      expect(skill).not.toMatch(/^agentic-/);
     }
   });
 
-  it('prefixes workflow names with agentic-workflow-', () => {
+  it('returns bare workflow names without prefix', () => {
     const result = resolveWorkflowDependencies(['product-spec', 'implement']);
 
-    expect(result.workflows).toEqual([
-      'agentic-workflow-product-spec',
-      'agentic-workflow-implement',
-    ]);
+    expect(result.workflows).toEqual(['product-spec', 'implement']);
   });
 
   it('returns workflows in input order', () => {
     const result = resolveWorkflowDependencies(['debug', 'product-spec']);
 
-    expect(result.workflows).toEqual(['agentic-workflow-debug', 'agentic-workflow-product-spec']);
+    expect(result.workflows).toEqual(['debug', 'product-spec']);
   });
 });
 
@@ -229,12 +225,12 @@ describe('cleanupStaleFiles', () => {
     await writeFile(join(TEST_DIR, 'agents', 'agentic-agent-qa.md'), 'test');
 
     const oldDeps = {
-      agents: ['agentic-agent-editor.md', 'agentic-agent-qa.md'],
+      agents: ['editor.md', 'qa.md'],
       skills: [],
       workflows: [],
     };
     const newDeps = {
-      agents: ['agentic-agent-qa.md'],
+      agents: ['qa.md'],
       skills: [],
       workflows: [],
     };
@@ -253,12 +249,12 @@ describe('cleanupStaleFiles', () => {
 
     const oldDeps = {
       agents: [],
-      skills: ['agentic-skill-brainstorming', 'agentic-skill-code'],
+      skills: ['brainstorming', 'code'],
       workflows: [],
     };
     const newDeps = {
       agents: [],
-      skills: ['agentic-skill-code'],
+      skills: ['code'],
       workflows: [],
     };
 
@@ -275,7 +271,7 @@ describe('cleanupStaleFiles', () => {
     const oldDeps = {
       agents: [],
       skills: [],
-      workflows: ['agentic-workflow-product-spec'],
+      workflows: ['product-spec'],
     };
     const newDeps = {
       agents: [],
@@ -293,8 +289,8 @@ describe('cleanupStaleFiles', () => {
     await mkdir(join(TEST_DIR, 'skills', 'agentic-skill-code'), { recursive: true });
 
     const deps = {
-      agents: ['agentic-agent-editor.md'],
-      skills: ['agentic-skill-code'],
+      agents: ['editor.md'],
+      skills: ['code'],
       workflows: [],
     };
 
@@ -309,9 +305,9 @@ describe('cleanupStaleFiles', () => {
 
     const oldDeps = { agents: [], skills: [], workflows: [] };
     const newDeps = {
-      agents: ['agentic-agent-editor.md'],
-      skills: ['agentic-skill-code'],
-      workflows: ['agentic-workflow-implement'],
+      agents: ['editor.md'],
+      skills: ['code'],
+      workflows: ['implement'],
     };
 
     // Should not throw or remove anything
@@ -325,19 +321,19 @@ describe('cleanupStaleFiles', () => {
     await writeFile(join(TEST_DIR, 'agents', 'foo-agent-qa.md'), 'test');
 
     const oldDeps = {
-      agents: ['agentic-agent-editor.md', 'agentic-agent-qa.md'],
+      agents: ['editor.md', 'qa.md'],
       skills: [],
       workflows: [],
     };
     const newDeps = {
-      agents: ['agentic-agent-qa.md'],
+      agents: ['qa.md'],
       skills: [],
       workflows: [],
     };
 
     await cleanupStaleFiles(TEST_DIR, oldDeps, newDeps, 'foo');
 
-    // foo-agent-editor.md should be removed (rewritten from agentic-agent-editor.md)
+    // foo-agent-editor.md should be removed (bare name + namespace = foo-agent-editor.md)
     expect(await exists(join(TEST_DIR, 'agents', 'foo-agent-editor.md'))).toBe(false);
     expect(await exists(join(TEST_DIR, 'agents', 'foo-agent-qa.md'))).toBe(true);
   });
@@ -348,12 +344,12 @@ describe('cleanupStaleFiles', () => {
 
     const oldDeps = {
       agents: [],
-      skills: ['agentic-skill-brainstorming', 'agentic-skill-code'],
+      skills: ['brainstorming', 'code'],
       workflows: [],
     };
     const newDeps = {
       agents: [],
-      skills: ['agentic-skill-code'],
+      skills: ['code'],
       workflows: [],
     };
 

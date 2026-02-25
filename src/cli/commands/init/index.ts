@@ -5,17 +5,17 @@ import type { Result } from '../../../lib/monads';
 import { Err, isErr, Ok } from '../../../lib/monads';
 import type { IDE } from '../../constants';
 import { resolveWorkflowDependencies, validateWorkflows } from '../../dependencies';
-import { AGENTS_DIR, SKILLS_DIR, SUBAGENTS_DIR } from '../../paths';
+import { AGENTS_DIR, SKILLS_DIR, SUBAGENTS_DIR, WORKFLOWS_DIR } from '../../paths';
 import { writeSettings } from '../../settings';
 import type { TemplateOptions } from '../../utils';
 import {
+  addNamePrefix,
   appendToGitignore,
   copyAndProcess,
   copyFileAndProcess,
   getCodeWritingModelName,
   getHighThinkingModelName,
   getQaModelName,
-  rewriteNamespace,
 } from '../../utils';
 import { getIdeStrategy } from './strategies';
 import type { InitError, SetupMode, TargetIDE } from './types';
@@ -47,6 +47,63 @@ async function makeScriptsExecutableRecursive(dir: string) {
   }
 }
 
+async function copyAllWithPrefixes(
+  ideDir: string,
+  targetIde: TargetIDE,
+  templateOptions: TemplateOptions,
+): Promise<Result<void, InitError>> {
+  const ns = templateOptions.namespace;
+
+  // Copy agents + subagents → agents/ with {ns}-agent- prefix
+  for (const srcDir of [AGENTS_DIR, SUBAGENTS_DIR]) {
+    const entries = await readdir(srcDir);
+    for (const entry of entries) {
+      const source = join(srcDir, entry);
+      const dest = join(ideDir, 'agents', addNamePrefix(entry, 'agent', ns));
+      const result = await copyFileAndProcess(source, dest, targetIde, templateOptions, 'agent');
+      if (isErr(result)) {
+        return Err({
+          code: 'COPY_FAILED' as const,
+          message: `Failed to copy agent ${entry}`,
+          cause: result.data,
+        });
+      }
+    }
+  }
+
+  // Copy skills → skills/ with {ns}-skill- prefix
+  const skillEntries = await readdir(SKILLS_DIR);
+  for (const entry of skillEntries) {
+    const source = join(SKILLS_DIR, entry);
+    const dest = join(ideDir, 'skills', addNamePrefix(entry, 'skill', ns));
+    const result = await copyAndProcess(source, dest, targetIde, templateOptions, 'skill');
+    if (isErr(result)) {
+      return Err({
+        code: 'COPY_FAILED' as const,
+        message: `Failed to copy skill ${entry}`,
+        cause: result.data,
+      });
+    }
+  }
+
+  // Copy workflows → skills/ with {ns}-workflow- prefix
+  const workflowEntries = await readdir(WORKFLOWS_DIR);
+  for (const entry of workflowEntries) {
+    const source = join(WORKFLOWS_DIR, entry);
+    const dest = join(ideDir, 'skills', addNamePrefix(entry, 'workflow', ns));
+    const result = await copyAndProcess(source, dest, targetIde, templateOptions, 'workflow');
+    if (isErr(result)) {
+      return Err({
+        code: 'COPY_FAILED' as const,
+        message: `Failed to copy workflow ${entry}`,
+        cause: result.data,
+      });
+    }
+  }
+
+  return Ok(undefined);
+}
+
 async function selectiveCopy(
   workflows: readonly string[],
   ideDir: string,
@@ -55,12 +112,17 @@ async function selectiveCopy(
 ): Promise<Result<void, InitError>> {
   const deps = resolveWorkflowDependencies(workflows);
 
-  // Copy resolved subagent files
   for (const agentFile of deps.agents) {
     const sourcePath = join(SUBAGENTS_DIR, agentFile);
-    const destName = rewriteNamespace(agentFile, templateOptions.namespace);
+    const destName = addNamePrefix(agentFile, 'agent', templateOptions.namespace);
     const destPath = join(ideDir, 'agents', destName);
-    const result = await copyFileAndProcess(sourcePath, destPath, targetIde, templateOptions);
+    const result = await copyFileAndProcess(
+      sourcePath,
+      destPath,
+      targetIde,
+      templateOptions,
+      'agent',
+    );
 
     if (isErr(result)) {
       return Err({
@@ -71,18 +133,37 @@ async function selectiveCopy(
     }
   }
 
-  // Copy resolved skill + workflow directories
-  const allDirs = [...deps.skills, ...deps.workflows];
-  for (const dirName of allDirs) {
-    const sourcePath = join(SKILLS_DIR, dirName);
-    const destName = rewriteNamespace(dirName, templateOptions.namespace);
+  for (const skillName of deps.skills) {
+    const sourcePath = join(SKILLS_DIR, skillName);
+    const destName = addNamePrefix(skillName, 'skill', templateOptions.namespace);
     const destPath = join(ideDir, 'skills', destName);
-    const result = await copyAndProcess(sourcePath, destPath, targetIde, templateOptions);
+    const result = await copyAndProcess(sourcePath, destPath, targetIde, templateOptions, 'skill');
 
     if (isErr(result)) {
       return Err({
         code: 'COPY_FAILED' as const,
-        message: `Failed to copy ${dirName} to .${targetIde}/`,
+        message: `Failed to copy ${skillName} to .${targetIde}/`,
+        cause: result.data,
+      });
+    }
+  }
+
+  for (const workflowName of deps.workflows) {
+    const sourcePath = join(WORKFLOWS_DIR, workflowName);
+    const destName = addNamePrefix(workflowName, 'workflow', templateOptions.namespace);
+    const destPath = join(ideDir, 'skills', destName);
+    const result = await copyAndProcess(
+      sourcePath,
+      destPath,
+      targetIde,
+      templateOptions,
+      'workflow',
+    );
+
+    if (isErr(result)) {
+      return Err({
+        code: 'COPY_FAILED' as const,
+        message: `Failed to copy ${workflowName} to .${targetIde}/`,
         cause: result.data,
       });
     }
@@ -121,23 +202,8 @@ export async function setupIde(
     const copyResult = await selectiveCopy(options.workflows, ideDir, targetIde, templateOptions);
     if (isErr(copyResult)) return copyResult;
   } else {
-    const copies: readonly [string, string][] = [
-      [AGENTS_DIR, join(ideDir, 'agents')],
-      [SUBAGENTS_DIR, join(ideDir, 'agents')],
-      [SKILLS_DIR, join(ideDir, 'skills')],
-    ];
-
-    for (const [source, destination] of copies) {
-      const result = await copyAndProcess(source, destination, targetIde, templateOptions);
-
-      if (isErr(result)) {
-        return Err({
-          code: 'COPY_FAILED' as const,
-          message: `Failed to copy to .${targetIde}/`,
-          cause: result.data,
-        });
-      }
-    }
+    const copyResult = await copyAllWithPrefixes(ideDir, targetIde, templateOptions);
+    if (isErr(copyResult)) return copyResult;
   }
 
   console.log(`  Copied to .${targetIde}/agents/, skills/`);

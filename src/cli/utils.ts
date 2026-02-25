@@ -5,6 +5,13 @@ import type { Result } from '../lib/monads';
 import { Err, Ok } from '../lib/monads';
 import type { IDE } from './constants';
 
+export type ContentType = 'skill' | 'workflow' | 'agent' | 'other';
+
+export function addNamePrefix(name: string, type: ContentType, namespace: string) {
+  if (type === 'other') return name;
+  return `${namespace}-${type}-${name}`;
+}
+
 export async function appendToGitignore(projectRoot: string, entry: string): Promise<void> {
   const gitignorePath = join(projectRoot, '.gitignore');
   const gitignoreFile = Bun.file(gitignorePath);
@@ -109,7 +116,36 @@ function applyNamespaceReplacements(content: string, namespace: string) {
   return result;
 }
 
-export function processTemplate(content: string, ide: TargetIDE, options: TemplateOptions) {
+function addFrontmatterPrefixes(content: string, type: ContentType, namespace: string) {
+  if (type === 'other') return content;
+
+  let result = content;
+
+  if (type === 'skill' || type === 'workflow') {
+    result = result.replace(/^(name:\s*)(\S+)/m, `$1${namespace}:${type}:$2`);
+  } else if (type === 'agent') {
+    result = result.replace(/^(name:\s*)(\S+)/m, `$1${namespace}:agent:$2`);
+    result = result.replace(/^(skills:\s*\[)(.+?)(\])/m, (_, prefix, skills, suffix) => {
+      const prefixed = skills
+        .split(',')
+        .map((s: string) => {
+          const trimmed = s.trim();
+          return trimmed.includes(':') ? trimmed : `${namespace}:skill:${trimmed}`;
+        })
+        .join(', ');
+      return `${prefix}${prefixed}${suffix}`;
+    });
+  }
+
+  return result;
+}
+
+export function processTemplate(
+  content: string,
+  ide: TargetIDE,
+  options: TemplateOptions,
+  contentType: ContentType = 'other',
+) {
   const vars = {
     ...IDE_TEMPLATE_VARS[ide],
     'output-folder': options.outputFolder,
@@ -124,14 +160,10 @@ export function processTemplate(content: string, ide: TargetIDE, options: Templa
     result = result.replaceAll(`{${key}}`, value);
   }
 
+  result = addFrontmatterPrefixes(result, contentType, options.namespace);
   result = applyNamespaceReplacements(result, options.namespace);
 
   return result;
-}
-
-export function rewriteNamespace(name: string, namespace: string) {
-  if (namespace === 'agentic') return name;
-  return name.replace(/^agentic-/, `${namespace}-`);
 }
 
 export async function copyAndProcess(
@@ -139,6 +171,7 @@ export async function copyAndProcess(
   destination: string,
   ide: TargetIDE,
   options: TemplateOptions,
+  contentType: ContentType = 'other',
 ): Promise<Result<void, CopyDirError>> {
   try {
     await mkdir(destination, { recursive: true });
@@ -147,16 +180,22 @@ export async function copyAndProcess(
 
     for (const entry of entries) {
       const sourcePath = join(source, entry.name);
-      const rewrittenName = rewriteNamespace(entry.name, options.namespace);
+      const rewrittenName = entry.name;
       const destinationPath = join(destination, rewrittenName);
 
       if (entry.isDirectory()) {
         const rewrittenDestination = join(destination, rewrittenName);
-        const result = await copyAndProcess(sourcePath, rewrittenDestination, ide, options);
+        const result = await copyAndProcess(
+          sourcePath,
+          rewrittenDestination,
+          ide,
+          options,
+          contentType,
+        );
         if (result._type === 'Err') return result;
       } else if (isTemplateFile(entry.name)) {
         const content = await Bun.file(sourcePath).text();
-        await Bun.write(destinationPath, processTemplate(content, ide, options));
+        await Bun.write(destinationPath, processTemplate(content, ide, options, contentType));
       } else {
         const content = await Bun.file(sourcePath).arrayBuffer();
         await Bun.write(destinationPath, content);
@@ -178,6 +217,7 @@ export async function copyFileAndProcess(
   destinationPath: string,
   ide: TargetIDE,
   options: TemplateOptions,
+  contentType: ContentType = 'other',
 ): Promise<Result<void, CopyDirError>> {
   try {
     const dir = destinationPath.substring(0, destinationPath.lastIndexOf('/'));
@@ -185,7 +225,7 @@ export async function copyFileAndProcess(
 
     if (isTemplateFile(sourcePath)) {
       const content = await Bun.file(sourcePath).text();
-      await Bun.write(destinationPath, processTemplate(content, ide, options));
+      await Bun.write(destinationPath, processTemplate(content, ide, options, contentType));
     } else {
       const content = await Bun.file(sourcePath).arrayBuffer();
       await Bun.write(destinationPath, content);

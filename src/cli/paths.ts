@@ -8,3 +8,4 @@ export const AGENTS_DIR = join(AGENTIC_DIR, 'agents');
 export const SKILLS_DIR = join(AGENTIC_DIR, 'skills');
 export const SUBAGENTS_DIR = join(AGENTIC_DIR, 'subagents');
 export const TEMPLATES_DIR = join(AGENTIC_DIR, 'templates');
+export const WORKFLOWS_DIR = join(AGENTIC_DIR, 'workflows');

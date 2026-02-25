@@ -4,12 +4,7 @@ export type Command = 'init' | 'list' | 'help' | 'update' | 'migrate' | 'version
 
 export const NAMESPACE_PATTERN = /^[a-z][a-z0-9-]{1,29}$/;
 
-export const AGENTS = [
-  'agentic-agent-cpo',
-  'agentic-agent-cto',
-  'agentic-agent-dx',
-  'agentic-agent-team-and-workflow',
-] as const;
+export const AGENTS = ['cpo', 'cto', 'dx', 'team-and-workflow'] as const;
 
 export function getAgents(namespace: string) {
   return [

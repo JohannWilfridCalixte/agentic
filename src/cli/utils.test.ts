@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 
-import { processTemplate, rewriteNamespace } from './utils';
+import { addNamePrefix, processTemplate } from './utils';
 
 const defaultOptions = {
   namespace: 'agentic',
@@ -167,32 +167,20 @@ Output: {ide-folder}/{output-folder}/task
   });
 });
 
-describe('rewriteNamespace', () => {
-  it('replaces agentic- prefix with custom namespace', () => {
-    expect(rewriteNamespace('agentic-agent-cpo.md', 'foo')).toBe('foo-agent-cpo.md');
+describe('addNamePrefix', () => {
+  it('prefixes agent name with namespace', () => {
+    expect(addNamePrefix('cpo.md', 'agent', 'foo')).toBe('foo-agent-cpo.md');
   });
 
-  it('replaces agentic- prefix in directory names', () => {
-    expect(rewriteNamespace('agentic-skill-code', 'foo')).toBe('foo-skill-code');
+  it('prefixes skill name with namespace', () => {
+    expect(addNamePrefix('code', 'skill', 'foo')).toBe('foo-skill-code');
   });
 
-  it('replaces agentic- prefix for workflow dirs', () => {
-    expect(rewriteNamespace('agentic-workflow-debug', 'foo')).toBe('foo-workflow-debug');
+  it('prefixes workflow name with namespace', () => {
+    expect(addNamePrefix('debug', 'workflow', 'foo')).toBe('foo-workflow-debug');
   });
 
-  it('returns name unchanged when namespace is agentic', () => {
-    expect(rewriteNamespace('agentic-agent-cpo.md', 'agentic')).toBe('agentic-agent-cpo.md');
-  });
-
-  it('does not replace agentic in the middle of a name', () => {
-    expect(rewriteNamespace('my-agentic-tool.md', 'foo')).toBe('my-agentic-tool.md');
-  });
-
-  it('returns name unchanged when no agentic- prefix', () => {
-    expect(rewriteNamespace('README.md', 'foo')).toBe('README.md');
-  });
-
-  it('handles empty string', () => {
-    expect(rewriteNamespace('', 'foo')).toBe('');
+  it('returns name unchanged for other type', () => {
+    expect(addNamePrefix('README.md', 'other', 'foo')).toBe('README.md');
   });
 });
