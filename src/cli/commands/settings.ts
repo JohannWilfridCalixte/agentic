@@ -5,12 +5,7 @@ import type { Result } from '../../lib/monads';
 import { Err, isErr, Ok } from '../../lib/monads';
 import type { IDE } from '../constants';
 import { NAMESPACE_PATTERN } from '../constants';
-import {
-  cleanupStaleFiles,
-  KNOWN_WORKFLOWS,
-  resolveWorkflowDependencies,
-  validateWorkflows,
-} from '../dependencies';
+import { cleanupStaleFiles, resolveWorkflowDependencies, validateWorkflows } from '../dependencies';
 import { AGENTS_DIR, SKILLS_DIR, SUBAGENTS_DIR, WORKFLOWS_DIR } from '../paths';
 import { readSettings, writeSettings } from '../settings';
 import type { TemplateOptions } from '../utils';
@@ -267,10 +262,8 @@ export async function settingsUpdate(
     }
 
     if (workflows) {
-      const oldWorkflows = s.workflows ?? KNOWN_WORKFLOWS;
-      const oldDeps = resolveWorkflowDependencies(oldWorkflows);
       const newDeps = resolveWorkflowDependencies(workflows);
-      await cleanupStaleFiles(ideDir, oldDeps, newDeps, namespace);
+      await cleanupStaleFiles(ideDir, newDeps, namespace);
     }
 
     const writeResult = await writeSettings(

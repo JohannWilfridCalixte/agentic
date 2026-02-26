@@ -3,6 +3,7 @@ import { mkdir, rm, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 
 import { isOk } from '../../../../lib/monads';
+import type { ResolvedDependencies } from '../../../dependencies';
 import { claudeStrategy } from './claude';
 import { cursorStrategy } from './cursor';
 import { getIdeStrategy } from './index';
@@ -211,6 +212,143 @@ describe('IDE strategies', () => {
       expect(isOk(result)).toBe(true);
       expect(await exists(backupPath)).toBe(false);
       expect(await exists(join(TEST_DIR, 'AGENTS.md'))).toBe(true);
+    });
+  });
+
+  describe('template filtering with resolvedDeps', () => {
+    const productSpecDeps: ResolvedDependencies = {
+      agents: [],
+      skills: ['product-discovery', 'brainstorming'],
+      workflows: ['product-spec'],
+    };
+
+    it('claudeStrategy strips uninstalled skills/workflows/agents when resolvedDeps present', async () => {
+      const result = await claudeStrategy.setup(TEST_DIR, {
+        mode: 'update',
+        namespace: 'agentic',
+        workflows: ['product-spec'],
+        resolvedDeps: productSpecDeps,
+      });
+
+      expect(isOk(result)).toBe(true);
+
+      const content = await Bun.file(join(TEST_DIR, 'CLAUDE.md')).text();
+
+      // Installed skills should be present
+      expect(content).toContain('agentic:skill:product-discovery');
+      expect(content).toContain('agentic:skill:brainstorming');
+
+      // Installed workflow should be present
+      expect(content).toContain('agentic:workflow:product-spec');
+
+      // Uninstalled skills should be stripped
+      expect(content).not.toContain('agentic:skill:code');
+      expect(content).not.toContain('agentic:skill:github');
+
+      // Uninstalled workflows should be stripped
+      expect(content).not.toContain('agentic:workflow:implement');
+      expect(content).not.toContain('agentic:workflow:debug');
+
+      // Top-level agents not in deps should be stripped
+      expect(content).not.toContain('agentic:agent:cpo');
+      expect(content).not.toContain('agentic:agent:cto');
+      expect(content).not.toContain('agentic:agent:editor');
+    });
+
+    it('cursorStrategy strips uninstalled skills/workflows/agents when resolvedDeps present', async () => {
+      const result = await cursorStrategy.setup(TEST_DIR, {
+        mode: 'update',
+        namespace: 'agentic',
+        workflows: ['product-spec'],
+        resolvedDeps: productSpecDeps,
+      });
+
+      expect(isOk(result)).toBe(true);
+
+      const content = await Bun.file(join(TEST_DIR, 'AGENTS.md')).text();
+
+      // Installed skills should be present
+      expect(content).toContain('agentic:skill:product-discovery');
+      expect(content).toContain('agentic:skill:brainstorming');
+
+      // Installed workflow should be present
+      expect(content).toContain('agentic:workflow:product-spec');
+
+      // Uninstalled should be stripped
+      expect(content).not.toContain('agentic:skill:code');
+      expect(content).not.toContain('agentic:workflow:implement');
+      expect(content).not.toContain('agentic:agent:editor');
+    });
+
+    it('claudeStrategy produces full template when no resolvedDeps', async () => {
+      const result = await claudeStrategy.setup(TEST_DIR, {
+        mode: 'update',
+        namespace: 'agentic',
+      });
+
+      expect(isOk(result)).toBe(true);
+
+      const content = await Bun.file(join(TEST_DIR, 'CLAUDE.md')).text();
+
+      // All skills/workflows/agents should be present
+      expect(content).toContain('agentic:skill:code');
+      expect(content).toContain('agentic:skill:brainstorming');
+      expect(content).toContain('agentic:skill:github');
+      expect(content).toContain('agentic:workflow:implement');
+      expect(content).toContain('agentic:workflow:product-spec');
+      expect(content).toContain('agentic:agent:cpo');
+      expect(content).toContain('agentic:agent:editor');
+    });
+
+    it('cursorStrategy produces full template when no resolvedDeps', async () => {
+      const result = await cursorStrategy.setup(TEST_DIR, {
+        mode: 'update',
+        namespace: 'agentic',
+      });
+
+      expect(isOk(result)).toBe(true);
+
+      const content = await Bun.file(join(TEST_DIR, 'AGENTS.md')).text();
+
+      expect(content).toContain('agentic:skill:code');
+      expect(content).toContain('agentic:workflow:implement');
+      expect(content).toContain('agentic:agent:editor');
+    });
+
+    it('both strategies produce identical filtering behavior', async () => {
+      const claudeResult = await claudeStrategy.setup(TEST_DIR, {
+        mode: 'update',
+        namespace: 'agentic',
+        workflows: ['product-spec'],
+        resolvedDeps: productSpecDeps,
+      });
+      expect(isOk(claudeResult)).toBe(true);
+      const claudeContent = await Bun.file(join(TEST_DIR, 'CLAUDE.md')).text();
+
+      // Reset for cursor
+      await rm(TEST_DIR, { recursive: true });
+      await mkdir(TEST_DIR, { recursive: true });
+
+      const cursorResult = await cursorStrategy.setup(TEST_DIR, {
+        mode: 'update',
+        namespace: 'agentic',
+        workflows: ['product-spec'],
+        resolvedDeps: productSpecDeps,
+      });
+      expect(isOk(cursorResult)).toBe(true);
+      const cursorContent = await Bun.file(join(TEST_DIR, 'AGENTS.md')).text();
+
+      // Both should have installed deps
+      for (const skill of productSpecDeps.skills) {
+        expect(claudeContent).toContain(`agentic:skill:${skill}`);
+        expect(cursorContent).toContain(`agentic:skill:${skill}`);
+      }
+
+      // Both should strip the same uninstalled items
+      expect(claudeContent).not.toContain('agentic:skill:code');
+      expect(cursorContent).not.toContain('agentic:skill:code');
+      expect(claudeContent).not.toContain('agentic:agent:editor');
+      expect(cursorContent).not.toContain('agentic:agent:editor');
     });
   });
 });

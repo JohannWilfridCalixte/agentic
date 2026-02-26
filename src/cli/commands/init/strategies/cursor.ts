@@ -2,7 +2,7 @@ import { join } from 'node:path';
 
 import { Err, Ok } from '../../../../lib/monads';
 import { TEMPLATES_DIR } from '../../../paths';
-import { processTemplate } from '../../../utils';
+import { processTemplate, stripUninstalledRows } from '../../../utils';
 import type { IdeSetupStrategy, StrategySetupOptions } from '../types';
 
 function getSectionMarker(namespace: string) {
@@ -22,13 +22,16 @@ export const cursorStrategy: IdeSetupStrategy = {
 
     try {
       const template = await Bun.file(templatePath).text();
-      const processed = processTemplate(template, 'cursor', {
+      let processed = processTemplate(template, 'cursor', {
         namespace,
         outputFolder: '',
         highThinkingModelName: '',
         codeWritingModelName: '',
         qaModelName: '',
       });
+      if (options?.resolvedDeps) {
+        processed = stripUninstalledRows(processed, options.resolvedDeps, namespace);
+      }
       const agentsMdFile = Bun.file(agentsMdPath);
 
       if (!(await agentsMdFile.exists())) {

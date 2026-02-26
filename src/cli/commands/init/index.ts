@@ -210,8 +210,17 @@ export async function setupIde(
 
   await makeScriptsExecutableRecursive(join(ideDir, 'skills'));
 
+  const resolvedDeps = options.workflows?.length
+    ? resolveWorkflowDependencies(options.workflows)
+    : undefined;
+
   const strategy = getIdeStrategy(targetIde);
-  const result = await strategy.setup(projectRoot, { mode: options.mode ?? 'init', namespace });
+  const result = await strategy.setup(projectRoot, {
+    mode: options.mode ?? 'init',
+    namespace,
+    workflows: options.workflows,
+    resolvedDeps,
+  });
 
   if (isErr(result)) return result;
 

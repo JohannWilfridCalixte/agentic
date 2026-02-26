@@ -249,3 +249,42 @@ function isTemplateFile(filename: string) {
     filename.endsWith('.sh')
   );
 }
+
+interface InstalledDeps {
+  readonly agents: readonly string[];
+  readonly skills: readonly string[];
+  readonly workflows: readonly string[];
+}
+
+export function stripUninstalledRows(
+  content: string,
+  resolvedDeps: InstalledDeps,
+  namespace: string,
+) {
+  const pattern = new RegExp(`${namespace}:(skill|workflow|agent):([a-z0-9-]+)`);
+  const skillSet = new Set(resolvedDeps.skills);
+  const workflowSet = new Set(resolvedDeps.workflows);
+  const agentSet = new Set(resolvedDeps.agents);
+
+  return content
+    .split('\n')
+    .filter((line) => {
+      if (!line.startsWith('|')) return true;
+
+      const match = line.match(pattern);
+      if (!match) return true;
+
+      const [, type, name] = match;
+      switch (type) {
+        case 'skill':
+          return skillSet.has(name);
+        case 'workflow':
+          return workflowSet.has(name);
+        case 'agent':
+          return agentSet.has(`${name}.md`);
+        default:
+          return true;
+      }
+    })
+    .join('\n');
+}

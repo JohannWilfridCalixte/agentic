@@ -4,12 +4,7 @@ import { join } from 'node:path';
 import type { Result } from '../../lib/monads';
 import { Err, isErr, Ok } from '../../lib/monads';
 import type { IDE } from '../constants';
-import {
-  cleanupStaleFiles,
-  KNOWN_WORKFLOWS,
-  resolveWorkflowDependencies,
-  validateWorkflows,
-} from '../dependencies';
+import { cleanupStaleFiles, resolveWorkflowDependencies, validateWorkflows } from '../dependencies';
 import { readSettings } from '../settings';
 import type { InitError, TargetIDE } from './init';
 import { getDefaultOutputFolder, setupIde } from './init';
@@ -121,11 +116,9 @@ export async function update(
     }
 
     if (workflows) {
-      const oldWorkflows = defaults.workflows ?? KNOWN_WORKFLOWS;
-      const oldDeps = resolveWorkflowDependencies(oldWorkflows);
       const newDeps = resolveWorkflowDependencies(workflows);
       const ideDir = join(projectRoot, `.${targetIde}`);
-      await cleanupStaleFiles(ideDir, oldDeps, newDeps, namespace);
+      await cleanupStaleFiles(ideDir, newDeps, namespace);
     }
   }
 

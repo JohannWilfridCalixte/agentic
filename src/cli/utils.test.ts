@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 
-import { addNamePrefix, processTemplate } from './utils';
+import { addNamePrefix, processTemplate, stripUninstalledRows } from './utils';
 
 const defaultOptions = {
   namespace: 'agentic',
@@ -182,5 +182,173 @@ describe('addNamePrefix', () => {
 
   it('returns name unchanged for other type', () => {
     expect(addNamePrefix('README.md', 'other', 'foo')).toBe('README.md');
+  });
+});
+
+describe('stripUninstalledRows', () => {
+  const templateContent = [
+    '## Skill Index',
+    '',
+    '| Skill | Use When |',
+    '|-------|----------|',
+    '| **agentic:skill:code** | Implementing code |',
+    '| **agentic:skill:brainstorming** | Turning ideas into designs |',
+    '| **agentic:skill:github** | GitHub operations |',
+    '',
+    '## Workflows',
+    '',
+    '| Skill | Use When |',
+    '|-------|----------|',
+    '| **agentic:workflow:implement** | Technical plan to implementation |',
+    '| **agentic:workflow:product-spec** | Product discovery to PRD |',
+    '| **agentic:workflow:debug** | Systematic debugging |',
+    '',
+    '## Agents',
+    '',
+    'Load agent: `Read .claude/agents/agentic-agent-{name}.md`',
+    '',
+    '| Agent | Role |',
+    '|-------|------|',
+    '| **agentic:agent:cpo** | Product vision |',
+    '| **agentic:agent:editor** | Code implementation |',
+    '| **agentic:agent:qa** | Code quality review |',
+    '| **agentic:agent:cto** | Technical vision |',
+  ].join('\n');
+
+  it('keeps rows for installed skills', () => {
+    const deps = { agents: [], skills: ['code'], workflows: [] };
+
+    const result = stripUninstalledRows(templateContent, deps, 'agentic');
+
+    expect(result).toContain('**agentic:skill:code**');
+  });
+
+  it('strips rows for uninstalled skills', () => {
+    const deps = { agents: [], skills: ['code'], workflows: [] };
+
+    const result = stripUninstalledRows(templateContent, deps, 'agentic');
+
+    expect(result).not.toContain('**agentic:skill:brainstorming**');
+  });
+
+  it('strips github skill row when not in resolvedDeps', () => {
+    const deps = { agents: [], skills: ['code'], workflows: [] };
+
+    const result = stripUninstalledRows(templateContent, deps, 'agentic');
+
+    expect(result).not.toContain('**agentic:skill:github**');
+  });
+
+  it('strips rows for uninstalled workflows', () => {
+    const deps = { agents: [], skills: [], workflows: ['implement'] };
+
+    const result = stripUninstalledRows(templateContent, deps, 'agentic');
+
+    expect(result).toContain('**agentic:workflow:implement**');
+    expect(result).not.toContain('**agentic:workflow:product-spec**');
+    expect(result).not.toContain('**agentic:workflow:debug**');
+  });
+
+  it('strips rows for uninstalled agents using .md suffix check', () => {
+    const deps = { agents: ['editor.md', 'qa.md'], skills: [], workflows: [] };
+
+    const result = stripUninstalledRows(templateContent, deps, 'agentic');
+
+    expect(result).toContain('**agentic:agent:editor**');
+    expect(result).toContain('**agentic:agent:qa**');
+    expect(result).not.toContain('**agentic:agent:cpo**');
+    expect(result).not.toContain('**agentic:agent:cto**');
+  });
+
+  it('strips top-level agents (cpo, cto, dx, team-and-workflow) when not in deps', () => {
+    const deps = { agents: ['editor.md'], skills: [], workflows: [] };
+
+    const result = stripUninstalledRows(templateContent, deps, 'agentic');
+
+    expect(result).not.toContain('agentic:agent:cpo');
+    expect(result).not.toContain('agentic:agent:cto');
+  });
+
+  it('leaves non-table lines untouched', () => {
+    const deps = { agents: [], skills: [], workflows: [] };
+
+    const result = stripUninstalledRows(templateContent, deps, 'agentic');
+
+    expect(result).toContain('## Skill Index');
+    expect(result).toContain('## Workflows');
+    expect(result).toContain('## Agents');
+    expect(result).toContain('Load agent:');
+  });
+
+  it('preserves table header rows without namespace patterns', () => {
+    const deps = { agents: [], skills: [], workflows: [] };
+
+    const result = stripUninstalledRows(templateContent, deps, 'agentic');
+
+    expect(result).toContain('| Skill | Use When |');
+    expect(result).toContain('|-------|----------|');
+    expect(result).toContain('| Agent | Role |');
+  });
+
+  it('works with custom namespace', () => {
+    const content = [
+      '| **foo:skill:code** | Implementing code |',
+      '| **foo:skill:brainstorming** | Ideas |',
+      '| **foo:workflow:implement** | Implementation |',
+      '| **foo:agent:editor** | Code |',
+    ].join('\n');
+    const deps = { agents: ['editor.md'], skills: ['code'], workflows: ['implement'] };
+
+    const result = stripUninstalledRows(content, deps, 'foo');
+
+    expect(result).toContain('foo:skill:code');
+    expect(result).not.toContain('foo:skill:brainstorming');
+    expect(result).toContain('foo:workflow:implement');
+    expect(result).toContain('foo:agent:editor');
+  });
+
+  it('returns content unchanged when no table rows match pattern', () => {
+    const content = [
+      '# Header',
+      '',
+      'Some paragraph text.',
+      '',
+      '| Column A | Column B |',
+      '|----------|----------|',
+      '| value 1 | value 2 |',
+    ].join('\n');
+    const deps = { agents: [], skills: [], workflows: [] };
+
+    const result = stripUninstalledRows(content, deps, 'agentic');
+
+    expect(result).toBe(content);
+  });
+
+  it('handles empty resolvedDeps by stripping all matching rows', () => {
+    const deps = { agents: [], skills: [], workflows: [] };
+
+    const result = stripUninstalledRows(templateContent, deps, 'agentic');
+
+    expect(result).not.toContain('agentic:skill:');
+    expect(result).not.toContain('agentic:workflow:');
+    expect(result).not.toContain('agentic:agent:');
+  });
+
+  it('only strips table rows, not non-table lines containing namespace patterns', () => {
+    const content = [
+      'Load agentic:skill:code from the skill index.',
+      '| **agentic:skill:code** | Implementing code |',
+      '| **agentic:skill:brainstorming** | Ideas |',
+    ].join('\n');
+    const deps = { agents: [], skills: ['code'], workflows: [] };
+
+    const result = stripUninstalledRows(content, deps, 'agentic');
+
+    // Non-table line with skill ref is preserved
+    expect(result).toContain('Load agentic:skill:code from the skill index.');
+    // Table row for installed skill is kept
+    expect(result).toContain('| **agentic:skill:code**');
+    // Table row for uninstalled skill is stripped
+    expect(result).not.toContain('brainstorming');
   });
 });

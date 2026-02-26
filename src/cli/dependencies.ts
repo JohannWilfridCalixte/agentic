@@ -1,4 +1,4 @@
-import { rm } from 'node:fs/promises';
+import { readdir, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 
 import type { Result } from '../lib/monads';
@@ -200,34 +200,35 @@ export function validateWorkflows(
 
 export async function cleanupStaleFiles(
   ideDir: string,
-  oldDeps: ResolvedDependencies,
   newDeps: ResolvedDependencies,
   namespace: string,
 ) {
   const agentsDir = join(ideDir, 'agents');
   const skillsDir = join(ideDir, 'skills');
 
-  const oldAgentSet = new Set(oldDeps.agents.map((a) => addNamePrefix(a, 'agent', namespace)));
-  const newAgentSet = new Set(newDeps.agents.map((a) => addNamePrefix(a, 'agent', namespace)));
+  const agentPrefix = `${namespace}-agent-`;
+  const skillPrefix = `${namespace}-skill-`;
+  const workflowPrefix = `${namespace}-workflow-`;
 
-  for (const agent of oldAgentSet) {
-    if (!newAgentSet.has(agent)) {
-      await rm(join(agentsDir, agent), { force: true });
+  const newAgentSet = new Set(newDeps.agents.map((a) => addNamePrefix(a, 'agent', namespace)));
+  const newSkillSet = new Set(newDeps.skills.map((s) => addNamePrefix(s, 'skill', namespace)));
+  const newWorkflowSet = new Set(
+    newDeps.workflows.map((w) => addNamePrefix(w, 'workflow', namespace)),
+  );
+
+  const agentEntries = await readdir(agentsDir).catch(() => [] as string[]);
+  for (const entry of agentEntries) {
+    if (entry.startsWith(agentPrefix) && !newAgentSet.has(entry)) {
+      await rm(join(agentsDir, entry), { force: true });
     }
   }
 
-  const oldDirSet = new Set([
-    ...oldDeps.skills.map((s) => addNamePrefix(s, 'skill', namespace)),
-    ...oldDeps.workflows.map((w) => addNamePrefix(w, 'workflow', namespace)),
-  ]);
-  const newDirSet = new Set([
-    ...newDeps.skills.map((s) => addNamePrefix(s, 'skill', namespace)),
-    ...newDeps.workflows.map((w) => addNamePrefix(w, 'workflow', namespace)),
-  ]);
-
-  for (const dir of oldDirSet) {
-    if (!newDirSet.has(dir)) {
-      await rm(join(skillsDir, dir), { recursive: true, force: true });
+  const skillEntries = await readdir(skillsDir).catch(() => [] as string[]);
+  for (const entry of skillEntries) {
+    if (entry.startsWith(skillPrefix) && !newSkillSet.has(entry)) {
+      await rm(join(skillsDir, entry), { recursive: true, force: true });
+    } else if (entry.startsWith(workflowPrefix) && !newWorkflowSet.has(entry)) {
+      await rm(join(skillsDir, entry), { recursive: true, force: true });
     }
   }
 }
