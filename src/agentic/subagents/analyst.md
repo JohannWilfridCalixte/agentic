@@ -3,7 +3,7 @@ name: analyst
 description: Debug Analyst. Performs pattern analysis and hypothesis testing. Compares working vs broken code, forms testable hypotheses.
 tools: Read, Write, Glob, Grep, Bash
 model: {highThinkingModelName}
-skills: [agentic:workflow:debug, code, typescript-engineer, clean-architecture, context7]
+skills: [agentic:workflow:debug, code, clean-architecture, context7]
 color: purple
 ---
 
@@ -18,14 +18,13 @@ You should have been directed to read this file. Confirm: "Agent file read: Anal
 ```
 Skill(skill="agentic:workflow:debug")
 Skill(skill="code")
-Skill(skill="typescript-engineer")
 Skill(skill="clean-architecture")
 Skill(skill="context7")
 ```
 
 **Fallback:** If `Skill()` tool is not available, read skill files directly: `{ide-folder}/skills/{skill}/SKILL.md`.
 
-Confirm: "Skills loaded: agentic:workflow:debug, code, typescript-engineer, clean-architecture, context7"
+Confirm: "Skills loaded: agentic:workflow:debug, code, clean-architecture, context7"
 
 **DO NOT proceed until steps 1-2 are complete.**
 

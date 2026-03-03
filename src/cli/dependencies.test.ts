@@ -67,7 +67,7 @@ describe('resolveWorkflowDependencies', () => {
   it('deduplicates skills across multiple workflows', () => {
     const result = resolveWorkflowDependencies(['implement', 'debug']);
 
-    // Both share 'code', 'typescript-engineer', etc.
+    // Both share 'code', 'clean-architecture', etc.
     const uniqueSkills = new Set(result.skills);
     expect(uniqueSkills.size).toBe(result.skills.length);
   });
@@ -108,6 +108,98 @@ describe('resolveWorkflowDependencies', () => {
     const result = resolveWorkflowDependencies(['debug', 'product-spec']);
 
     expect(result.workflows).toEqual(['debug', 'product-spec']);
+  });
+
+  it('includes profile skills when profiles are provided', () => {
+    const profiles = [
+      { name: 'typescript', detect: ['ts'], skills: ['typescript-engineer', 'typescript-imports'] },
+    ] as const;
+
+    const result = resolveWorkflowDependencies(['product-spec'], profiles);
+
+    expect(result.skills).toContain('typescript-engineer');
+    expect(result.skills).toContain('typescript-imports');
+    expect(result.skills).toContain('product-discovery');
+    expect(result.skills).toContain('brainstorming');
+  });
+
+  it('deduplicates profile skills that overlap with workflow skills', () => {
+    const profiles = [{ name: 'custom', detect: ['custom'], skills: ['code'] }] as const;
+
+    const result = resolveWorkflowDependencies(['implement'], profiles);
+
+    const codeOccurrences = result.skills.filter((s) => s === 'code');
+    expect(codeOccurrences).toHaveLength(1);
+  });
+
+  it('returns unchanged results when profiles is undefined', () => {
+    const withoutProfiles = resolveWorkflowDependencies(['implement']);
+    const withUndefined = resolveWorkflowDependencies(['implement'], undefined);
+
+    expect(withoutProfiles.skills).toEqual(withUndefined.skills);
+    expect(withoutProfiles.agents).toEqual(withUndefined.agents);
+  });
+
+  it('respects selectedProfiles when filtering profile skills', () => {
+    const profiles = [
+      { name: 'typescript', detect: ['ts'], skills: ['typescript-engineer'] },
+      { name: 'ruby', detect: ['ruby'], skills: ['ruby-engineer'] },
+    ] as const;
+
+    const result = resolveWorkflowDependencies(['product-spec'], profiles, ['ruby']);
+
+    expect(result.skills).toContain('ruby-engineer');
+    expect(result.skills).not.toContain('typescript-engineer');
+  });
+
+  it('includes all profile skills when no selectedProfiles', () => {
+    const profiles = [
+      { name: 'typescript', detect: ['ts'], skills: ['typescript-engineer'] },
+      { name: 'ruby', detect: ['ruby'], skills: ['ruby-engineer'] },
+    ] as const;
+
+    const result = resolveWorkflowDependencies(['product-spec'], profiles);
+
+    expect(result.skills).toContain('typescript-engineer');
+    expect(result.skills).toContain('ruby-engineer');
+  });
+
+  it('no workflow contains hardcoded typescript-engineer or typescript-imports', () => {
+    const allWorkflows = [
+      'product-spec',
+      'technical-planning',
+      'auto-implement',
+      'implement',
+      'quick-spec-and-implement',
+      'debug',
+      'frontend-development',
+    ];
+
+    for (const workflow of allWorkflows) {
+      const result = resolveWorkflowDependencies([workflow]);
+
+      expect(result.skills).not.toContain('typescript-engineer');
+      expect(result.skills).not.toContain('typescript-imports');
+    }
+  });
+
+  it('skill-injection-protocol is present in all workflows except product-spec', () => {
+    const workflowsWithProtocol = [
+      'technical-planning',
+      'auto-implement',
+      'implement',
+      'quick-spec-and-implement',
+      'debug',
+      'frontend-development',
+    ];
+
+    for (const workflow of workflowsWithProtocol) {
+      const result = resolveWorkflowDependencies([workflow]);
+      expect(result.skills).toContain('skill-injection-protocol');
+    }
+
+    const productSpec = resolveWorkflowDependencies(['product-spec']);
+    expect(productSpec.skills).not.toContain('skill-injection-protocol');
   });
 });
 

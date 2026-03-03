@@ -5,6 +5,7 @@ import type { Result } from '../../lib/monads';
 import { Err, isErr, Ok } from '../../lib/monads';
 import type { IDE } from '../constants';
 import { cleanupStaleFiles, resolveWorkflowDependencies, validateWorkflows } from '../dependencies';
+import { LANGUAGE_PROFILES, mergeProfiles } from '../profiles';
 import { readSettings } from '../settings';
 import type { InitError, TargetIDE } from './init';
 import { getDefaultOutputFolder, setupIde } from './init';
@@ -20,6 +21,8 @@ export interface UpdateOptions {
   readonly namespace?: string;
   readonly outputFolder?: string;
   readonly workflows?: readonly string[];
+  readonly profiles?: readonly string[];
+  readonly skillOverrides?: Record<string, string>;
 }
 
 export async function directoryExists(path: string): Promise<boolean> {
@@ -44,6 +47,8 @@ interface SettingsDefaults {
   readonly namespace: string;
   readonly outputFolder: string;
   readonly workflows?: readonly string[];
+  readonly selectedProfiles?: readonly string[];
+  readonly skillOverrides?: Record<string, string>;
 }
 
 async function readDefaultsFromSettings(
@@ -58,6 +63,8 @@ async function readDefaultsFromSettings(
         namespace: result.data.namespace,
         outputFolder: result.data.outputFolder,
         workflows: result.data.workflows,
+        selectedProfiles: result.data.selectedProfiles,
+        skillOverrides: result.data.skillOverrides,
       };
     }
   }
@@ -97,6 +104,15 @@ export async function update(
     workflows = defaults.workflows ? [...defaults.workflows] : undefined;
   }
 
+  const selectedProfiles =
+    options.profiles ?? (defaults.selectedProfiles ? [...defaults.selectedProfiles] : undefined);
+  const skillOverrides = options.skillOverrides ?? defaults.skillOverrides ?? {};
+  const mergedProfiles = mergeProfiles(LANGUAGE_PROFILES, [], skillOverrides);
+
+  if (selectedProfiles) {
+    console.log(`  Profiles: ${selectedProfiles.join(', ')}`);
+  }
+
   console.log(`Updating ${namespace}...\n`);
   console.log(`  Output folder: ${outputFolder}`);
 
@@ -106,6 +122,9 @@ export async function update(
       outputFolder,
       mode: 'update',
       workflows,
+      profiles: mergedProfiles,
+      skillOverrides,
+      selectedProfiles,
     });
     if (isErr(result)) {
       return Err({
@@ -116,7 +135,7 @@ export async function update(
     }
 
     if (workflows) {
-      const newDeps = resolveWorkflowDependencies(workflows);
+      const newDeps = resolveWorkflowDependencies(workflows, mergedProfiles, selectedProfiles);
       const ideDir = join(projectRoot, `.${targetIde}`);
       await cleanupStaleFiles(ideDir, newDeps, namespace);
     }

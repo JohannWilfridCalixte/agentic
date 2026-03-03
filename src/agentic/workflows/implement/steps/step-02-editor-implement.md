@@ -20,7 +20,7 @@ This file contains your role, skill loading instructions (you MUST use the Skill
 
 After setup, confirm: 'Agent file read. Skills loaded. Beginning implementation.'
 
----
+{language_skills_prompt}
 
 # TASK: Implement Technical Plan
 

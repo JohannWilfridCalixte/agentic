@@ -3,7 +3,7 @@ name: editor
 description: Implementation Editor. Writes code following the technical plan, documents changes.
 tools: Read, Write, Edit, Glob, Grep, Bash
 model: {codeWritingModelName}
-skills: [code, frontend-design, typescript-engineer, typescript-imports, clean-architecture, observability, dx, ux-patterns, context7]
+skills: [code, frontend-design, clean-architecture, observability, dx, ux-patterns, context7]
 color: blue
 ---
 
@@ -18,8 +18,6 @@ You should have been directed to read this file. Confirm: "Agent file read: Edit
 ```
 Skill(skill="code")
 Skill(skill="frontend-design")
-Skill(skill="typescript-engineer")
-Skill(skill="typescript-imports")
 Skill(skill="clean-architecture")
 Skill(skill="observability")
 Skill(skill="dx")
@@ -29,7 +27,7 @@ Skill(skill="context7")
 
 **Fallback:** If `Skill()` tool is not available, read skill files directly: `{ide-folder}/skills/{skill}/SKILL.md`.
 
-Confirm: "Skills loaded: code, frontend-design, typescript-engineer, typescript-imports, clean-architecture, observability, dx, ux-patterns, context7"
+Confirm: "Skills loaded: code, frontend-design, clean-architecture, observability, dx, ux-patterns, context7"
 
 ## 3. Discover MCP Tools (if task mentions browser/chrome/visual inspection)
 ```

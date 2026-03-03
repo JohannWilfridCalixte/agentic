@@ -6,6 +6,8 @@ import { Err, isErr, Ok } from '../../../lib/monads';
 import type { IDE } from '../../constants';
 import { resolveWorkflowDependencies, validateWorkflows } from '../../dependencies';
 import { AGENTS_DIR, SKILLS_DIR, SUBAGENTS_DIR, WORKFLOWS_DIR } from '../../paths';
+import type { LanguageProfile } from '../../profiles';
+import { LANGUAGE_PROFILES, mergeProfiles } from '../../profiles';
 import { writeSettings } from '../../settings';
 import type { TemplateOptions } from '../../utils';
 import {
@@ -109,8 +111,10 @@ async function selectiveCopy(
   ideDir: string,
   targetIde: TargetIDE,
   templateOptions: TemplateOptions,
+  profiles?: readonly LanguageProfile[],
+  selectedProfiles?: readonly string[],
 ): Promise<Result<void, InitError>> {
-  const deps = resolveWorkflowDependencies(workflows);
+  const deps = resolveWorkflowDependencies(workflows, profiles, selectedProfiles);
 
   for (const agentFile of deps.agents) {
     const sourcePath = join(SUBAGENTS_DIR, agentFile);
@@ -177,6 +181,9 @@ export interface SetupOptions {
   readonly outputFolder?: string;
   readonly mode?: SetupMode;
   readonly workflows?: readonly string[];
+  readonly profiles?: readonly LanguageProfile[];
+  readonly skillOverrides?: Record<string, string>;
+  readonly selectedProfiles?: readonly string[];
 }
 
 export async function setupIde(
@@ -199,7 +206,14 @@ export async function setupIde(
   };
 
   if (options.workflows && options.workflows.length > 0) {
-    const copyResult = await selectiveCopy(options.workflows, ideDir, targetIde, templateOptions);
+    const copyResult = await selectiveCopy(
+      options.workflows,
+      ideDir,
+      targetIde,
+      templateOptions,
+      options.profiles,
+      options.selectedProfiles,
+    );
     if (isErr(copyResult)) return copyResult;
   } else {
     const copyResult = await copyAllWithPrefixes(ideDir, targetIde, templateOptions);
@@ -211,7 +225,7 @@ export async function setupIde(
   await makeScriptsExecutableRecursive(join(ideDir, 'skills'));
 
   const resolvedDeps = options.workflows?.length
-    ? resolveWorkflowDependencies(options.workflows)
+    ? resolveWorkflowDependencies(options.workflows, options.profiles, options.selectedProfiles)
     : undefined;
 
   const strategy = getIdeStrategy(targetIde);
@@ -234,6 +248,9 @@ export async function setupIde(
     getCodeWritingModelName(targetIde),
     getQaModelName(targetIde),
     options.workflows,
+    options.profiles,
+    options.skillOverrides,
+    options.selectedProfiles,
   );
   if (isErr(settingsResult)) {
     return Err({
@@ -251,6 +268,8 @@ export interface InitOptions {
   readonly namespace?: string;
   readonly outputFolder?: string;
   readonly workflows?: readonly string[];
+  readonly profiles?: readonly string[];
+  readonly skillOverrides?: Record<string, string>;
 }
 
 export async function init(options: InitOptions = {}): Promise<Result<void, InitError>> {
@@ -269,6 +288,12 @@ export async function init(options: InitOptions = {}): Promise<Result<void, Init
     validatedWorkflows = validation.data;
   }
 
+  const mergedProfiles = mergeProfiles(LANGUAGE_PROFILES, [], options.skillOverrides ?? {});
+
+  if (options.profiles) {
+    console.log(`  Profiles: ${options.profiles.join(', ')}`);
+  }
+
   console.log(`Initializing ${namespace}...\n`);
   console.log(`  Output folder: ${outputFolder}`);
 
@@ -277,6 +302,9 @@ export async function init(options: InitOptions = {}): Promise<Result<void, Init
       namespace,
       outputFolder,
       workflows: validatedWorkflows,
+      profiles: mergedProfiles,
+      skillOverrides: options.skillOverrides,
+      selectedProfiles: options.profiles,
     });
     if (isErr(result)) return result;
   }

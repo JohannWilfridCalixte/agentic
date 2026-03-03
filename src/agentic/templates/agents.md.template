@@ -27,14 +27,22 @@ It is **MANDATORY** that you read skills if you cannot invoke them via tools.
 
 - At the end of each plan, give me the list of unresolved questions to answer, if any.
 
+## Language Skills (loaded dynamically)
+
+Language-specific skills are injected at runtime by the skill-injection-protocol based on the project's `tech_stack` in `technical-context.md` and profiles in `.agentic.settings.json`. Agents do NOT hardcode language skills.
+
+| Skill | Use When |
+|-------|----------|
+| **agentic:skill:typescript-engineer** | Writing TypeScript code - types, error handling, patterns |
+| **agentic:skill:typescript-imports** | Writing imports - ordering, grouping, type imports |
+
 ## Skill Index (always available)
 
 Load skill: `{ide-invoke-prefix}{ide-folder}/skills/{name}/SKILL.md`
 
 | Skill | Use When |
 |-------|----------|
-| **agentic:skill:typescript-engineer** | Writing TypeScript code - types, error handling, patterns |
-| **agentic:skill:typescript-imports** | Writing imports - ordering, grouping, type imports |
+| **agentic:skill:skill-injection-protocol** | Determines which language skills to load at runtime |
 | **agentic:skill:clean-architecture** | Services with business logic needing decoupling from frameworks/DB |
 | **agentic:skill:observability** | Adding logging, tracing, instrumentation |
 | **agentic:skill:code** | Implementing code per technical plan |

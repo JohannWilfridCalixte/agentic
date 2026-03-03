@@ -178,6 +178,7 @@ artifacts:
   decision_log: "{story_path}/decision-log.md"
 
 pr_url: null
+language_skills_prompt: ""
 ```
 
 ### 1.8 Initialize Decision Log
@@ -253,6 +254,18 @@ Decision log: {story_path}/decision-log.md
 
 Proceeding to {next step name}...
 ```
+
+### Resolve Language Skills (technical-plan-with-context only)
+
+IF `input_class == "technical-plan-with-context"` (route skips step-02):
+
+Follow skill-injection-protocol to resolve language skills:
+{ide-invoke-prefix}{ide-folder}/skills/agentic-skill-skill-injection-protocol/SKILL.md
+
+Use technical context from the input for tech_stack.
+Cache result in workflow-state.yaml as `language_skills_prompt`.
+
+(Other routes: step-02 handles resolution after context gathering.)
 
 ---
 

@@ -79,6 +79,38 @@ export function parseNamespaceOption(args: readonly string[]): string | undefine
   return value;
 }
 
+export function parseProfileOption(args: readonly string[]): string[] | undefined {
+  let index = args.indexOf('--profile');
+  if (index === -1) index = args.indexOf('-p');
+  if (index === -1 || !args[index + 1]) return undefined;
+
+  return args[index + 1]
+    .split(',')
+    .map((p) => p.trim())
+    .filter(Boolean);
+}
+
+export function parseSkillOverrideOption(
+  args: readonly string[],
+): Record<string, string> | undefined {
+  const overrides: Record<string, string> = {};
+  let found = false;
+
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--skill-override' && args[i + 1]) {
+      const value = args[i + 1];
+      const eqIndex = value.indexOf('=');
+      if (eqIndex > 0) {
+        overrides[value.slice(0, eqIndex)] = value.slice(eqIndex + 1);
+        found = true;
+      }
+      i++;
+    }
+  }
+
+  return found ? overrides : undefined;
+}
+
 export async function run(args: readonly string[]) {
   const command = parseCommand(args[0], args);
 
@@ -96,7 +128,16 @@ export async function run(args: readonly string[]) {
       const outputFolder = parseOutputOption(args);
       const namespace = parseNamespaceOption(args);
       const workflows = parseWorkflowsOption(args);
-      const result = await init({ ide, outputFolder, namespace, workflows });
+      const profiles = parseProfileOption(args);
+      const skillOverrides = parseSkillOverrideOption(args);
+      const result = await init({
+        ide,
+        outputFolder,
+        namespace,
+        workflows,
+        profiles,
+        skillOverrides,
+      });
 
       if (isErr(result)) {
         console.error(`Error: ${result.data.message}`);
@@ -111,7 +152,16 @@ export async function run(args: readonly string[]) {
       const outputFolder = parseOutputOption(args);
       const namespace = parseNamespaceOption(args);
       const workflows = parseWorkflowsOption(args);
-      const result = await update({ ide, outputFolder, namespace, workflows });
+      const profiles = parseProfileOption(args);
+      const skillOverrides = parseSkillOverrideOption(args);
+      const result = await update({
+        ide,
+        outputFolder,
+        namespace,
+        workflows,
+        profiles,
+        skillOverrides,
+      });
 
       if (isErr(result)) {
         console.error(`Error: ${result.data.message}`);

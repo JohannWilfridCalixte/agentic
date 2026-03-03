@@ -3,6 +3,8 @@ import { join } from 'node:path';
 
 import type { Result } from '../lib/monads';
 import { Err, Ok } from '../lib/monads';
+import type { LanguageProfile } from './profiles';
+import { collectAllProfileSkills } from './profiles';
 import { addNamePrefix } from './utils';
 
 type WorkflowName =
@@ -35,9 +37,8 @@ const WORKFLOW_DEPENDENCY_MAP: Record<WorkflowName, WorkflowDependencies> = {
     skills: [
       'gather-technical-context',
       'technical-planning',
+      'skill-injection-protocol',
       'code',
-      'typescript-engineer',
-      'typescript-imports',
       'clean-architecture',
       'observability',
       'code-testing',
@@ -51,10 +52,9 @@ const WORKFLOW_DEPENDENCY_MAP: Record<WorkflowName, WorkflowDependencies> = {
     skills: [
       'gather-technical-context',
       'technical-planning',
+      'skill-injection-protocol',
       'code',
       'frontend-design',
-      'typescript-engineer',
-      'typescript-imports',
       'clean-architecture',
       'observability',
       'code-testing',
@@ -68,10 +68,9 @@ const WORKFLOW_DEPENDENCY_MAP: Record<WorkflowName, WorkflowDependencies> = {
   implement: {
     agents: ['editor', 'test-engineer', 'qa', 'test-qa', 'security-qa'],
     skills: [
+      'skill-injection-protocol',
       'code',
       'frontend-design',
-      'typescript-engineer',
-      'typescript-imports',
       'clean-architecture',
       'observability',
       'code-testing',
@@ -97,10 +96,9 @@ const WORKFLOW_DEPENDENCY_MAP: Record<WorkflowName, WorkflowDependencies> = {
       'product-manager',
       'gather-technical-context',
       'technical-planning',
+      'skill-injection-protocol',
       'code',
       'frontend-design',
-      'typescript-engineer',
-      'typescript-imports',
       'clean-architecture',
       'observability',
       'code-testing',
@@ -115,9 +113,8 @@ const WORKFLOW_DEPENDENCY_MAP: Record<WorkflowName, WorkflowDependencies> = {
   debug: {
     agents: ['investigator', 'analyst', 'test-engineer', 'editor', 'qa', 'test-qa'],
     skills: [
+      'skill-injection-protocol',
       'code',
-      'typescript-engineer',
-      'typescript-imports',
       'clean-architecture',
       'observability',
       'code-testing',
@@ -131,12 +128,11 @@ const WORKFLOW_DEPENDENCY_MAP: Record<WorkflowName, WorkflowDependencies> = {
   'frontend-development': {
     agents: ['ui-ux-designer', 'frontend-developer', 'qa'],
     skills: [
+      'skill-injection-protocol',
       'frontend-design',
       'ux-patterns',
       'refactoring-ui',
       'code',
-      'typescript-engineer',
-      'typescript-imports',
       'clean-architecture',
       'observability',
       'dx',
@@ -148,7 +144,11 @@ const WORKFLOW_DEPENDENCY_MAP: Record<WorkflowName, WorkflowDependencies> = {
 
 export const KNOWN_WORKFLOWS = Object.keys(WORKFLOW_DEPENDENCY_MAP) as readonly WorkflowName[];
 
-export function resolveWorkflowDependencies(workflows: readonly string[]) {
+export function resolveWorkflowDependencies(
+  workflows: readonly string[],
+  profiles?: readonly LanguageProfile[],
+  selectedProfiles?: readonly string[],
+) {
   const agents = new Set<string>();
   const skills = new Set<string>();
 
@@ -157,6 +157,11 @@ export function resolveWorkflowDependencies(workflows: readonly string[]) {
     if (!deps) continue;
     for (const agent of deps.agents) agents.add(agent);
     for (const skill of deps.skills) skills.add(skill);
+  }
+
+  if (profiles) {
+    const profileSkills = collectAllProfileSkills(profiles, selectedProfiles);
+    for (const skill of profileSkills) skills.add(skill);
   }
 
   return {

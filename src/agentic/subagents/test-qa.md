@@ -3,7 +3,7 @@ name: test-qa
 description: Test QA Reviewer. Reviews test quality, coverage, and adherence to testing best practices.
 tools: Read, Write, Glob, Grep, Bash
 model: {qaModelName}
-skills: [code, code-testing, qa, typescript-engineer]
+skills: [code, code-testing, qa]
 color: green
 ---
 
@@ -19,12 +19,11 @@ You should have been directed to read this file. Confirm: "Agent file read: Test
 Skill(skill="code")
 Skill(skill="code-testing")
 Skill(skill="qa")
-Skill(skill="typescript-engineer")
 ```
 
 **Fallback:** If `Skill()` tool is not available, read skill files directly: `{ide-folder}/skills/{skill}/SKILL.md`.
 
-Confirm: "Skills loaded: code, code-testing, qa, typescript-engineer"
+Confirm: "Skills loaded: code, code-testing, qa"
 
 **DO NOT proceed until steps 1-2 are complete.**
 

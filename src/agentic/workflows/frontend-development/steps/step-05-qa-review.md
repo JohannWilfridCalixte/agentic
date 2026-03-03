@@ -24,7 +24,7 @@ This file contains your role, skill loading instructions (you MUST use the Skill
 
 After setup, confirm: 'Agent file read. Skills loaded. Beginning QA review.'
 
----
+{language_skills_prompt}
 
 # TASK: Review Frontend Implementation
 
@@ -121,7 +121,7 @@ Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="
 
 ...setup instructions...
 
----
+{language_skills_prompt}
 
 # TASK: Fix QA Issues
 

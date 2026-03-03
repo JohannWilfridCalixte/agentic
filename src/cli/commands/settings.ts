@@ -7,6 +7,8 @@ import type { IDE } from '../constants';
 import { NAMESPACE_PATTERN } from '../constants';
 import { cleanupStaleFiles, resolveWorkflowDependencies, validateWorkflows } from '../dependencies';
 import { AGENTS_DIR, SKILLS_DIR, SUBAGENTS_DIR, WORKFLOWS_DIR } from '../paths';
+import type { LanguageProfile } from '../profiles';
+import { LANGUAGE_PROFILES, mergeProfiles } from '../profiles';
 import { readSettings, writeSettings } from '../settings';
 import type { TemplateOptions } from '../utils';
 import { addNamePrefix, copyAndProcess, copyFileAndProcess } from '../utils';
@@ -31,6 +33,8 @@ export interface SettingsUpdateOptions {
   qaModelName?: string;
   outputFolder?: string;
   workflows?: readonly string[];
+  profiles?: readonly string[];
+  skillOverrides?: Record<string, string>;
 }
 
 export function parseSettingsArgs(args: readonly string[]): SettingsUpdateOptions {
@@ -70,6 +74,19 @@ export function parseSettingsArgs(args: readonly string[]): SettingsUpdateOption
         .map((w) => w.trim())
         .filter(Boolean);
       i++;
+    } else if ((arg === '--profile' || arg === '-p') && next) {
+      options.profiles = next
+        .split(',')
+        .map((p) => p.trim())
+        .filter(Boolean);
+      i++;
+    } else if (arg === '--skill-override' && next) {
+      if (!options.skillOverrides) options.skillOverrides = {};
+      const eqIndex = next.indexOf('=');
+      if (eqIndex > 0) {
+        options.skillOverrides[next.slice(0, eqIndex)] = next.slice(eqIndex + 1);
+      }
+      i++;
     }
   }
 
@@ -81,11 +98,13 @@ async function reinstallAgents(
   projectRoot: string,
   templateOptions: TemplateOptions,
   workflows?: readonly string[],
+  profiles?: readonly LanguageProfile[],
+  selectedProfiles?: readonly string[],
 ): Promise<Result<void, InitError>> {
   const ideDir = join(projectRoot, `.${targetIde}`);
 
   if (workflows && workflows.length > 0) {
-    const deps = resolveWorkflowDependencies(workflows);
+    const deps = resolveWorkflowDependencies(workflows, profiles, selectedProfiles);
 
     for (const agentFile of deps.agents) {
       const sourcePath = join(SUBAGENTS_DIR, agentFile);
@@ -243,6 +262,10 @@ export async function settingsUpdate(
     const qaModelName = options.qaModelName ?? s.qaModelName;
     const namespace = options.namespace ?? s.namespace ?? 'agentic';
     const workflows = validatedWorkflows ?? (s.workflows ? [...s.workflows] : undefined);
+    const selectedProfiles =
+      options.profiles ?? (s.selectedProfiles ? [...s.selectedProfiles] : undefined);
+    const skillOverrides = options.skillOverrides ?? s.skillOverrides ?? {};
+    const mergedProfiles = mergeProfiles(LANGUAGE_PROFILES, [], skillOverrides);
 
     const templateOptions: TemplateOptions = {
       namespace,
@@ -252,7 +275,14 @@ export async function settingsUpdate(
       qaModelName,
     };
 
-    const copyResult = await reinstallAgents(targetIde, projectRoot, templateOptions, workflows);
+    const copyResult = await reinstallAgents(
+      targetIde,
+      projectRoot,
+      templateOptions,
+      workflows,
+      mergedProfiles,
+      selectedProfiles,
+    );
     if (isErr(copyResult)) {
       return Err({
         code: 'SETTINGS_UPDATE_FAILED' as const,
@@ -262,7 +292,7 @@ export async function settingsUpdate(
     }
 
     if (workflows) {
-      const newDeps = resolveWorkflowDependencies(workflows);
+      const newDeps = resolveWorkflowDependencies(workflows, mergedProfiles, selectedProfiles);
       await cleanupStaleFiles(ideDir, newDeps, namespace);
     }
 
@@ -274,6 +304,9 @@ export async function settingsUpdate(
       codeWritingModelName,
       qaModelName,
       workflows,
+      mergedProfiles,
+      Object.keys(skillOverrides).length > 0 ? skillOverrides : undefined,
+      selectedProfiles,
     );
     if (isErr(writeResult)) {
       return Err({

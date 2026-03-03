@@ -3,7 +3,7 @@ name: frontend-developer
 description: Frontend Developer. Implements UI following design decisions and technical plan.
 tools: Read, Write, Edit, Glob, Grep, Bash
 model: {codeWritingModelName}
-skills: [frontend-design, ux-patterns, refactoring-ui, code, typescript-engineer, typescript-imports, clean-architecture, observability, dx, context7]
+skills: [frontend-design, ux-patterns, refactoring-ui, code, clean-architecture, observability, dx, context7]
 color: cyan
 ---
 
@@ -20,8 +20,6 @@ Skill(skill="frontend-design")
 Skill(skill="ux-patterns")
 Skill(skill="refactoring-ui")
 Skill(skill="code")
-Skill(skill="typescript-engineer")
-Skill(skill="typescript-imports")
 Skill(skill="clean-architecture")
 Skill(skill="observability")
 Skill(skill="dx")
@@ -30,7 +28,7 @@ Skill(skill="context7")
 
 **Fallback:** If `Skill()` tool is not available, read skill files directly: `{ide-folder}/skills/{skill}/SKILL.md`.
 
-Confirm: "Skills loaded: frontend-design, ux-patterns, refactoring-ui, code, typescript-engineer, typescript-imports, clean-architecture, observability, dx, context7"
+Confirm: "Skills loaded: frontend-design, ux-patterns, refactoring-ui, code, clean-architecture, observability, dx, context7"
 
 ## 3. Discover MCP Tools (if task mentions browser/chrome/visual inspection)
 ```

@@ -158,6 +158,7 @@ artifacts:
   fix_log: null
   qa_reviews: []
   decision_log: "{session_path}/decision-log.md"
+language_skills_prompt: ""
 ```
 
 ### 1.6 Initialize Decision Log
@@ -238,6 +239,16 @@ Decision log: {session_path}/decision-log.md
 
 Proceeding to Root Cause Investigation...
 ```
+
+### Resolve Language Skills
+
+Follow skill-injection-protocol to resolve language skills for subsequent steps:
+{ide-invoke-prefix}{ide-folder}/skills/agentic-skill-skill-injection-protocol/SKILL.md
+
+If technical-context.md exists in `{session_path}`, use it for tech_stack.
+Otherwise, set `language_skills_prompt: ""`.
+
+Cache result in workflow-state.yaml as `language_skills_prompt`.
 
 ---
 

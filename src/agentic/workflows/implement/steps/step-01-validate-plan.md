@@ -144,6 +144,7 @@ pr:
   requested: null
   branch: null
   url: null
+language_skills_prompt: ""
 ```
 
 ### 1.8 Initialize Decision Log
@@ -206,6 +207,16 @@ Decision log: {output_path}/decision-log.md
 
 Proceeding to Editor implementation...
 ```
+
+### Resolve Language Skills
+
+Follow skill-injection-protocol to resolve language skills for subsequent steps:
+{ide-invoke-prefix}{ide-folder}/skills/agentic-skill-skill-injection-protocol/SKILL.md
+
+If technical-context.md exists in `{output_path}`, use it for tech_stack.
+Otherwise, set `language_skills_prompt: ""`.
+
+Cache result in workflow-state.yaml as `language_skills_prompt`.
 
 ---
 

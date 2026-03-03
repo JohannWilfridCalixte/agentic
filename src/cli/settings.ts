@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import type { Result } from '../lib/monads';
 import { Err, Ok } from '../lib/monads';
 import { PKG_ROOT } from './paths';
+import type { LanguageProfile } from './profiles';
 
 export interface AgenticSettings {
   readonly namespace: string;
@@ -13,6 +14,9 @@ export interface AgenticSettings {
   readonly qaModelName: string;
   readonly lastUpdate: string;
   readonly workflows?: readonly string[];
+  readonly profiles?: readonly LanguageProfile[];
+  readonly skillOverrides?: Record<string, string>;
+  readonly selectedProfiles?: readonly string[];
 }
 
 interface WriteSettingsError {
@@ -79,6 +83,9 @@ export async function writeSettings(
   codeWritingModelName: string,
   qaModelName: string,
   workflows?: readonly string[],
+  profiles?: readonly LanguageProfile[],
+  skillOverrides?: Record<string, string>,
+  selectedProfiles?: readonly string[],
 ): Promise<Result<void, WriteSettingsError>> {
   try {
     const version = await getPackageVersion();
@@ -92,6 +99,9 @@ export async function writeSettings(
       qaModelName,
       lastUpdate: new Date().toISOString(),
       ...(workflows ? { workflows } : {}),
+      ...(profiles ? { profiles } : {}),
+      ...(skillOverrides && Object.keys(skillOverrides).length > 0 ? { skillOverrides } : {}),
+      ...(selectedProfiles && selectedProfiles.length > 0 ? { selectedProfiles } : {}),
     };
 
     const settingsPath = join(ideDir, '.agentic.settings.json');

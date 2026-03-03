@@ -29,7 +29,10 @@ Status: Draft | Ready
 Owner: AI Architect (Context)
 Last Updated: (ISO timestamp)
 Inputs: (list exact paths consumed)
+tech_stack: [lowercase identifiers of languages/frameworks/runtimes used]
 ```
+
+The `tech_stack` field is **required**. List all languages, frameworks, and runtimes relevant to the project as lowercase identifiers. Examples: `typescript`, `react`, `node`, `bun`, `ruby`, `rails`, `python`, `django`, `go`, `rust`. This field is used by the skill-injection-protocol to determine which language skills to load at runtime.
 
 ### Sections
 

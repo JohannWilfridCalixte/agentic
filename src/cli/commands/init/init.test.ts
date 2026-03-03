@@ -281,15 +281,17 @@ describe('init', () => {
       const skillsDir = join(TEST_DIR, '.claude', 'skills');
       const entries = await readdir(skillsDir);
 
-      // product-spec has skills: product-discovery, brainstorming + workflow dir
+      // product-spec has skills: product-discovery, brainstorming + workflow dir + profile skills
       expect(entries).toContain('agentic-skill-product-discovery');
       expect(entries).toContain('agentic-skill-brainstorming');
       expect(entries).toContain('agentic-workflow-product-spec');
+      expect(entries).toContain('agentic-skill-typescript-engineer');
+      expect(entries).toContain('agentic-skill-typescript-imports');
 
       // Should NOT have other workflows or skills
       expect(entries).not.toContain('agentic-skill-code');
       expect(entries).not.toContain('agentic-workflow-implement');
-      expect(entries).toHaveLength(3);
+      expect(entries).toHaveLength(5);
     });
 
     it('installs no top-level agents when -w is used', async () => {

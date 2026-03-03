@@ -22,7 +22,7 @@ This file contains your role, skill loading instructions (you MUST use the Skill
 
 After setup, confirm: 'Agent file read. Skills loaded. Beginning context gathering.'
 
----
+{language_skills_prompt}
 
 # TASK: Context Gathering (Phase 1)
 
@@ -68,6 +68,14 @@ steps_completed:
 
 current_step: {next step in route}
 ```
+
+### Resolve Language Skills
+
+Follow skill-injection-protocol to resolve language skills for subsequent steps:
+{ide-invoke-prefix}{ide-folder}/skills/agentic-skill-skill-injection-protocol/SKILL.md
+
+Use `{story_path}/technical-context.md` for tech_stack.
+Cache result in workflow-state.yaml as `language_skills_prompt`.
 
 ---
 
