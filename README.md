@@ -7,6 +7,7 @@ Multi-agent framework for **Claude Code** + **Cursor**. Distributes agent prompt
 ## Table of Contents
 
 - [Quick Start](#quick-start)
+- [Setup Guides](#setup-guides)
 - [What It Does](#what-it-does)
 - [CLI Commands](#cli-commands)
 - [Migrating from Older Versions](#migrate)
@@ -33,26 +34,30 @@ Add to `~/.npmrc` (a [GitHub Personal Access Token](https://github.com/settings/
 //npm.pkg.github.com/:_authToken=YOUR_GITHUB_PAT
 ```
 
-### 2. Install in your project
+### 2. Install for your role
 
-**Recommended setup** — core workflows with your team namespace:
+Pick the setup that matches your role. Detailed guides explain each workflow, how to use them, and provide examples.
 
-```bash
-bunx @JohannWilfridCalixte/agentic@alpha init \
-  -w product-spec,technical-planning,implement,debug \
-  -n YOUR_TEAM_NAME \
-  --ide YOUR_IDE
-```
-
-Other package managers:
+**Product Manager** — ask questions about the codebase, write product specs ([detailed guide](SETUP_PM.md)):
 
 ```bash
-# npx
-npx @JohannWilfridCalixte/agentic@alpha init -w product-spec,technical-planning,implement,debug -n YOUR_TEAM_NAME --ide YOUR_IDE
-
-# pnpx
-pnpx @JohannWilfridCalixte/agentic@alpha init -w product-spec,technical-planning,implement,debug -n YOUR_TEAM_NAME --ide YOUR_IDE
+bunx @JohannWilfridCalixte/agentic@alpha init -w ask-codebase,product-spec -n YOUR_TEAM_NAME --ide YOUR_IDE
 ```
+
+**Developer** — technical planning, implementation, debugging ([detailed guide](SETUP_DEV.md)):
+
+```bash
+bunx @JohannWilfridCalixte/agentic@alpha init -w technical-planning,implement,debug -n YOUR_TEAM_NAME --ide YOUR_IDE
+```
+
+**Solo Developer** — full product-to-code pipeline + frontend ([detailed guide](SETUP_SOLO_DEV.md)):
+
+```bash
+bunx @JohannWilfridCalixte/agentic@alpha init -w ask-codebase,product-spec,technical-planning,implement,debug,frontend-development -n YOUR_TEAM_NAME --ide YOUR_IDE
+```
+
+> Replace `YOUR_TEAM_NAME` with a lowercase namespace (e.g. `myteam`) and `YOUR_IDE` with `claude`, `cursor`, or `both`.
+> Also works with `npx` or `pnpx` instead of `bunx`.
 
 Full install (all workflows, both IDEs):
 
@@ -65,22 +70,36 @@ bunx @JohannWilfridCalixte/agentic@alpha init
 In **Claude Code**, invoke workflows with colon syntax:
 
 ```
+/agentic:workflow:ask-codebase            # question → code-informed answer
 /agentic:workflow:product-spec            # idea → PRD
 /agentic:workflow:technical-planning      # spec → detailed technical plan
 /agentic:workflow:implement               # plan → code → tests → review
 /agentic:workflow:debug                   # systematic debugging
+/agentic:workflow:frontend-development    # idea → design → frontend code
 ```
 
 In **Cursor**, invoke workflows with dash syntax:
 
 ```
+/agentic-workflow-ask-codebase
 /agentic-workflow-product-spec
 /agentic-workflow-technical-planning
 /agentic-workflow-implement
 /agentic-workflow-debug
+/agentic-workflow-frontend-development
 ```
 
 > With a custom namespace (e.g., `-n myteam`), replace `agentic` with your namespace: `/myteam:workflow:implement` (Claude Code) or `/myteam-workflow-implement` (Cursor).
+
+## Setup Guides
+
+Detailed guides with workflow explanations, step-by-step usage, and examples:
+
+| Role | Guide | Workflows |
+|------|-------|-----------|
+| Product Manager | [SETUP_PM.md](SETUP_PM.md) | ask-codebase, product-spec |
+| Developer | [SETUP_DEV.md](SETUP_DEV.md) | technical-planning, implement, debug |
+| Solo Developer | [SETUP_SOLO_DEV.md](SETUP_SOLO_DEV.md) | All workflows |
 
 ## What It Does
 
@@ -202,6 +221,7 @@ bunx @JohannWilfridCalixte/agentic@alpha update --workflows debug
 
 | Workflow | Agents installed | Key skills |
 |----------|-----------------|------------|
+| `ask-codebase` | architect | gather-technical-context, context7 |
 | `product-spec` | (none) | product-discovery, brainstorming |
 | `technical-planning` | architect | gather-technical-context, technical-planning, code, typescript-* |
 | `implement` | editor, test-engineer, qa, test-qa, security-qa | all code skills |
@@ -245,9 +265,10 @@ Workflows are orchestrated multi-step processes that coordinate agents to comple
 
 | Workflow | Trigger | What it does |
 |----------|---------|-------------|
-| `implement` | technical plan | Plan → Editor code → Test Engineer tests → QA + Security review → optional PR |
-| `technical-planning` | spec/PRD/story | Gathers context → resolves decisions → produces detailed technical plan |
+| `ask-codebase` | question about behavior | Architect context gathering → functional understanding → code-informed answer |
 | `product-spec` | vague idea | Product discovery dialogue → precise PRD |
+| `technical-planning` | spec/PRD/story | Gathers context → resolves decisions → produces detailed technical plan |
+| `implement` | technical plan | Plan → Editor code → Test Engineer tests → QA + Security review → optional PR |
 | `debug` | bug/error/failure | Investigator evidence → Analyst hypothesis → Editor fix → QA verify |
 | `frontend-development` | UI feature | UI/UX design → visual decisions → frontend implementation |
 
