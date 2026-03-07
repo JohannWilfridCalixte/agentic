@@ -17,7 +17,7 @@ Options:
                               Must be lowercase, start with letter, 2-30 chars
   --workflows, -w <list>      Install only specified workflows + deps
                               Comma-separated: -w product-spec,implement
-                              Available: product-spec, technical-planning,
+                              Available: product-spec, ask-codebase, technical-planning,
                               auto-implement, implement, debug,
                               quick-spec-and-implement, frontend-development
   --ide <type>                Target IDE: claude, cursor, or both

@@ -1,0 +1,34 @@
+# Workflow State Template
+# Tracks progress through ask-codebase workflow
+# Location: {output_path}/workflow-state.yaml
+
+workflow: ask-codebase
+version: "1.0.0"
+
+input_type: "" # prompt_user | file | github_issue | inline
+input_source: null # path, issue reference, URL, or null
+
+topic: "" # kebab-case topic
+instance_id: "" # YYYYMMDD-HHMMSS-XXXX
+output_path: "" # {ide-folder}/{outputFolder}/task/ask-codebase/{topic}/{instance_id}
+
+started_at: "" # ISO timestamp
+updated_at: "" # ISO timestamp
+completed_at: null # ISO timestamp when done
+
+language_skills_prompt: ""
+
+status: "pending" # pending | in_progress | completed | failed
+current_step: 0
+steps_completed: []
+
+understanding_attempts: 0
+question_confirmed: false
+clarifications_asked: 0
+material_ambiguities: 0
+
+artifacts:
+  input_question: null
+  technical_context: null
+  functional_understanding: null
+  answer: null

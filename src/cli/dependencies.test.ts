@@ -10,13 +10,14 @@ import {
 } from './dependencies';
 
 describe('KNOWN_WORKFLOWS', () => {
-  it('contains exactly 7 workflow names', () => {
-    expect(KNOWN_WORKFLOWS).toHaveLength(7);
+  it('contains exactly 8 workflow names', () => {
+    expect(KNOWN_WORKFLOWS).toHaveLength(8);
   });
 
   it('includes all expected workflow names', () => {
     const expected = [
       'product-spec',
+      'ask-codebase',
       'technical-planning',
       'auto-implement',
       'implement',
@@ -54,6 +55,27 @@ describe('resolveWorkflowDependencies', () => {
       ]),
     );
     expect(result.agents).toHaveLength(5);
+  });
+
+  it('returns correct dependencies for ask-codebase workflow', () => {
+    const result = resolveWorkflowDependencies(['ask-codebase']);
+
+    expect(result.agents).toEqual(['architect.md']);
+    expect(result.skills).toEqual(
+      expect.arrayContaining([
+        'gather-technical-context',
+        'technical-planning',
+        'skill-injection-protocol',
+        'code',
+        'clean-architecture',
+        'observability',
+        'code-testing',
+        'dx',
+        'ux-patterns',
+        'context7',
+      ]),
+    );
+    expect(result.workflows).toEqual(['ask-codebase']);
   });
 
   it('deduplicates agents across multiple workflows', () => {
@@ -167,6 +189,7 @@ describe('resolveWorkflowDependencies', () => {
   it('no workflow contains hardcoded typescript-engineer or typescript-imports', () => {
     const allWorkflows = [
       'product-spec',
+      'ask-codebase',
       'technical-planning',
       'auto-implement',
       'implement',
@@ -185,6 +208,7 @@ describe('resolveWorkflowDependencies', () => {
 
   it('skill-injection-protocol is present in all workflows except product-spec', () => {
     const workflowsWithProtocol = [
+      'ask-codebase',
       'technical-planning',
       'auto-implement',
       'implement',

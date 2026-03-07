@@ -317,6 +317,7 @@ export async function init(options: InitOptions = {}): Promise<Result<void, Init
 
   console.log('\nUsage:');
   console.log(`  /${namespace}:workflow:product-spec [--auto] [input]`);
+  console.log(`  /${namespace}:workflow:ask-codebase [input]`);
   console.log(`  /${namespace}:workflow:technical-planning [input]`);
   console.log(`  /${namespace}:workflow:quick-spec-and-implement [--auto] [input]`);
   console.log(`  /${namespace}:workflow:auto-implement [input]`);
