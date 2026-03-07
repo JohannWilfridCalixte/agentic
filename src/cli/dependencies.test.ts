@@ -62,19 +62,9 @@ describe('resolveWorkflowDependencies', () => {
 
     expect(result.agents).toEqual(['architect.md']);
     expect(result.skills).toEqual(
-      expect.arrayContaining([
-        'gather-technical-context',
-        'technical-planning',
-        'skill-injection-protocol',
-        'code',
-        'clean-architecture',
-        'observability',
-        'code-testing',
-        'dx',
-        'ux-patterns',
-        'context7',
-      ]),
+      expect.arrayContaining(['gather-technical-context', 'skill-injection-protocol', 'context7']),
     );
+    expect(result.skills).toHaveLength(3);
     expect(result.workflows).toEqual(['ask-codebase']);
   });
 

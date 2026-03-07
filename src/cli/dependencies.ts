@@ -20,6 +20,7 @@ type WorkflowName =
 interface WorkflowDependencies {
   readonly agents: readonly string[];
   readonly skills: readonly string[];
+  readonly argumentHint?: string;
 }
 
 export interface ResolvedDependencies {
@@ -32,21 +33,12 @@ const WORKFLOW_DEPENDENCY_MAP: Record<WorkflowName, WorkflowDependencies> = {
   'product-spec': {
     agents: [],
     skills: ['product-discovery', 'brainstorming'],
+    argumentHint: '[--auto] [input]',
   },
   'ask-codebase': {
     agents: ['architect'],
-    skills: [
-      'gather-technical-context',
-      'technical-planning',
-      'skill-injection-protocol',
-      'code',
-      'clean-architecture',
-      'observability',
-      'code-testing',
-      'dx',
-      'ux-patterns',
-      'context7',
-    ],
+    skills: ['gather-technical-context', 'skill-injection-protocol', 'context7'],
+    argumentHint: '[input]',
   },
   'technical-planning': {
     agents: ['architect'],
@@ -62,6 +54,7 @@ const WORKFLOW_DEPENDENCY_MAP: Record<WorkflowName, WorkflowDependencies> = {
       'ux-patterns',
       'context7',
     ],
+    argumentHint: '[input]',
   },
   'auto-implement': {
     agents: ['architect', 'editor', 'test-engineer', 'qa', 'test-qa', 'security-qa'],
@@ -80,6 +73,7 @@ const WORKFLOW_DEPENDENCY_MAP: Record<WorkflowName, WorkflowDependencies> = {
       'qa',
       'security-qa',
     ],
+    argumentHint: '[input]',
   },
   implement: {
     agents: ['editor', 'test-engineer', 'qa', 'test-qa', 'security-qa'],
@@ -96,6 +90,7 @@ const WORKFLOW_DEPENDENCY_MAP: Record<WorkflowName, WorkflowDependencies> = {
       'qa',
       'security-qa',
     ],
+    argumentHint: '<technical-plan>',
   },
   'quick-spec-and-implement': {
     agents: [
@@ -125,6 +120,7 @@ const WORKFLOW_DEPENDENCY_MAP: Record<WorkflowName, WorkflowDependencies> = {
       'security-qa',
       'security-context',
     ],
+    argumentHint: '[--auto] [input]',
   },
   debug: {
     agents: ['investigator', 'analyst', 'test-engineer', 'editor', 'qa', 'test-qa'],
@@ -140,6 +136,7 @@ const WORKFLOW_DEPENDENCY_MAP: Record<WorkflowName, WorkflowDependencies> = {
       'qa',
       'frontend-design',
     ],
+    argumentHint: '[input]',
   },
   'frontend-development': {
     agents: ['ui-ux-designer', 'frontend-developer', 'qa'],
@@ -155,10 +152,23 @@ const WORKFLOW_DEPENDENCY_MAP: Record<WorkflowName, WorkflowDependencies> = {
       'context7',
       'qa',
     ],
+    argumentHint: '[input]',
   },
 };
 
 export const KNOWN_WORKFLOWS = Object.keys(WORKFLOW_DEPENDENCY_MAP) as readonly WorkflowName[];
+
+export function getWorkflowUsageLines(
+  namespace: string,
+  workflows?: readonly string[],
+): readonly string[] {
+  const names = workflows ?? KNOWN_WORKFLOWS;
+  return names.map((name) => {
+    const deps = WORKFLOW_DEPENDENCY_MAP[name as WorkflowName];
+    const hint = deps?.argumentHint ?? '[input]';
+    return `  /${namespace}:workflow:${name} ${hint}`;
+  });
+}
 
 export function resolveWorkflowDependencies(
   workflows: readonly string[],

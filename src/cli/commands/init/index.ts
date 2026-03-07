@@ -4,7 +4,11 @@ import { join } from 'node:path';
 import type { Result } from '../../../lib/monads';
 import { Err, isErr, Ok } from '../../../lib/monads';
 import type { IDE } from '../../constants';
-import { resolveWorkflowDependencies, validateWorkflows } from '../../dependencies';
+import {
+  getWorkflowUsageLines,
+  resolveWorkflowDependencies,
+  validateWorkflows,
+} from '../../dependencies';
 import { AGENTS_DIR, SKILLS_DIR, SUBAGENTS_DIR, WORKFLOWS_DIR } from '../../paths';
 import type { LanguageProfile } from '../../profiles';
 import { LANGUAGE_PROFILES, mergeProfiles } from '../../profiles';
@@ -316,13 +320,9 @@ export async function init(options: InitOptions = {}): Promise<Result<void, Init
   }
 
   console.log('\nUsage:');
-  console.log(`  /${namespace}:workflow:product-spec [--auto] [input]`);
-  console.log(`  /${namespace}:workflow:ask-codebase [input]`);
-  console.log(`  /${namespace}:workflow:technical-planning [input]`);
-  console.log(`  /${namespace}:workflow:quick-spec-and-implement [--auto] [input]`);
-  console.log(`  /${namespace}:workflow:auto-implement [input]`);
-  console.log(`  /${namespace}:workflow:debug [input]`);
-  console.log(`  /${namespace}:workflow:frontend-development [input]`);
+  for (const line of getWorkflowUsageLines(namespace, validatedWorkflows)) {
+    console.log(line);
+  }
 
   return Ok(undefined);
 }
