@@ -66,9 +66,7 @@ Load skill: `{ide-invoke-prefix}{ide-folder}/skills/{name}/SKILL.md`
 
 | Skill | Use When |
 |-------|----------|
-| **agentic:workflow:auto-implement** | Autonomous spec/PRD/plan → PR without interaction |
 | **agentic:workflow:implement** | Technical plan → implementation + tests + review, optional PR |
-| **agentic:workflow:quick-spec-and-implement** | Interactive idea → spec → PR with collaboration |
 | **agentic:workflow:ask-codebase** | Existing codebase behavior → plain-language functional explanation |
 | **agentic:workflow:technical-planning** | Spec/PRD/story → detailed technical plan with all decisions resolved |
 | **agentic:workflow:debug** | Systematic debugging to verified fix |

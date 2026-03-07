@@ -11,9 +11,7 @@ type WorkflowName =
   | 'product-spec'
   | 'ask-codebase'
   | 'technical-planning'
-  | 'auto-implement'
   | 'implement'
-  | 'quick-spec-and-implement'
   | 'debug'
   | 'frontend-development';
 
@@ -56,25 +54,6 @@ const WORKFLOW_DEPENDENCY_MAP: Record<WorkflowName, WorkflowDependencies> = {
     ],
     argumentHint: '[input]',
   },
-  'auto-implement': {
-    agents: ['architect', 'editor', 'test-engineer', 'qa', 'test-qa', 'security-qa'],
-    skills: [
-      'gather-technical-context',
-      'technical-planning',
-      'skill-injection-protocol',
-      'code',
-      'frontend-design',
-      'clean-architecture',
-      'observability',
-      'code-testing',
-      'dx',
-      'ux-patterns',
-      'context7',
-      'qa',
-      'security-qa',
-    ],
-    argumentHint: '[input]',
-  },
   implement: {
     agents: ['editor', 'test-engineer', 'qa', 'test-qa', 'security-qa'],
     skills: [
@@ -91,36 +70,6 @@ const WORKFLOW_DEPENDENCY_MAP: Record<WorkflowName, WorkflowDependencies> = {
       'security-qa',
     ],
     argumentHint: '<technical-plan>',
-  },
-  'quick-spec-and-implement': {
-    agents: [
-      'pm',
-      'architect',
-      'security',
-      'editor',
-      'test-engineer',
-      'qa',
-      'test-qa',
-      'security-qa',
-    ],
-    skills: [
-      'product-manager',
-      'gather-technical-context',
-      'technical-planning',
-      'skill-injection-protocol',
-      'code',
-      'frontend-design',
-      'clean-architecture',
-      'observability',
-      'code-testing',
-      'dx',
-      'ux-patterns',
-      'context7',
-      'qa',
-      'security-qa',
-      'security-context',
-    ],
-    argumentHint: '[--auto] [input]',
   },
   debug: {
     agents: ['investigator', 'analyst', 'test-engineer', 'editor', 'qa', 'test-qa'],

@@ -1,6 +1,6 @@
 ---
 name: agentic:agent:security-qa
-description: Security QA Reviewer. Reviews code for security vulnerabilities and compliance. Invoke for security review during /quick-spec-and-implement review loop.
+description: Security QA Reviewer. Reviews code for security vulnerabilities and compliance.
 tools: Read, Write, Glob, Grep, Bash
 model: opus
 skills: [agentic:skill:security-qa, agentic:skill:context7]

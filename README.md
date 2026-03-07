@@ -204,9 +204,7 @@ bunx @JohannWilfridCalixte/agentic@alpha update --workflows debug
 |----------|-----------------|------------|
 | `product-spec` | (none) | product-discovery, brainstorming |
 | `technical-planning` | architect | gather-technical-context, technical-planning, code, typescript-* |
-| `auto-implement` | architect, editor, test-engineer, qa, test-qa, security-qa | all code + planning skills |
 | `implement` | editor, test-engineer, qa, test-qa, security-qa | all code skills |
-| `quick-spec-and-implement` | pm, architect, security, editor, test-engineer, qa, test-qa, security-qa | all skills |
 | `debug` | investigator, analyst, test-engineer, editor, qa, test-qa | code + diagnostic skills |
 | `frontend-development` | ui-ux-designer, frontend-developer, qa | frontend-design, ux-patterns, refactoring-ui |
 
@@ -247,8 +245,6 @@ Workflows are orchestrated multi-step processes that coordinate agents to comple
 
 | Workflow | Trigger | What it does |
 |----------|---------|-------------|
-| `quick-spec-and-implement` | idea/feature request | PM spec → Architect plan → Security review → Editor code → QA review → optional PR |
-| `auto-implement` | spec/PRD/plan | Autonomous: plan → implement → test → review → PR (no interaction) |
 | `implement` | technical plan | Plan → Editor code → Test Engineer tests → QA + Security review → optional PR |
 | `technical-planning` | spec/PRD/story | Gathers context → resolves decisions → produces detailed technical plan |
 | `product-spec` | vague idea | Product discovery dialogue → precise PRD |

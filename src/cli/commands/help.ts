@@ -18,8 +18,7 @@ Options:
   --workflows, -w <list>      Install only specified workflows + deps
                               Comma-separated: -w product-spec,implement
                               Available: product-spec, ask-codebase, technical-planning,
-                              auto-implement, implement, debug,
-                              quick-spec-and-implement, frontend-development
+                              implement, debug, frontend-development
   --ide <type>                Target IDE: claude, cursor, or both
                               init: defaults to both
                               update/settings: defaults to auto-detect

@@ -10,8 +10,8 @@ import {
 } from './dependencies';
 
 describe('KNOWN_WORKFLOWS', () => {
-  it('contains exactly 8 workflow names', () => {
-    expect(KNOWN_WORKFLOWS).toHaveLength(8);
+  it('contains exactly 6 workflow names', () => {
+    expect(KNOWN_WORKFLOWS).toHaveLength(6);
   });
 
   it('includes all expected workflow names', () => {
@@ -19,9 +19,7 @@ describe('KNOWN_WORKFLOWS', () => {
       'product-spec',
       'ask-codebase',
       'technical-planning',
-      'auto-implement',
       'implement',
-      'quick-spec-and-implement',
       'debug',
       'frontend-development',
     ] as const;
@@ -181,9 +179,7 @@ describe('resolveWorkflowDependencies', () => {
       'product-spec',
       'ask-codebase',
       'technical-planning',
-      'auto-implement',
       'implement',
-      'quick-spec-and-implement',
       'debug',
       'frontend-development',
     ];
@@ -200,9 +196,7 @@ describe('resolveWorkflowDependencies', () => {
     const workflowsWithProtocol = [
       'ask-codebase',
       'technical-planning',
-      'auto-implement',
       'implement',
-      'quick-spec-and-implement',
       'debug',
       'frontend-development',
     ];
