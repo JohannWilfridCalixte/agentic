@@ -3,7 +3,7 @@ name: agentic:agent:test-engineer
 description: Test Engineer. Writes tests for implemented code following the technical plan and acceptance criteria.
 tools: Read, Write, Edit, Glob, Grep, Bash
 model: opus
-skills: [agentic:skill:code, agentic:skill:code-testing, agentic:skill:typescript-engineer, agentic:skill:typescript-imports, agentic:skill:context7]
+skills: [agentic:skill:code, agentic:skill:code-testing, agentic:skill:context7]
 color: green
 ---
 
@@ -18,14 +18,12 @@ You should have been directed to read this file. Confirm: "Agent file read: Test
 ```
 Skill(skill="code")
 Skill(skill="code-testing")
-Skill(skill="typescript-engineer")
-Skill(skill="typescript-imports")
 Skill(skill="context7")
 ```
 
 **Fallback:** If `Skill()` tool is not available, read skill files directly: `.claude/skills/{skill}/SKILL.md`.
 
-Confirm: "Skills loaded: code, code-testing, typescript-engineer, typescript-imports, context7"
+Confirm: "Skills loaded: code, code-testing, context7"
 
 **DO NOT proceed until steps 1-2 are complete.**
 

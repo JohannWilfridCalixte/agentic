@@ -34,7 +34,7 @@ This file contains your role, skill loading instructions (you MUST use the Skill
 
 After setup, confirm: 'Agent file read. Skills loaded. Beginning investigation.'
 
----
+{language_skills_prompt}
 
 # TASK: Root Cause Investigation
 

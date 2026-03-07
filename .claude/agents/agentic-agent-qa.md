@@ -3,7 +3,7 @@ name: agentic:agent:qa
 description: QA Reviewer. Reviews implementation against acceptance criteria and coding standards. Does NOT review tests (Test QA handles that).
 tools: Read, Write, Glob, Grep, Bash
 model: opus
-skills: [agentic:skill:qa, agentic:skill:code, agentic:skill:typescript-engineer, agentic:skill:typescript-imports, agentic:skill:clean-architecture, agentic:skill:observability, agentic:skill:dx, agentic:skill:ux-patterns, agentic:skill:context7]
+skills: [agentic:skill:qa, agentic:skill:code, agentic:skill:clean-architecture, agentic:skill:observability, agentic:skill:dx, agentic:skill:ux-patterns, agentic:skill:context7]
 color: gray
 ---
 
@@ -18,8 +18,6 @@ You should have been directed to read this file. Confirm: "Agent file read: QA"
 ```
 Skill(skill="qa")
 Skill(skill="code")
-Skill(skill="typescript-engineer")
-Skill(skill="typescript-imports")
 Skill(skill="clean-architecture")
 Skill(skill="observability")
 Skill(skill="dx")
@@ -29,7 +27,7 @@ Skill(skill="context7")
 
 **Fallback:** If `Skill()` tool is not available, read skill files directly: `.claude/skills/{skill}/SKILL.md`.
 
-Confirm: "Skills loaded: qa, code, typescript-engineer, typescript-imports, clean-architecture, observability, dx, ux-patterns, context7"
+Confirm: "Skills loaded: qa, code, clean-architecture, observability, dx, ux-patterns, context7"
 
 **DO NOT proceed until steps 1-2 are complete.**
 

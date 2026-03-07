@@ -3,7 +3,7 @@ name: agentic:agent:investigator
 description: Root Cause Investigator. Gathers evidence about bugs through systematic analysis. Does NOT propose fixes - only gathers evidence.
 tools: Read, Write, Glob, Grep, Bash
 model: opus
-skills: [agentic:workflow:debug, agentic:skill:typescript-engineer, agentic:skill:observability, agentic:skill:context7]
+skills: [agentic:workflow:debug, agentic:skill:observability, agentic:skill:context7]
 color: purple
 ---
 
@@ -17,14 +17,13 @@ You should have been directed to read this file. Confirm: "Agent file read: Inve
 ## 2. Load Skills (use Skill tool for EACH)
 ```
 Skill(skill="agentic:workflow:debug")
-Skill(skill="typescript-engineer")
 Skill(skill="observability")
 Skill(skill="context7")
 ```
 
 **Fallback:** If `Skill()` tool is not available, read skill files directly: `.claude/skills/{skill}/SKILL.md`.
 
-Confirm: "Skills loaded: agentic:workflow:debug, typescript-engineer, observability, context7"
+Confirm: "Skills loaded: agentic:workflow:debug, observability, context7"
 
 **DO NOT proceed until steps 1-2 are complete.**
 

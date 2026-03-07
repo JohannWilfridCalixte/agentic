@@ -33,7 +33,7 @@ This file contains your role, skill loading instructions (you MUST use the Skill
 
 After setup, confirm: 'Agent file read. Skills loaded. Beginning technical planning.'
 
----
+{language_skills_prompt}
 
 # TASK: Technical Planning (Phase 2)
 

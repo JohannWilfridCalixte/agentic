@@ -46,7 +46,7 @@ This file contains your role, skill loading instructions (you MUST use the Skill
 
 After setup, confirm: 'Agent file read. Skills loaded. Beginning QA review.'
 
----
+{language_skills_prompt}
 
 # TASK: Review Implementation Code
 
@@ -76,7 +76,7 @@ This file contains your role, skill loading instructions (you MUST use the Skill
 
 After setup, confirm: 'Agent file read. Skills loaded. Beginning Test QA review.'
 
----
+{language_skills_prompt}
 
 # TASK: Review Test Quality and Coverage
 
@@ -176,7 +176,7 @@ This file contains your role, skill loading instructions (you MUST use the Skill
 
 After setup, confirm: 'Agent file read. Skills loaded. Beginning fix phase.'
 
----
+{language_skills_prompt}
 
 # TASK: Fix Code Review Issues
 
@@ -206,7 +206,7 @@ This file contains your role, skill loading instructions (you MUST use the Skill
 
 After setup, confirm: 'Agent file read. Skills loaded. Beginning test fixes.'
 
----
+{language_skills_prompt}
 
 # TASK: Fix Test Review Issues
 

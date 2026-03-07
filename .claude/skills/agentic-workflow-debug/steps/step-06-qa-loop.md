@@ -46,7 +46,7 @@ This file contains your role, skill loading instructions (you MUST use the Skill
 
 After setup, confirm: 'Agent file read. Skills loaded. Beginning QA review.'
 
----
+{language_skills_prompt}
 
 # TASK: Verify Debug Fix
 
@@ -97,7 +97,7 @@ This file contains your role, skill loading instructions (you MUST use the Skill
 
 After setup, confirm: 'Agent file read. Skills loaded. Beginning Test QA review.'
 
----
+{language_skills_prompt}
 
 # TASK: Review Regression Test Quality
 
@@ -196,7 +196,7 @@ This file contains your role, skill loading instructions (you MUST use the Skill
 
 After setup, confirm: 'Agent file read. Skills loaded. Beginning fix phase.'
 
----
+{language_skills_prompt}
 
 # TASK: Address QA Findings
 
@@ -239,7 +239,7 @@ This file contains your role, skill loading instructions (you MUST use the Skill
 
 After setup, confirm: 'Agent file read. Skills loaded. Beginning test fixes.'
 
----
+{language_skills_prompt}
 
 # TASK: Address Test QA Findings
 
