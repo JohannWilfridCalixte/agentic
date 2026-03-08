@@ -336,7 +336,9 @@ describe('cleanupStaleFiles', () => {
 
     await cleanupStaleFiles(TEST_DIR, newDeps, 'agentic');
 
-    expect(await exists(join(TEST_DIR, 'agents', 'agentic-agent-software-engineer.md'))).toBe(false);
+    expect(await exists(join(TEST_DIR, 'agents', 'agentic-agent-software-engineer.md'))).toBe(
+      false,
+    );
     expect(await exists(join(TEST_DIR, 'agents', 'agentic-agent-qa.md'))).toBe(true);
   });
 
@@ -443,7 +445,9 @@ describe('cleanupStaleFiles', () => {
 
     await cleanupStaleFiles(TEST_DIR, newDeps, 'agentic');
 
-    expect(await exists(join(TEST_DIR, 'agents', 'agentic-agent-software-engineer.md'))).toBe(false);
+    expect(await exists(join(TEST_DIR, 'agents', 'agentic-agent-software-engineer.md'))).toBe(
+      false,
+    );
     expect(await exists(join(TEST_DIR, 'agents', 'custom-file.md'))).toBe(true);
   });
 
@@ -456,14 +460,20 @@ describe('cleanupStaleFiles', () => {
     await cleanupStaleFiles(TEST_DIR, newDeps, 'agentic');
 
     expect(await exists(join(TEST_DIR, 'agents', 'bar-agent-software-engineer.md'))).toBe(true);
-    expect(await exists(join(TEST_DIR, 'agents', 'agentic-agent-software-engineer.md'))).toBe(false);
+    expect(await exists(join(TEST_DIR, 'agents', 'agentic-agent-software-engineer.md'))).toBe(
+      false,
+    );
   });
 
   it('handles missing agents/ or skills/ directories gracefully', async () => {
     await rm(join(TEST_DIR, 'agents'), { recursive: true });
     await rm(join(TEST_DIR, 'skills'), { recursive: true });
 
-    const newDeps = { agents: ['software-engineer.md'], skills: ['code'], workflows: ['implement'] };
+    const newDeps = {
+      agents: ['software-engineer.md'],
+      skills: ['code'],
+      workflows: ['implement'],
+    };
 
     await expect(cleanupStaleFiles(TEST_DIR, newDeps, 'agentic')).resolves.toBeUndefined();
   });
