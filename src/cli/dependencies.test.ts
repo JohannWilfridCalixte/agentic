@@ -46,7 +46,7 @@ describe('resolveWorkflowDependencies', () => {
 
     expect(result.agents).toEqual(
       expect.arrayContaining([
-        'editor.md',
+        'software-engineer.md',
         'test-engineer.md',
         'qa.md',
         'test-qa.md',
@@ -70,7 +70,7 @@ describe('resolveWorkflowDependencies', () => {
   it('deduplicates agents across multiple workflows', () => {
     const result = resolveWorkflowDependencies(['implement', 'debug']);
 
-    // Both have 'editor', 'test-engineer', 'qa', 'test-qa'
+    // Both have 'software-engineer', 'test-engineer', 'qa', 'test-qa'
     const uniqueAgents = new Set(result.agents);
     expect(uniqueAgents.size).toBe(result.agents.length);
   });
@@ -86,10 +86,10 @@ describe('resolveWorkflowDependencies', () => {
   it('unions agents from multiple workflows', () => {
     const result = resolveWorkflowDependencies(['implement', 'technical-planning']);
 
-    // implement has editor, test-engineer, qa, test-qa, security-qa
+    // implement has software-engineer, test-engineer, qa, test-qa, security-qa
     // technical-planning has architect
     expect(result.agents).toContain('architect.md');
-    expect(result.agents).toContain('editor.md');
+    expect(result.agents).toContain('software-engineer.md');
   });
 
   it('returns bare agent names with .md suffix', () => {
@@ -325,7 +325,7 @@ describe('cleanupStaleFiles', () => {
   });
 
   it('removes agent file when no longer needed', async () => {
-    await writeFile(join(TEST_DIR, 'agents', 'agentic-agent-editor.md'), 'test');
+    await writeFile(join(TEST_DIR, 'agents', 'agentic-agent-software-engineer.md'), 'test');
     await writeFile(join(TEST_DIR, 'agents', 'agentic-agent-qa.md'), 'test');
 
     const newDeps = {
@@ -336,7 +336,7 @@ describe('cleanupStaleFiles', () => {
 
     await cleanupStaleFiles(TEST_DIR, newDeps, 'agentic');
 
-    expect(await exists(join(TEST_DIR, 'agents', 'agentic-agent-editor.md'))).toBe(false);
+    expect(await exists(join(TEST_DIR, 'agents', 'agentic-agent-software-engineer.md'))).toBe(false);
     expect(await exists(join(TEST_DIR, 'agents', 'agentic-agent-qa.md'))).toBe(true);
   });
 
@@ -374,37 +374,37 @@ describe('cleanupStaleFiles', () => {
   });
 
   it('does nothing when all disk entries are in newDeps', async () => {
-    await writeFile(join(TEST_DIR, 'agents', 'agentic-agent-editor.md'), 'test');
+    await writeFile(join(TEST_DIR, 'agents', 'agentic-agent-software-engineer.md'), 'test');
     await mkdir(join(TEST_DIR, 'skills', 'agentic-skill-code'), { recursive: true });
 
     const deps = {
-      agents: ['editor.md'],
+      agents: ['software-engineer.md'],
       skills: ['code'],
       workflows: [],
     };
 
     await cleanupStaleFiles(TEST_DIR, deps, 'agentic');
 
-    expect(await exists(join(TEST_DIR, 'agents', 'agentic-agent-editor.md'))).toBe(true);
+    expect(await exists(join(TEST_DIR, 'agents', 'agentic-agent-software-engineer.md'))).toBe(true);
     expect(await exists(join(TEST_DIR, 'skills', 'agentic-skill-code'))).toBe(true);
   });
 
   it('keeps files in newDeps even if more exist on disk', async () => {
-    await writeFile(join(TEST_DIR, 'agents', 'agentic-agent-editor.md'), 'test');
+    await writeFile(join(TEST_DIR, 'agents', 'agentic-agent-software-engineer.md'), 'test');
 
     const newDeps = {
-      agents: ['editor.md'],
+      agents: ['software-engineer.md'],
       skills: ['code'],
       workflows: ['implement'],
     };
 
     await cleanupStaleFiles(TEST_DIR, newDeps, 'agentic');
 
-    expect(await exists(join(TEST_DIR, 'agents', 'agentic-agent-editor.md'))).toBe(true);
+    expect(await exists(join(TEST_DIR, 'agents', 'agentic-agent-software-engineer.md'))).toBe(true);
   });
 
   it('applies namespace rewriting during cleanup', async () => {
-    await writeFile(join(TEST_DIR, 'agents', 'foo-agent-editor.md'), 'test');
+    await writeFile(join(TEST_DIR, 'agents', 'foo-agent-software-engineer.md'), 'test');
     await writeFile(join(TEST_DIR, 'agents', 'foo-agent-qa.md'), 'test');
 
     const newDeps = {
@@ -415,7 +415,7 @@ describe('cleanupStaleFiles', () => {
 
     await cleanupStaleFiles(TEST_DIR, newDeps, 'foo');
 
-    expect(await exists(join(TEST_DIR, 'agents', 'foo-agent-editor.md'))).toBe(false);
+    expect(await exists(join(TEST_DIR, 'agents', 'foo-agent-software-engineer.md'))).toBe(false);
     expect(await exists(join(TEST_DIR, 'agents', 'foo-agent-qa.md'))).toBe(true);
   });
 
@@ -436,34 +436,34 @@ describe('cleanupStaleFiles', () => {
   });
 
   it('leaves non-namespaced files untouched', async () => {
-    await writeFile(join(TEST_DIR, 'agents', 'agentic-agent-editor.md'), 'test');
+    await writeFile(join(TEST_DIR, 'agents', 'agentic-agent-software-engineer.md'), 'test');
     await writeFile(join(TEST_DIR, 'agents', 'custom-file.md'), 'test');
 
     const newDeps = { agents: [], skills: [], workflows: [] };
 
     await cleanupStaleFiles(TEST_DIR, newDeps, 'agentic');
 
-    expect(await exists(join(TEST_DIR, 'agents', 'agentic-agent-editor.md'))).toBe(false);
+    expect(await exists(join(TEST_DIR, 'agents', 'agentic-agent-software-engineer.md'))).toBe(false);
     expect(await exists(join(TEST_DIR, 'agents', 'custom-file.md'))).toBe(true);
   });
 
   it('leaves other-namespace files untouched', async () => {
-    await writeFile(join(TEST_DIR, 'agents', 'bar-agent-editor.md'), 'test');
-    await writeFile(join(TEST_DIR, 'agents', 'agentic-agent-editor.md'), 'test');
+    await writeFile(join(TEST_DIR, 'agents', 'bar-agent-software-engineer.md'), 'test');
+    await writeFile(join(TEST_DIR, 'agents', 'agentic-agent-software-engineer.md'), 'test');
 
     const newDeps = { agents: [], skills: [], workflows: [] };
 
     await cleanupStaleFiles(TEST_DIR, newDeps, 'agentic');
 
-    expect(await exists(join(TEST_DIR, 'agents', 'bar-agent-editor.md'))).toBe(true);
-    expect(await exists(join(TEST_DIR, 'agents', 'agentic-agent-editor.md'))).toBe(false);
+    expect(await exists(join(TEST_DIR, 'agents', 'bar-agent-software-engineer.md'))).toBe(true);
+    expect(await exists(join(TEST_DIR, 'agents', 'agentic-agent-software-engineer.md'))).toBe(false);
   });
 
   it('handles missing agents/ or skills/ directories gracefully', async () => {
     await rm(join(TEST_DIR, 'agents'), { recursive: true });
     await rm(join(TEST_DIR, 'skills'), { recursive: true });
 
-    const newDeps = { agents: ['editor.md'], skills: ['code'], workflows: ['implement'] };
+    const newDeps = { agents: ['software-engineer.md'], skills: ['code'], workflows: ['implement'] };
 
     await expect(cleanupStaleFiles(TEST_DIR, newDeps, 'agentic')).resolves.toBeUndefined();
   });

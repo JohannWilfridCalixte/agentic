@@ -243,12 +243,12 @@ product-vision --> product-spec --> technical-planning --> implement
 **Steps:**
 
 1. Validate Plan
-2. Editor Implement (auto)
+2. Software Engineer Implement (auto)
 3. Test Engineer (auto)
 4. Review Loop (auto, max 3 iterations)
 5. PR Creation (optional, interactive)
 
-**Key rules:** Fully automated implementation. Uses subagents: editor, test-engineer, qa, test-qa, security-qa. Review loops until quality gates pass or 3 iterations hit.
+**Key rules:** Fully automated implementation. Uses subagents: software-engineer, test-engineer, qa, test-qa, security-qa. Review loops until quality gates pass or 3 iterations hit.
 
 **Artifacts:** `_<namespace>_output/task/implement/{topic}/{instance_id}/`
 

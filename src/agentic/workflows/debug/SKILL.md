@@ -54,7 +54,7 @@ Each subagent reads instructions from `{ide-folder}/agents/agentic-agent-{agent}
 
 Invoke: `Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="You are the {Agent} agent. {ide-invoke-prefix}{ide-folder}/agents/agentic-agent-{agent}.md for your full instructions. ...")`
 
-Available agents: `agentic:agent:investigator`, `agentic:agent:analyst`, `agentic:agent:test-engineer`, `agentic:agent:editor`, `agentic:agent:qa`, `agentic:agent:test-qa`
+Available agents: `agentic:agent:investigator`, `agentic:agent:analyst`, `agentic:agent:test-engineer`, `agentic:agent:software-engineer`, `agentic:agent:qa`, `agentic:agent:test-qa`
 
 ## Mandatory Delegation
 
@@ -117,7 +117,7 @@ Execute each step by reading its detailed instructions.
 
 **Read:** `steps/step-05-fix-implementation.md`
 
-- Delegate to Editor subagent via Task tool
+- Delegate to Software Engineer subagent via Task tool
 - ONE fix addressing root cause
 - Output: `fix-log.md`
 - Verify regression test now passes

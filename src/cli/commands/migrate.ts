@@ -28,7 +28,7 @@ const OLD_AGENT_FILES = [
   'team-and-workflow.md',
   'analyst.md',
   'architect.md',
-  'editor.md',
+  'software-engineer.md',
   'frontend-developer.md',
   'investigator.md',
   'pm.md',

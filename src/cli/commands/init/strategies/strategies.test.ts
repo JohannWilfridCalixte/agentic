@@ -252,7 +252,7 @@ describe('IDE strategies', () => {
       // Top-level agents not in deps should be stripped
       expect(content).not.toContain('agentic:agent:cpo');
       expect(content).not.toContain('agentic:agent:cto');
-      expect(content).not.toContain('agentic:agent:editor');
+      expect(content).not.toContain('agentic:agent:software-engineer');
     });
 
     it('cursorStrategy strips uninstalled skills/workflows/agents when resolvedDeps present', async () => {
@@ -277,7 +277,7 @@ describe('IDE strategies', () => {
       // Uninstalled should be stripped
       expect(content).not.toContain('agentic:skill:code');
       expect(content).not.toContain('agentic:workflow:implement');
-      expect(content).not.toContain('agentic:agent:editor');
+      expect(content).not.toContain('agentic:agent:software-engineer');
     });
 
     it('claudeStrategy produces full template when no resolvedDeps', async () => {
@@ -297,7 +297,7 @@ describe('IDE strategies', () => {
       expect(content).toContain('agentic:workflow:implement');
       expect(content).toContain('agentic:workflow:product-spec');
       expect(content).toContain('agentic:agent:cpo');
-      expect(content).toContain('agentic:agent:editor');
+      expect(content).toContain('agentic:agent:software-engineer');
     });
 
     it('cursorStrategy produces full template when no resolvedDeps', async () => {
@@ -312,7 +312,7 @@ describe('IDE strategies', () => {
 
       expect(content).toContain('agentic:skill:code');
       expect(content).toContain('agentic:workflow:implement');
-      expect(content).toContain('agentic:agent:editor');
+      expect(content).toContain('agentic:agent:software-engineer');
     });
 
     it('both strategies produce identical filtering behavior', async () => {
@@ -347,8 +347,8 @@ describe('IDE strategies', () => {
       // Both should strip the same uninstalled items
       expect(claudeContent).not.toContain('agentic:skill:code');
       expect(cursorContent).not.toContain('agentic:skill:code');
-      expect(claudeContent).not.toContain('agentic:agent:editor');
-      expect(cursorContent).not.toContain('agentic:agent:editor');
+      expect(claudeContent).not.toContain('agentic:agent:software-engineer');
+      expect(cursorContent).not.toContain('agentic:agent:software-engineer');
     });
   });
 });

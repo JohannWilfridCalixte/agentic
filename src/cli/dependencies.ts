@@ -61,7 +61,7 @@ const WORKFLOW_DEPENDENCY_MAP: Record<WorkflowName, WorkflowDependencies> = {
     argumentHint: '[input]',
   },
   implement: {
-    agents: ['editor', 'test-engineer', 'qa', 'test-qa', 'security-qa'],
+    agents: ['software-engineer', 'test-engineer', 'qa', 'test-qa', 'security-qa'],
     skills: [
       'skill-injection-protocol',
       'code',
@@ -78,7 +78,7 @@ const WORKFLOW_DEPENDENCY_MAP: Record<WorkflowName, WorkflowDependencies> = {
     argumentHint: '<technical-plan>',
   },
   debug: {
-    agents: ['investigator', 'analyst', 'test-engineer', 'editor', 'qa', 'test-qa'],
+    agents: ['investigator', 'analyst', 'test-engineer', 'software-engineer', 'qa', 'test-qa'],
     skills: [
       'skill-injection-protocol',
       'code',

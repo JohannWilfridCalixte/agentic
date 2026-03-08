@@ -139,7 +139,7 @@ bunx @JohannWilfridCalixte/agentic@alpha init --output docs
 
 ### `migrate`
 
-Migrates from older versions that used unprefixed artifact names (e.g., `agents/editor.md` instead of `agentic-agent-editor.md`, `skills/code/` instead of `agentic-skill-code/`). Backs up old artifacts to timestamped directories, then runs `init`.
+Migrates from older versions that used unprefixed artifact names (e.g., `agents/software-engineer.md` instead of `agentic-agent-software-engineer.md`, `skills/code/` instead of `agentic-skill-code/`). Backs up old artifacts to timestamped directories, then runs `init`.
 
 ```bash
 bunx @JohannWilfridCalixte/agentic@alpha migrate
@@ -156,7 +156,7 @@ bunx @JohannWilfridCalixte/agentic@alpha migrate --namespace myteam --workflows 
 
 **What gets backed up:**
 
-- Old unprefixed agent files (`agents/editor.md`, `agents/qa.md`, ...)
+- Old unprefixed agent files (`agents/software-engineer.md`, `agents/qa.md`, ...)
 - Old unprefixed skill dirs (`skills/code/`, `skills/brainstorming/`, ...)
 - Old workflow dirs (`skills/agentic-auto-implement/`, ...)
 - Old aggregated skill dir (`skills/agentic/`)
@@ -227,8 +227,8 @@ bunx @JohannWilfridCalixte/agentic@alpha update --workflows debug
 | `product-spec` | (none) | product-discovery, brainstorming |
 | `product-vision` | cpo | product-vision, product-discovery, brainstorming |
 | `technical-planning` | architect | gather-technical-context, technical-planning, code, typescript-* |
-| `implement` | editor, test-engineer, qa, test-qa, security-qa | all code skills |
-| `debug` | investigator, analyst, test-engineer, editor, qa, test-qa | code + diagnostic skills |
+| `implement` | software-engineer, test-engineer, qa, test-qa, security-qa | all code skills |
+| `debug` | investigator, analyst, test-engineer, software-engineer, qa, test-qa | code + diagnostic skills |
 | `frontend-development` | ui-ux-designer, frontend-developer, qa | frontend-design, ux-patterns, refactoring-ui |
 
 ### Behavior
@@ -251,7 +251,7 @@ bunx @JohannWilfridCalixte/agentic@alpha init --namespace myteam
 
 | Before | After (`--namespace myteam`) |
 |--------|------------------------------|
-| `agentic-agent-editor.md` | `myteam-agent-editor.md` |
+| `agentic-agent-software-engineer.md` | `myteam-agent-software-engineer.md` |
 | `agentic-skill-code/` | `myteam-skill-code/` |
 | `agentic-workflow-implement/` | `myteam-workflow-implement/` |
 | `/agentic:workflow:implement` | `/myteam:workflow:implement` |
@@ -272,8 +272,8 @@ Workflows are orchestrated multi-step processes that coordinate agents to comple
 | `product-spec` | vague idea | Product discovery dialogue → precise PRD |
 | `product-vision` | new product idea | Creative brainstorming → vision discovery → comprehensive vision document |
 | `technical-planning` | spec/PRD/story | Gathers context → resolves decisions → produces detailed technical plan |
-| `implement` | technical plan | Plan → Editor code → Test Engineer tests → QA + Security review → optional PR |
-| `debug` | bug/error/failure | Investigator evidence → Analyst hypothesis → Editor fix → QA verify |
+| `implement` | technical plan | Plan → Software Engineer code → Test Engineer tests → QA + Security review → optional PR |
+| `debug` | bug/error/failure | Investigator evidence → Analyst hypothesis → Software Engineer fix → QA verify |
 | `frontend-development` | UI feature | UI/UX design → visual decisions → frontend implementation |
 
 ## Agents
@@ -295,7 +295,7 @@ Specialized agents invoked by workflows to perform focused tasks:
 | `cpo` | Product vision, roadmap, decision principles |
 | `pm` | Product specs: epics, user stories, acceptance criteria |
 | `architect` | Codebase context gathering + technical planning |
-| `editor` | Code implementation following technical plan |
+| `software-engineer` | Code implementation following technical plan |
 | `test-engineer` | Test writing following implementation |
 | `qa` | Code quality review (not tests) |
 | `test-qa` | Test quality and coverage review |

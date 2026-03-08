@@ -18,7 +18,7 @@ Fix the root cause, not the symptom. The failing regression test was written in 
 Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="
 # MANDATORY FIRST ACTION - DO NOT SKIP
 
-{ide-invoke-prefix}{ide-folder}/agents/agentic-agent-editor.md
+{ide-invoke-prefix}{ide-folder}/agents/agentic-agent-software-engineer.md
 
 This file contains your role, skill loading instructions (you MUST use the Skill tool for each skill listed), and output format. Complete ALL setup steps in that file before proceeding.
 
@@ -75,7 +75,7 @@ Read `{session_path}/fix-log.md`. Verify it contains:
 ### DEC-{N}: Fix Implemented
 
 **Step**: fix-implementation
-**Agent**: Editor
+**Agent**: Software Engineer
 **Timestamp**: {ISO}
 
 **Context**: Implementing fix for confirmed root cause
@@ -121,7 +121,7 @@ Document in decision log, proceed to QA.
 **Confidence**: {%}
 ```
 
-Re-delegate to editor with additional constraint:
+Re-delegate to software-engineer with additional constraint:
 ```
 Additional constraint: Your previous fix caused these regressions:
 {list of failing tests}

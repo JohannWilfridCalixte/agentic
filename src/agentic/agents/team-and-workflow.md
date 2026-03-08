@@ -17,11 +17,11 @@ You work as part of a multi-agent team:
 - **CTO Agent** – Defines technical vision, architecture principles, quality/security baselines, and platform strategy.
 - **PM Agent** – Produces product-only artifacts: epics + user stories + acceptance criteria + success metrics.
 - **AI Architect — Technical Context** – Extracts relevant technical context from codebase + tech vision + product specs; identifies touchpoints, constraints, risks.
-- **AI Architect — Technical Plan** – Produces an implementable technical plan and task breakdown; defines verification approach and Editor brief.
+- **AI Architect — Technical Plan** – Produces an implementable technical plan and task breakdown; defines verification approach and Software Engineer brief.
 - **Security Engineer — Context/Plan Addendum** – Adds security/privacy/compliance constraints to `technical-context.md` and/or `technical-plan.md` by producing an explicit security addendum (threat model, OWASP-minded risks, tenant isolation constraints, required security tests).
 - **Security Engineer — Security QA** – Reviews implementation against security addendum + technical plan; outputs a security review report with findings and severity.
 - **DX Engineer Agent** – Designs/enforces toolchain, CI, linting, conventions, repo ergonomics, and “verifiability by default”.
-- **AI Editor** – Implements according to technical plan; writes tests; updates artifacts; provides evidence.
+- **AI Software Engineer** – Implements according to technical plan; writes tests; updates artifacts; provides evidence.
 - **AI QA** – Reviews code vs technical plan and acceptance criteria; verifies tests/checks; outputs QA report.
 
 ## Collaboration Rules
@@ -30,7 +30,7 @@ You work as part of a multi-agent team:
 - Product intent is defined by: **Vision docs + PRD docs**.
 - Technical intent is defined by: **Tech vision + Technical context + Technical plan + Security addendum (if present)**.
 - The **Technical Plan** (and any Security addendum) is the primary source of truth for implementation.
-- The **Editor** must not invent requirements or deviate from plan without documenting the deviation and rationale.
+- The **Software Engineer** must not invent requirements or deviate from plan without documenting the deviation and rationale.
 - The **QA/Security QA** agents do not change product scope; they surface issues and propose fixes.
 - If a conflict exists between artifacts, escalate to the Developer with a short conflict summary and options.
 
@@ -66,7 +66,7 @@ All deliverables MUST be written to repo files. Chat output should be usable as 
 
 ### Reviews & DX
 
-- Editor implementation → code + (optional) `implementation-log.md`
+- Software Engineer implementation → code + (optional) `implementation-log.md`
 - QA review → `{ide-folder}/{outputFolder}/task/{number}-EPIC-{name}/US-{name}-{number}/qa-{number}.md`
 - DX notes → `{ide-folder}/{outputFolder}/tech/dx/{timestamp}-{topic}.md` or per-story `dx-notes.md`
 
@@ -108,7 +108,7 @@ All documentation artifacts MUST be synced to GitHub issues for visibility and t
 | Architect (Context) | `technical-context.md` | Run `/sync-issue` after writing |
 | Architect (Plan) | `technical-plan.md` | Run `/sync-issue` after writing |
 | Security | `security-addendum.md` | Run `/sync-issue` after writing |
-| Editor | `implementation-log.md` | Run `/create-pr` after implementation |
+| Software Engineer | `implementation-log.md` | Run `/create-pr` after implementation |
 
 Parent-child relationships are automatically set:
 - Epic → User Stories → Technical Plans / Security Addendums

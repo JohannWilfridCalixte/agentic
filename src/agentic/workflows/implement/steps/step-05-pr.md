@@ -141,7 +141,7 @@ Workflow complete (implement)
 
 PR: {pr_url}
 Topic: {topic}
-Steps executed: validate-plan → editor → test → review → pr
+Steps executed: validate-plan → software-engineer → test → review → pr
 Decisions made: {count} (see decision-log.md)
 Open questions: {count}
 Review verdict: {PASS | ESCALATED}
@@ -168,7 +168,7 @@ status: "completed"
 Workflow complete (implement)
 
 Topic: {topic}
-Steps executed: validate-plan → editor → test → review
+Steps executed: validate-plan → software-engineer → test → review
 Decisions made: {count} (see decision-log.md)
 Open questions: {count}
 Review verdict: {PASS | ESCALATED}

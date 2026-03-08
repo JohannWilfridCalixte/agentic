@@ -86,7 +86,7 @@ Load agent: `{ide-invoke-prefix}{ide-folder}/agents/agentic-agent-{name}.md`
 | **agentic:agent:cpo** | Product vision, roadmap (Chief Product Officer) |
 | **agentic:agent:pm** | Product specs, stories, ACs |
 | **agentic:agent:architect** | Technical context + planning |
-| **agentic:agent:editor** | Code implementation (no tests) |
+| **agentic:agent:software-engineer** | Code implementation (no tests) |
 | **agentic:agent:test-engineer** | Test writing |
 | **agentic:agent:qa** | Code quality review (no test review) |
 | **agentic:agent:test-qa** | Test quality review |

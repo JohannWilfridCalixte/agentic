@@ -210,7 +210,7 @@ describe('stripUninstalledRows', () => {
     '| Agent | Role |',
     '|-------|------|',
     '| **agentic:agent:cpo** | Product vision |',
-    '| **agentic:agent:editor** | Code implementation |',
+    '| **agentic:agent:software-engineer** | Code implementation |',
     '| **agentic:agent:qa** | Code quality review |',
     '| **agentic:agent:cto** | Technical vision |',
   ].join('\n');
@@ -250,18 +250,18 @@ describe('stripUninstalledRows', () => {
   });
 
   it('strips rows for uninstalled agents using .md suffix check', () => {
-    const deps = { agents: ['editor.md', 'qa.md'], skills: [], workflows: [] };
+    const deps = { agents: ['software-engineer.md', 'qa.md'], skills: [], workflows: [] };
 
     const result = stripUninstalledRows(templateContent, deps, 'agentic');
 
-    expect(result).toContain('**agentic:agent:editor**');
+    expect(result).toContain('**agentic:agent:software-engineer**');
     expect(result).toContain('**agentic:agent:qa**');
     expect(result).not.toContain('**agentic:agent:cpo**');
     expect(result).not.toContain('**agentic:agent:cto**');
   });
 
   it('strips top-level agents (cpo, cto, dx, team-and-workflow) when not in deps', () => {
-    const deps = { agents: ['editor.md'], skills: [], workflows: [] };
+    const deps = { agents: ['software-engineer.md'], skills: [], workflows: [] };
 
     const result = stripUninstalledRows(templateContent, deps, 'agentic');
 
@@ -295,16 +295,16 @@ describe('stripUninstalledRows', () => {
       '| **foo:skill:code** | Implementing code |',
       '| **foo:skill:brainstorming** | Ideas |',
       '| **foo:workflow:implement** | Implementation |',
-      '| **foo:agent:editor** | Code |',
+      '| **foo:agent:software-engineer** | Code |',
     ].join('\n');
-    const deps = { agents: ['editor.md'], skills: ['code'], workflows: ['implement'] };
+    const deps = { agents: ['software-engineer.md'], skills: ['code'], workflows: ['implement'] };
 
     const result = stripUninstalledRows(content, deps, 'foo');
 
     expect(result).toContain('foo:skill:code');
     expect(result).not.toContain('foo:skill:brainstorming');
     expect(result).toContain('foo:workflow:implement');
-    expect(result).toContain('foo:agent:editor');
+    expect(result).toContain('foo:agent:software-engineer');
   });
 
   it('returns content unchanged when no table rows match pattern', () => {

@@ -52,7 +52,7 @@ The plan must include:
 3. Contracts & interfaces
 4. Task breakdown (TASK-01, TASK-02, ...) with PR-sized tasks
 5. Verification matrix mapping every requirement to tests
-6. Editor brief with suggested implementation order
+6. Software Engineer brief with suggested implementation order
 
 If any minor open questions remain in technical-decisions.md, make reasonable defaults and document them clearly in the plan's Open Questions section.
 ")

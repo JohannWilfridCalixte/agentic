@@ -318,8 +318,8 @@ describe('init', () => {
       const agentsDir = join(TEST_DIR, '.claude', 'agents');
       const files = await readdir(agentsDir);
 
-      // implement: editor, test-engineer, qa, test-qa, security-qa
-      expect(files).toContain('agentic-agent-editor.md');
+      // implement: software-engineer, test-engineer, qa, test-qa, security-qa
+      expect(files).toContain('agentic-agent-software-engineer.md');
       expect(files).toContain('agentic-agent-test-engineer.md');
       expect(files).toContain('agentic-agent-qa.md');
       expect(files).toContain('agentic-agent-test-qa.md');

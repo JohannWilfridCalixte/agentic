@@ -107,9 +107,9 @@ Output path: `_<namespace>_output/task/technical-planning/{topic}/{instance_id}/
 | Step | Mode | What happens |
 |------|------|-------------|
 | 1. Validate Plan | -- | Checks input is a valid technical plan |
-| 2. Editor Implement | Autonomous | Editor subagent writes code following the plan |
+| 2. Software Engineer Implement | Autonomous | Software Engineer subagent writes code following the plan |
 | 3. Test Engineer | Autonomous | Test Engineer subagent writes tests |
-| 4. Review Loop | Autonomous (max 3 iterations) | QA + Test QA + Security QA review, Editor fixes |
+| 4. Review Loop | Autonomous (max 3 iterations) | QA + Test QA + Security QA review, Software Engineer fixes |
 | 5. PR | Interactive | Asks about branch name, commit, PR creation |
 
 Steps 2-4 are fully autonomous -- AI makes decisions and logs them with context, options considered, confidence percentage, and reversibility.
@@ -118,7 +118,7 @@ Step 5 is interactive and asks you about PR details.
 
 ### Subagents
 
-`editor`, `test-engineer`, `qa`, `test-qa`, `security-qa`
+`software-engineer`, `test-engineer`, `qa`, `test-qa`, `security-qa`
 
 ### Artifacts
 
@@ -129,7 +129,7 @@ Output path: `_<namespace>_output/task/implement/{topic}/{instance_id}/`
 | `workflow-state.yaml` | Workflow state machine |
 | `decision-log.md` | All autonomous decisions with confidence scores |
 | `technical-plan.md` | Copy of input plan |
-| `implementation-log.md` | Editor's implementation details |
+| `implementation-log.md` | Software Engineer's implementation details |
 | `test-log.md` | Test Engineer's test details |
 | `qa-{n}.md` | QA review per iteration |
 | `test-qa-{n}.md` | Test QA review per iteration |
@@ -167,7 +167,7 @@ Output path: `_<namespace>_output/task/implement/{topic}/{instance_id}/`
 | 3. Pattern Analysis | Analyst | Finds working examples, compares working vs broken |
 | 4. Hypothesis Testing | Analyst (max 3 iterations) | Tests one hypothesis at a time |
 | 4b. Regression Test | Test Engineer | Writes a failing test that reproduces the bug before fix |
-| 5. Fix Implementation | Editor | One fix addressing root cause, verifies regression test passes |
+| 5. Fix Implementation | Software Engineer | One fix addressing root cause, verifies regression test passes |
 | 6. QA Loop | QA + Test QA (max 3 iterations) | Verifies fix, checks for regressions |
 
 **Fully autonomous** -- no user interaction, all decisions logged.
@@ -176,7 +176,7 @@ Output path: `_<namespace>_output/task/implement/{topic}/{instance_id}/`
 
 ### Subagents
 
-`investigator`, `analyst`, `test-engineer`, `editor`, `qa`, `test-qa`
+`investigator`, `analyst`, `test-engineer`, `software-engineer`, `qa`, `test-qa`
 
 ### Artifacts
 

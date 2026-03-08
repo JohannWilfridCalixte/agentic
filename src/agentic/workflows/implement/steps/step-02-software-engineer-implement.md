@@ -1,4 +1,4 @@
-# Step 2: Editor Implement
+# Step 2: Software Engineer Implement
 
 ---
 
@@ -6,7 +6,7 @@
 
 **You MUST delegate this step using the Task tool. Do NOT write code yourself.**
 
-The Editor subagent will read its own instructions from `{ide-folder}/agents/agentic-agent-editor.md`.
+The Software Engineer subagent will read its own instructions from `{ide-folder}/agents/agentic-agent-software-engineer.md`.
 
 ### Delegate
 
@@ -14,7 +14,7 @@ The Editor subagent will read its own instructions from `{ide-folder}/agents/age
 Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="
 # MANDATORY FIRST ACTION - DO NOT SKIP
 
-{ide-invoke-prefix}{ide-folder}/agents/agentic-agent-editor.md
+{ide-invoke-prefix}{ide-folder}/agents/agentic-agent-software-engineer.md
 
 This file contains your role, skill loading instructions (you MUST use the Skill tool for each skill listed), and output format. Complete ALL setup steps in that file before proceeding.
 
@@ -59,7 +59,7 @@ artifacts:
 
 steps_completed:
   - step: 2
-    name: "editor-implement"
+    name: "software-engineer-implement"
     completed_at: {ISO}
     output: "{output_path}/implementation-log.md"
 

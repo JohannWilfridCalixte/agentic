@@ -167,7 +167,7 @@ language_skills_prompt: ""
 | Metric | Count |
 |--------|-------|
 | Total Decisions | 0 |
-| Editor Decisions | 0 |
+| Software Engineer Decisions | 0 |
 | Orchestrator Decisions | 0 |
 | Low Confidence (<90%) | 0 |
 
@@ -205,7 +205,7 @@ Path: {output_path}
 Tasks: {task_count}
 Decision log: {output_path}/decision-log.md
 
-Proceeding to Editor implementation...
+Proceeding to Software Engineer implementation...
 ```
 
 ### Resolve Language Skills
@@ -222,4 +222,4 @@ Cache result in workflow-state.yaml as `language_skills_prompt`.
 
 ## NEXT STEP
 
-Load `step-02-editor-implement.md`
+Load `step-02-software-engineer-implement.md`
