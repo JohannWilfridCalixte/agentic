@@ -4,10 +4,11 @@ Agentic is a multi-agent framework that works inside Claude Code and Cursor (AI-
 
 You do not need to write code. You will type commands into a terminal inside Claude Code or Cursor, interact with AI agents that ask you questions, and review the outputs they produce (mostly Markdown documents).
 
-This guide covers two workflows relevant to PMs:
+This guide covers three workflows relevant to PMs:
 
 - **ask-codebase** -- ask a question about your product's existing behavior and get a plain-language answer
 - **product-spec** -- turn a rough idea into a rigorous product specification through guided questioning
+- **product-vision** -- turn a rough idea into a comprehensive product vision document through creative brainstorming and rigorous questioning
 
 ---
 
@@ -78,7 +79,7 @@ If the file is empty or missing, repeat the step above.
 With your registry configured, you can now install agentic. Open your terminal **inside your project's root directory** (the top-level folder of the codebase you want to work with) and run:
 
 ```bash
-bunx @JohannWilfridCalixte/agentic@alpha init -w ask-codebase,product-spec -n YOUR_TEAM_NAME --ide YOUR_IDE
+bunx @JohannWilfridCalixte/agentic@alpha init -w ask-codebase,product-spec,product-vision -n YOUR_TEAM_NAME --ide YOUR_IDE
 ```
 
 ### Breaking down the command
@@ -88,7 +89,7 @@ bunx @JohannWilfridCalixte/agentic@alpha init -w ask-codebase,product-spec -n YO
 | `bunx` | Runs a package without permanently installing it. You can also use `npx` or `pnpx` instead -- they all do the same thing. |
 | `@JohannWilfridCalixte/agentic@alpha` | The agentic package, using the alpha release channel. |
 | `init` | Tells agentic to set itself up in the current project. |
-| `-w ask-codebase,product-spec` | Install only these two workflows. No spaces around the comma. |
+| `-w ask-codebase,product-spec,product-vision` | Install only these three workflows. No spaces around the comma. |
 | `-n YOUR_TEAM_NAME` | A namespace prefix for your team. Must be lowercase, start with a letter, and be 2-30 characters long. Example: `myteam`, `acme`, `productx`. |
 | `--ide YOUR_IDE` | Which editor you use. Possible values: `claude`, `cursor`, or `both`. |
 
@@ -97,13 +98,13 @@ bunx @JohannWilfridCalixte/agentic@alpha init -w ask-codebase,product-spec -n YO
 If your team name is `acme` and you use Claude Code:
 
 ```bash
-bunx @JohannWilfridCalixte/agentic@alpha init -w ask-codebase,product-spec -n acme --ide claude
+bunx @JohannWilfridCalixte/agentic@alpha init -w ask-codebase,product-spec,product-vision -n acme --ide claude
 ```
 
 Or with npx instead of bunx:
 
 ```bash
-npx @JohannWilfridCalixte/agentic@alpha init -w ask-codebase,product-spec -n acme --ide claude
+npx @JohannWilfridCalixte/agentic@alpha init -w ask-codebase,product-spec,product-vision -n acme --ide claude
 ```
 
 ### What happens after installation
@@ -314,6 +315,95 @@ You want to spec out a "team billing" feature.
 
 ---
 
+---
+
+## Workflow: product-vision
+
+### What it does
+
+Transforms a rough product idea into a comprehensive product vision document through creative brainstorming (100+ ideas using structured techniques) followed by rigorous questioning. The output is a rich 15-section vision document covering everything from problem space and personas to market context, strategic goals, roadmap, and business model.
+
+### When to use it
+
+- You are defining a new product or major initiative
+- You need a strategic vision document before writing individual feature specs
+- You want to explore an idea deeply before committing to a direction
+- You need alignment on product direction, principles, and roadmap
+
+### How to invoke it
+
+**Claude Code:**
+
+```
+/acme:workflow:product-vision
+```
+
+**Cursor:**
+
+```
+/acme-workflow-product-vision
+```
+
+### Input options
+
+| Method | Example | When to use |
+|--------|---------|-------------|
+| No arguments | `/acme:workflow:product-vision` | Start from scratch; the workflow prompts you for your idea. |
+| Path to a notes file | `/acme:workflow:product-vision path/to/notes.md` | You have already written some rough notes about the vision. |
+
+This workflow is always interactive -- there is no auto mode. Product vision requires human judgment at every step.
+
+### What happens step by step
+
+1. **Input Detection** -- The workflow parses your input and initializes its state.
+
+2. **Context Gathering** -- An AI subagent explores the codebase to understand the existing product and technical landscape.
+
+3. **Creative Exploration** -- This is the distinctive step. A brainstorming session uses structured creative techniques (62 techniques across 10 categories) to generate 100+ ideas. You choose how techniques are selected: browse and pick, AI-recommended, random discovery, or a progressive flow. The session explores problem space, users, market, value proposition, features, business model, and risks.
+
+4. **Vision Discovery** -- Informed by the brainstorming output, an AI subagent asks you structured questions about each vision element: vision statement, problem space, target users, market context, value proposition, product principles, strategic goals, success metrics, features, user journeys, business model, risks, and roadmap.
+
+5. **You Confirm Vision Direction** -- The workflow pauses to present the vision discovery summary. If something is wrong, the workflow loops back to refine.
+
+6. **Vision Deepening** -- The AI asks you detailed follow-up questions one at a time across 12 categories, filling in gaps. The workflow will not proceed to writing if critical vision questions remain unanswered.
+
+7. **Write Vision Document** -- The CPO subagent compiles all artifacts into the final 15-section vision document.
+
+### What artifacts are produced
+
+All outputs are saved to: `_<namespace>_output/product/vision/{topic}/{instance_id}/`
+
+| File | Description |
+|------|-------------|
+| `workflow-state.yaml` | Internal state tracking for the workflow run. |
+| `context-{topic}.md` | Product and technical context gathered from the codebase. |
+| `brainstorming-{topic}.md` | Full brainstorming session: ideas, themes, breakthrough concepts. |
+| `discovery-{topic}.md` | Vision discovery findings across all 13 vision elements. |
+| `vision-decisions.md` | Record of all vision decisions made during deepening. |
+| `vision-{topic}.md` | The final product vision document. This is the main deliverable. |
+
+### Concrete example
+
+You want to create a vision for a "developer analytics platform."
+
+1. In Claude Code, type: `/acme:workflow:product-vision`
+
+2. The workflow asks for your idea. You type: "A platform that gives engineering teams real-time visibility into developer productivity, code quality, and delivery metrics."
+
+3. The AI explores the codebase for existing context, then starts a brainstorming session. You choose "AI-Recommended" technique selection. The session generates 120+ ideas across problem space, users, market positioning, features, and business model.
+
+4. Vision discovery uses the brainstorming output to ask you focused questions: "During brainstorming, the idea of integrating with existing CI/CD pipelines emerged. How central is that to your vision?"
+
+5. You confirm the vision direction, then answer deepening questions one by one across all vision dimensions.
+
+6. The final `vision-developer-analytics.md` is a comprehensive 15-section document covering executive summary, vision statement, detailed personas, competitive landscape, value proposition, product principles, strategic goals with OKRs, prioritized features, user journeys, business model, risks with mitigation, and a phased roadmap.
+
+### Output location
+
+Vision documents: `_<namespace>_output/product/vision/{topic}/{instance_id}/vision-{topic}.md`
+
+---
+
 ## FAQ and Troubleshooting
 
 ### "Command not found" when running the install command
@@ -381,5 +471,6 @@ During the review steps (step 4 in both workflows), you can reject the AI's unde
 All outputs go to `_<namespace>_output/` in your project directory:
 - ask-codebase answers: `_<namespace>_output/task/ask-codebase/{topic}/{instance_id}/answer.md`
 - product specs: `_<namespace>_output/product/specs/{topic}/{instance_id}/spec-{topic}.md`
+- product vision: `_<namespace>_output/product/vision/{topic}/{instance_id}/vision-{topic}.md`
 
 Open these files in any text editor or Markdown viewer.

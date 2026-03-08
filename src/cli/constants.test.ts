@@ -4,14 +4,13 @@ import { AGENTS, COMMANDS, getAgents } from './constants';
 
 describe('AGENTS', () => {
   it('contains expected agents', () => {
-    expect(AGENTS).toContain('cpo');
     expect(AGENTS).toContain('cto');
     expect(AGENTS).toContain('dx');
     expect(AGENTS).toContain('team-and-workflow');
   });
 
-  it('has 4 agents', () => {
-    expect(AGENTS).toHaveLength(4);
+  it('has 3 agents', () => {
+    expect(AGENTS).toHaveLength(3);
   });
 });
 
@@ -19,7 +18,6 @@ describe('getAgents', () => {
   it('returns agents with custom namespace prefix', () => {
     const agents = getAgents('foo');
 
-    expect(agents).toContain('foo-agent-cpo');
     expect(agents).toContain('foo-agent-cto');
     expect(agents).toContain('foo-agent-dx');
     expect(agents).toContain('foo-agent-team-and-workflow');
@@ -33,8 +31,8 @@ describe('getAgents', () => {
     }
   });
 
-  it('has 4 agents', () => {
-    expect(getAgents('foo')).toHaveLength(4);
+  it('has 3 agents', () => {
+    expect(getAgents('foo')).toHaveLength(3);
   });
 });
 

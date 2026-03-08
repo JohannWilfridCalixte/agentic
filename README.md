@@ -53,7 +53,7 @@ bunx @JohannWilfridCalixte/agentic@alpha init -w technical-planning,implement,de
 **Solo Developer** — full product-to-code pipeline + frontend ([detailed guide](SETUP_SOLO_DEV.md)):
 
 ```bash
-bunx @JohannWilfridCalixte/agentic@alpha init -w ask-codebase,product-spec,technical-planning,implement,debug,frontend-development -n YOUR_TEAM_NAME --ide YOUR_IDE
+bunx @JohannWilfridCalixte/agentic@alpha init -w ask-codebase,product-spec,product-vision,technical-planning,implement,debug,frontend-development -n YOUR_TEAM_NAME --ide YOUR_IDE
 ```
 
 > Replace `YOUR_TEAM_NAME` with a lowercase namespace (e.g. `myteam`) and `YOUR_IDE` with `claude`, `cursor`, or `both`.
@@ -72,6 +72,7 @@ In **Claude Code**, invoke workflows with colon syntax:
 ```
 /agentic:workflow:ask-codebase            # question → code-informed answer
 /agentic:workflow:product-spec            # idea → PRD
+/agentic:workflow:product-vision           # idea → comprehensive product vision
 /agentic:workflow:technical-planning      # spec → detailed technical plan
 /agentic:workflow:implement               # plan → code → tests → review
 /agentic:workflow:debug                   # systematic debugging
@@ -83,6 +84,7 @@ In **Cursor**, invoke workflows with dash syntax:
 ```
 /agentic-workflow-ask-codebase
 /agentic-workflow-product-spec
+/agentic-workflow-product-vision
 /agentic-workflow-technical-planning
 /agentic-workflow-implement
 /agentic-workflow-debug
@@ -97,7 +99,7 @@ Detailed guides with workflow explanations, step-by-step usage, and examples:
 
 | Role | Guide | Workflows |
 |------|-------|-----------|
-| Product Manager | [SETUP_PM.md](SETUP_PM.md) | ask-codebase, product-spec |
+| Product Manager | [SETUP_PM.md](SETUP_PM.md) | ask-codebase, product-spec, product-vision |
 | Developer | [SETUP_DEV.md](SETUP_DEV.md) | technical-planning, implement, debug |
 | Solo Developer | [SETUP_SOLO_DEV.md](SETUP_SOLO_DEV.md) | All workflows |
 
@@ -223,6 +225,7 @@ bunx @JohannWilfridCalixte/agentic@alpha update --workflows debug
 |----------|-----------------|------------|
 | `ask-codebase` | architect | gather-technical-context, context7 |
 | `product-spec` | (none) | product-discovery, brainstorming |
+| `product-vision` | cpo | product-vision, product-discovery, brainstorming |
 | `technical-planning` | architect | gather-technical-context, technical-planning, code, typescript-* |
 | `implement` | editor, test-engineer, qa, test-qa, security-qa | all code skills |
 | `debug` | investigator, analyst, test-engineer, editor, qa, test-qa | code + diagnostic skills |
@@ -267,6 +270,7 @@ Workflows are orchestrated multi-step processes that coordinate agents to comple
 |----------|---------|-------------|
 | `ask-codebase` | question about behavior | Architect context gathering → functional understanding → code-informed answer |
 | `product-spec` | vague idea | Product discovery dialogue → precise PRD |
+| `product-vision` | new product idea | Creative brainstorming → vision discovery → comprehensive vision document |
 | `technical-planning` | spec/PRD/story | Gathers context → resolves decisions → produces detailed technical plan |
 | `implement` | technical plan | Plan → Editor code → Test Engineer tests → QA + Security review → optional PR |
 | `debug` | bug/error/failure | Investigator evidence → Analyst hypothesis → Editor fix → QA verify |
@@ -278,7 +282,6 @@ Strategic agents defining team-level roles and guidelines:
 
 | Agent | Role |
 |-------|------|
-| `cpo` | Product vision, roadmap, decision principles |
 | `cto` | Technical vision, architecture principles |
 | `dx` | Developer experience, tooling, CI, repo ergonomics |
 | `team-and-workflow` | Multi-agent team structure and collaboration rules |
@@ -289,6 +292,7 @@ Specialized agents invoked by workflows to perform focused tasks:
 
 | Subagent | Role |
 |----------|------|
+| `cpo` | Product vision, roadmap, decision principles |
 | `pm` | Product specs: epics, user stories, acceptance criteria |
 | `architect` | Codebase context gathering + technical planning |
 | `editor` | Code implementation following technical plan |

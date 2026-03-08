@@ -10,13 +10,14 @@ import {
 } from './dependencies';
 
 describe('KNOWN_WORKFLOWS', () => {
-  it('contains exactly 6 workflow names', () => {
-    expect(KNOWN_WORKFLOWS).toHaveLength(6);
+  it('contains exactly 7 workflow names', () => {
+    expect(KNOWN_WORKFLOWS).toHaveLength(7);
   });
 
   it('includes all expected workflow names', () => {
     const expected = [
       'product-spec',
+      'product-vision',
       'ask-codebase',
       'technical-planning',
       'implement',
@@ -177,6 +178,7 @@ describe('resolveWorkflowDependencies', () => {
   it('no workflow contains hardcoded typescript-engineer or typescript-imports', () => {
     const allWorkflows = [
       'product-spec',
+      'product-vision',
       'ask-codebase',
       'technical-planning',
       'implement',
@@ -192,7 +194,7 @@ describe('resolveWorkflowDependencies', () => {
     }
   });
 
-  it('skill-injection-protocol is present in all workflows except product-spec', () => {
+  it('skill-injection-protocol is present in all workflows except product-spec and product-vision', () => {
     const workflowsWithProtocol = [
       'ask-codebase',
       'technical-planning',
@@ -208,6 +210,9 @@ describe('resolveWorkflowDependencies', () => {
 
     const productSpec = resolveWorkflowDependencies(['product-spec']);
     expect(productSpec.skills).not.toContain('skill-injection-protocol');
+
+    const productVision = resolveWorkflowDependencies(['product-vision']);
+    expect(productVision.skills).not.toContain('skill-injection-protocol');
   });
 });
 

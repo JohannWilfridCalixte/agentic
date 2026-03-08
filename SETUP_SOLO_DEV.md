@@ -1,6 +1,6 @@
 # Setup Guide for Solo Developers
 
-All-in-one setup covering product discovery through implementation. You handle both product and engineering -- this guide gives you six workflows that chain together into a complete development lifecycle.
+All-in-one setup covering product discovery through implementation. You handle both product and engineering -- this guide gives you seven workflows that chain together into a complete development lifecycle.
 
 ## Prerequisites
 
@@ -17,14 +17,14 @@ Your GitHub PAT needs `read:packages` scope.
 
 ```bash
 bunx @JohannWilfridCalixte/agentic@alpha init \
-  -w ask-codebase,product-spec,technical-planning,implement,debug,frontend-development \
+  -w ask-codebase,product-spec,product-vision,technical-planning,implement,debug,frontend-development \
   -n YOUR_TEAM_NAME \
   --ide YOUR_IDE
 ```
 
 | Flag | Values | Notes |
 |------|--------|-------|
-| `-w` | Comma-separated workflow names | All six listed above |
+| `-w` | Comma-separated workflow names | All seven listed above |
 | `-n` | Namespace prefix | Lowercase, starts with letter, 2-30 chars |
 | `--ide` | `claude`, `cursor`, `both` | IDE integration target |
 
@@ -53,6 +53,17 @@ product-spec --> technical-planning --> frontend-development
 ```
 
 Same discovery flow, but use `frontend-development` instead of `implement` for UI-heavy work. Design decisions are documented before any code is written.
+
+### Vision-First Lifecycle
+
+```
+product-vision --> product-spec --> technical-planning --> implement
+```
+
+1. **product-vision** -- define the big picture
+2. **product-spec** -- define detailed feature specs within the vision
+3. **technical-planning** -- define how to build each feature
+4. **implement** -- build it with automated review
 
 ### Standalone Utilities
 
@@ -143,6 +154,42 @@ Same discovery flow, but use `frontend-development` instead of `implement` for U
 
 ```
 /agentic:workflow:product-spec --auto ./notes/dashboard-idea.md
+```
+
+---
+
+### product-vision
+
+**Purpose:** Transform a rough idea into a comprehensive product vision document through creative brainstorming and rigorous questioning.
+
+**Invocation:**
+
+```
+/agentic:workflow:product-vision [<input>]
+```
+
+**Inputs:** No args (prompts you) or `notes.md` file path.
+
+**Steps:**
+
+1. Input Detection
+2. Context Gathering
+3. Creative Exploration (brainstorming, 100+ ideas)
+4. Vision Discovery
+5. Confirm Vision (loop)
+6. Vision Deepening
+7. Write Vision Document
+
+**Key rules:** Always interactive. Won't write vision if critical questions remain. Uses 62 brainstorming techniques across 10 categories.
+
+**Artifacts:** `_<namespace>_output/product/vision/{topic}/{instance_id}/`
+
+- `workflow-state.yaml`, `context-{topic}.md`, `brainstorming-{topic}.md`, `discovery-{topic}.md`, `vision-decisions.md`, `vision-{topic}.md`
+
+**Example:**
+
+```
+/agentic:workflow:product-vision We need a developer analytics platform for engineering teams
 ```
 
 ---

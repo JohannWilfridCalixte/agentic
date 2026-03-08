@@ -9,6 +9,7 @@ import { addNamePrefix } from './utils';
 
 type WorkflowName =
   | 'product-spec'
+  | 'product-vision'
   | 'ask-codebase'
   | 'technical-planning'
   | 'implement'
@@ -32,6 +33,11 @@ const WORKFLOW_DEPENDENCY_MAP: Record<WorkflowName, WorkflowDependencies> = {
     agents: [],
     skills: ['product-discovery', 'brainstorming'],
     argumentHint: '[--auto] [input]',
+  },
+  'product-vision': {
+    agents: ['cpo'],
+    skills: ['product-vision', 'product-discovery', 'brainstorming'],
+    argumentHint: '[input]',
   },
   'ask-codebase': {
     agents: ['architect'],
