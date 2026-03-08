@@ -1,6 +1,6 @@
 ---
 name: product-manager
-description: Use when producing product artifacts - epics, user stories, acceptance criteria, analytics. Product-only, no technical implementation.
+description: Use when producing product artifacts - epics, user stories, acceptance criteria, or analytics specs.
 ---
 
 # Product Manager

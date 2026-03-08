@@ -1,6 +1,6 @@
 ---
 name: frontend-development
-description: Use when building frontend features from idea to implementation. Systematic workflow through UI/UX design, visual decisions, then implementation. For new UI components, pages, or features.
+description: Use when building frontend features from idea to implementation. Triggers on new UI components, pages, or features needing design and code.
 argument-hint: "[feature description | design spec | URL]"
 ---
 

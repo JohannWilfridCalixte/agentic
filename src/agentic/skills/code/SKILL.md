@@ -1,6 +1,6 @@
 ---
 name: code
-description: Use when implementing code according to technical plan. Requires evidence of verification - never claim tests pass without proof.
+description: Use when implementing code according to a technical plan. After planning, during development.
 ---
 
 # Code Implementation

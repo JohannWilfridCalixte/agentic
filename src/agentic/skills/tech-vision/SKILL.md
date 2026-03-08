@@ -1,6 +1,6 @@
 ---
 name: tech-vision
-description: Use when defining technical vision, architecture principles, non-functional requirements. CTO-level technical strategy.
+description: Use when defining technical vision, architecture principles, or non-functional requirements. Triggers on strategic technical planning or architecture decisions.
 ---
 
 # Technical Vision

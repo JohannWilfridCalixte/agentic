@@ -1,6 +1,6 @@
 ---
 name: clean-architecture
-description: Use when designing or refactoring services with business logic that must remain decoupled from frameworks, databases, and external systems. Use when code has mixed concerns, infrastructure dependencies in business logic, or untestable domain rules.
+description: Use when code has mixed concerns, infrastructure dependencies in business logic, or untestable domain rules. Triggers on service design or refactoring requiring decoupled business logic.
 ---
 
 # Clean Architecture

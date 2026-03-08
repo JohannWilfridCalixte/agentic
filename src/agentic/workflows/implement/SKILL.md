@@ -1,6 +1,6 @@
 ---
 name: implement
-description: Use when implementing from a technical plan (from agentic:technical-planning or planning mode). Requires valid technical plan as input. Interactive PR step. Triggers - "implement this plan", "implement technical plan", technical plan file provided.
+description: Use when implementing from a technical plan (from agentic:technical-planning or planning mode). Triggers - "implement this plan", "implement technical plan", technical plan file provided.
 argument-hint: "<path/to/technical-plan.md | technical plan in context>"
 ---
 

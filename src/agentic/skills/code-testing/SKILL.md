@@ -1,6 +1,6 @@
 ---
 name: code-testing
-description: Use when writing tests, reviewing test quality, debugging flaky tests, or deciding what/how to test. Covers test structure, pyramid vs trophy, mocking strategy, and anti-patterns.
+description: Use when writing tests, reviewing test quality, debugging flaky tests, or deciding what/how to test.
 ---
 
 # Code Testing

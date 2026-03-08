@@ -1,6 +1,6 @@
 ---
 name: gather-technical-context
-description: Use when extracting technical context from codebase + vision docs before planning implementation. Identifies touchpoints, constraints, risks.
+description: Use when extracting technical context from codebase and vision docs before planning implementation.
 ---
 
 # Gather Technical Context

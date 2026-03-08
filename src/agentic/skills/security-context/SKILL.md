@@ -1,6 +1,6 @@
 ---
 name: security-context
-description: Use when adding security/privacy/compliance constraints to technical artifacts. Before or after technical planning. Does NOT implement code.
+description: Use when adding security, privacy, or compliance constraints to technical artifacts. Before or after technical planning.
 ---
 
 # Security Context (Addendum)

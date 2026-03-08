@@ -1,6 +1,6 @@
 ---
 name: product-vision
-description: Use when defining product direction, decision principles, roadmap. CPO-level strategic planning.
+description: Use when defining product direction, decision principles, or roadmap. Triggers on strategic product planning or vision alignment.
 ---
 
 # Product Vision

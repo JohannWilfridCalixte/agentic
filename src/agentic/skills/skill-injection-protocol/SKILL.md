@@ -1,6 +1,6 @@
 ---
 name: skill-injection-protocol
-description: Orchestrator protocol for resolving language-specific skills. Produces a `language_skills_prompt` value cached in workflow-state.yaml.
+description: Use when resolving language-specific skills for a workflow. Triggers on multi-language projects or when language-specific conventions are needed before implementation.
 ---
 
 # Skill Injection Protocol (Orchestrator)
