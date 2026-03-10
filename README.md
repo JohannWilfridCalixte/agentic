@@ -53,7 +53,7 @@ bunx @JohannWilfridCalixte/agentic@alpha init -w technical-planning,implement,de
 **Solo Developer** — full product-to-code pipeline + frontend ([detailed guide](SETUP_SOLO_DEV.md)):
 
 ```bash
-bunx @JohannWilfridCalixte/agentic@alpha init -w ask-codebase,product-spec,product-vision,technical-planning,implement,debug,frontend-development -n YOUR_TEAM_NAME --ide YOUR_IDE
+bunx @JohannWilfridCalixte/agentic@alpha init -w ask-codebase,product-spec,product-vision,technical-planning,implement,debug,frontend-development,auto-implement -n YOUR_TEAM_NAME --ide YOUR_IDE
 ```
 
 > Replace `YOUR_TEAM_NAME` with a lowercase namespace (e.g. `myteam`) and `YOUR_IDE` with `claude`, `cursor`, or `both`.
@@ -77,6 +77,7 @@ In **Claude Code**, invoke workflows with colon syntax:
 /agentic:workflow:implement               # plan → code → tests → review
 /agentic:workflow:debug                   # systematic debugging
 /agentic:workflow:frontend-development    # idea → design → frontend code
+/agentic:workflow:auto-implement              # idea → autonomous code
 ```
 
 In **Cursor**, invoke workflows with dash syntax:
@@ -89,6 +90,7 @@ In **Cursor**, invoke workflows with dash syntax:
 /agentic-workflow-implement
 /agentic-workflow-debug
 /agentic-workflow-frontend-development
+/agentic-workflow-auto-implement
 ```
 
 > With a custom namespace (e.g., `-n myteam`), replace `agentic` with your namespace: `/myteam:workflow:implement` (Claude Code) or `/myteam-workflow-implement` (Cursor).
@@ -230,6 +232,7 @@ bunx @JohannWilfridCalixte/agentic@alpha update --workflows debug
 | `implement` | software-engineer, test-engineer, qa, test-qa, security-qa | all code skills |
 | `debug` | investigator, analyst, test-engineer, software-engineer, qa, test-qa | code + diagnostic skills |
 | `frontend-development` | ui-ux-designer, frontend-developer, qa | frontend-design, ux-patterns, refactoring-ui |
+| `auto-implement` | architect, pm, software-engineer, test-engineer, qa, test-qa, security-qa | all code skills + product-manager |
 
 ### Behavior
 
@@ -275,6 +278,7 @@ Workflows are orchestrated multi-step processes that coordinate agents to comple
 | `implement` | technical plan | Plan → Software Engineer code → Test Engineer tests → QA + Security review → optional PR |
 | `debug` | bug/error/failure | Investigator evidence → Analyst hypothesis → Software Engineer fix → QA verify |
 | `frontend-development` | UI feature | UI/UX design → visual decisions → frontend implementation |
+| `auto-implement` | rough idea | Input detection → Architect context → PM decisions → Technical plan → Launch implement workflow |
 
 ## Agents
 

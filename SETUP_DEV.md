@@ -1,6 +1,6 @@
 # Setup Guide for Developers
 
-Multi-agent framework for Claude Code and Cursor. This guide covers three workflows: `technical-planning`, `implement`, and `debug`.
+Multi-agent framework for Claude Code and Cursor. This guide covers four workflows: `technical-planning`, `implement`, `debug`, and `auto-implement`.
 
 ## Prerequisites
 
@@ -15,7 +15,7 @@ A GitHub Personal Access Token (PAT) with `read:packages` scope configured in `~
 
 ```bash
 bunx @JohannWilfridCalixte/agentic@alpha init \
-  -w technical-planning,implement,debug \
+  -w technical-planning,implement,debug,auto-implement \
   -n YOUR_TEAM_NAME \
   --ide YOUR_IDE
 ```
@@ -198,6 +198,55 @@ Output path: `_<namespace>_output/debug/{session_id}/`
 
 ---
 
+## Workflow: auto-implement
+
+**Purpose:** Takes a rough idea and autonomously goes from idea to working code. Gathers codebase context, makes product decisions, creates a technical plan, then implements -- all without manual intervention.
+
+**Invocation:**
+```
+/agentic:workflow:auto-implement [<input>]
+```
+
+### Input
+
+- No arguments -- prompts for idea
+- Path to `idea.md` file
+- GitHub issue (`#123` or full URL)
+- Inline text
+
+### Flow
+
+| Step | Mode | What happens |
+|------|------|-------------|
+| 1. Input Detection | -- | Parses input, classifies, initializes state |
+| 2. Architect Context | Autonomous | Architect gathers technical context + functional understanding |
+| 3. PM Decisions | Autonomous | PM makes product decisions (scope, acceptance criteria) |
+| 4. Technical Plan | Autonomous | Architect generates technical plan |
+| 5. Launch Implement | Autonomous | Launches implement workflow with generated plan |
+
+**Fully autonomous** -- no interactive mode. All decisions logged with confidence scores. Low-confidence decisions (<90%) flagged for post-implementation review.
+
+### Subagents
+
+Direct: `architect`, `pm`
+Transitive (via implement): `software-engineer`, `test-engineer`, `qa`, `test-qa`, `security-qa`
+
+### Artifacts
+
+Output path: `_<namespace>_output/task/auto-implement/{topic}/{instance_id}/`
+
+| File | Description |
+|------|-------------|
+| `workflow-state.yaml` | Workflow state machine |
+| `decision-log.md` | All autonomous decisions with confidence scores |
+| `input-idea.md` | Original idea/prompt |
+| `technical-context.md` | Codebase analysis from Architect |
+| `functional-understanding.md` | Plain-language behavior synthesis |
+| `product-decisions.md` | Product scope, acceptance criteria from PM |
+| `technical-plan.md` | Implementation plan from Architect |
+
+---
+
 ## Typical Workflow Chains
 
 ### Full feature lifecycle
@@ -232,6 +281,16 @@ Or with a log file:
 /agentic:workflow:debug path/to/error.log
 ```
 
+### Quick implementation
+
+When you want to skip manual planning and go straight from idea to code:
+
+```bash
+/agentic:workflow:auto-implement Add rate limiting per tenant
+```
+
+All product and technical decisions are made autonomously. Review `decision-log.md` after completion.
+
 ---
 
 ## Tips
@@ -242,3 +301,4 @@ Or with a log file:
 - **Escalation files:** If `debug` generates `escalation.md`, the bug needs human attention -- review the hypothesis log to see what was tried.
 - **Namespace consistency:** Use the same namespace across your team so artifact paths are predictable.
 - **IDE choice:** Use `--ide both` if your team uses a mix of Claude Code and Cursor.
+- **Use `auto-implement` for well-understood features.** It skips interactive planning. Best for features where the scope is clear enough that autonomous decisions are acceptable. Review `decision-log.md` for all assumptions made.

@@ -1,6 +1,6 @@
 # Setup Guide for Solo Developers
 
-All-in-one setup covering product discovery through implementation. You handle both product and engineering -- this guide gives you seven workflows that chain together into a complete development lifecycle.
+All-in-one setup covering product discovery through implementation. You handle both product and engineering -- this guide gives you eight workflows that chain together into a complete development lifecycle.
 
 ## Prerequisites
 
@@ -17,14 +17,14 @@ Your GitHub PAT needs `read:packages` scope.
 
 ```bash
 bunx @JohannWilfridCalixte/agentic@alpha init \
-  -w ask-codebase,product-spec,product-vision,technical-planning,implement,debug,frontend-development \
+  -w ask-codebase,product-spec,product-vision,technical-planning,implement,debug,frontend-development,auto-implement \
   -n YOUR_TEAM_NAME \
   --ide YOUR_IDE
 ```
 
 | Flag | Values | Notes |
 |------|--------|-------|
-| `-w` | Comma-separated workflow names | All seven listed above |
+| `-w` | Comma-separated workflow names | All eight listed above |
 | `-n` | Namespace prefix | Lowercase, starts with letter, 2-30 chars |
 | `--ide` | `claude`, `cursor`, `both` | IDE integration target |
 
@@ -64,6 +64,14 @@ product-vision --> product-spec --> technical-planning --> implement
 2. **product-spec** -- define detailed feature specs within the vision
 3. **technical-planning** -- define how to build each feature
 4. **implement** -- build it with automated review
+
+### Quick Implementation
+
+```
+auto-implement
+```
+
+Skip all manual steps. Give it an idea and get working code with tests and review -- fully autonomous. Best when scope is clear and you trust autonomous product decisions. Review `decision-log.md` after.
 
 ### Standalone Utilities
 
@@ -352,6 +360,44 @@ product-vision --> product-spec --> technical-planning --> implement
 
 ---
 
+### auto-implement
+
+**Purpose:** Idea to working code, fully autonomous. Gathers codebase context, makes product decisions, creates a technical plan, then implements -- all without manual intervention.
+
+**Invocation:**
+
+```
+/agentic:workflow:auto-implement [<input>]
+```
+
+**Inputs:** No args (prompts you), `idea.md` file, GitHub issue (`#123` or URL), or inline text.
+
+**Steps:**
+
+1. Input Detection
+2. Architect Context Gathering (autonomous)
+3. PM Autonomous Decisions
+4. Generate Technical Plan (autonomous)
+5. Launch Implement Workflow (autonomous)
+
+**Key rules:** Always autonomous. All decisions logged with confidence scores. Low-confidence decisions (<90%) flagged for post-implementation review.
+
+**Artifacts:** `_<namespace>_output/task/auto-implement/{topic}/{instance_id}/`
+
+- `workflow-state.yaml`, `decision-log.md`, `input-idea.md`, `technical-context.md`, `functional-understanding.md`, `product-decisions.md`, `technical-plan.md`
+
+**Example:**
+
+```
+/agentic:workflow:auto-implement Add API rate limiting per tenant with configurable thresholds
+```
+
+```
+/agentic:workflow:auto-implement #42
+```
+
+---
+
 ## Typical Workflow Chain
 
 The most powerful pattern chains three workflows end-to-end:
@@ -376,6 +422,12 @@ product-spec --> technical-planning --> implement
 /agentic:workflow:implement _acme_output/task/technical-planning/rate-limiting/def456/technical-plan.md
 ```
 
+Or skip all manual steps with auto-implement:
+
+```bash
+/agentic:workflow:auto-implement I want to add API rate limiting per tenant
+```
+
 For UI-heavy features, replace `implement` with `frontend-development` in step 3.
 
 ---
@@ -393,3 +445,5 @@ For UI-heavy features, replace `implement` with `frontend-development` in step 3
 **Use `frontend-development` for UI work.** It forces design-first thinking and produces documented design decisions, which matters when you revisit the code months later.
 
 **Keep `technical-planning` interactive.** Even solo, the questioning phase surfaces edge cases. Answer honestly -- "I don't know" is valid and leads to better plans.
+
+**Use `auto-implement` when scope is clear.** Skips interactive planning entirely. All product and technical decisions are autonomous. Review `decision-log.md` for assumptions. Best for well-understood features where you trust the AI's judgment.

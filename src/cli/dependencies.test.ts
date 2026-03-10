@@ -10,8 +10,8 @@ import {
 } from './dependencies';
 
 describe('KNOWN_WORKFLOWS', () => {
-  it('contains exactly 7 workflow names', () => {
-    expect(KNOWN_WORKFLOWS).toHaveLength(7);
+  it('contains exactly 8 workflow names', () => {
+    expect(KNOWN_WORKFLOWS).toHaveLength(8);
   });
 
   it('includes all expected workflow names', () => {
@@ -23,6 +23,7 @@ describe('KNOWN_WORKFLOWS', () => {
       'implement',
       'debug',
       'frontend-development',
+      'auto-implement',
     ] as const;
 
     for (const name of expected) {

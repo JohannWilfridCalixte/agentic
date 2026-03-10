@@ -1,0 +1,45 @@
+# Workflow State Template
+# Tracks progress through auto-implement workflow
+# Location: {output_path}/workflow-state.yaml
+
+workflow: auto-implement
+version: "1.0.0"
+
+# Input
+input_type: "" # prompt_user | file | github_issue | inline
+input_source: null # path, URL, issue number, or null
+input_classification: "" # feature_request | enhancement | bug_fix | rough_idea
+
+# Topic
+topic: "" # kebab-case topic
+instance_id: "" # YYYYMMDD-HHMMSS-XXXX
+output_path: "" # {ide-folder}/{outputFolder}/task/auto-implement/{topic}/{instance_id}
+
+# Timing
+started_at: "" # ISO timestamp
+updated_at: "" # ISO timestamp
+completed_at: null # ISO timestamp when done
+
+language_skills_prompt: ""
+
+# Progress
+status: "pending" # pending | in_progress | completed | failed
+current_step: 0
+steps_completed: []
+# Example:
+#   - step: 1
+#     name: "input-detection"
+#     completed_at: "2024-01-15T10:00:00Z"
+#   - step: 2
+#     name: "architect-context"
+#     completed_at: "2024-01-15T10:15:00Z"
+#     output: ".../technical-context.md"
+
+# Artifacts
+artifacts:
+  input_idea: null
+  technical_context: null
+  functional_understanding: null
+  product_decisions: null
+  technical_plan: null
+  decision_log: null

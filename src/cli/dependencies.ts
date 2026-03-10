@@ -14,7 +14,8 @@ type WorkflowName =
   | 'technical-planning'
   | 'implement'
   | 'debug'
-  | 'frontend-development';
+  | 'frontend-development'
+  | 'auto-implement';
 
 interface WorkflowDependencies {
   readonly agents: readonly string[];
@@ -106,6 +107,34 @@ const WORKFLOW_DEPENDENCY_MAP: Record<WorkflowName, WorkflowDependencies> = {
       'dx',
       'context7',
       'qa',
+    ],
+    argumentHint: '[input]',
+  },
+  'auto-implement': {
+    agents: [
+      'architect',
+      'pm',
+      'software-engineer',
+      'test-engineer',
+      'qa',
+      'test-qa',
+      'security-qa',
+    ],
+    skills: [
+      'gather-technical-context',
+      'skill-injection-protocol',
+      'context7',
+      'product-manager',
+      'technical-planning',
+      'code',
+      'frontend-design',
+      'clean-architecture',
+      'observability',
+      'code-testing',
+      'dx',
+      'ux-patterns',
+      'qa',
+      'security-qa',
     ],
     argumentHint: '[input]',
   },
