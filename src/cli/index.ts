@@ -17,7 +17,8 @@ function parseCommand(arg: string | undefined, args: readonly string[]) {
 }
 
 export function normalizeIde(value: string): IDE | undefined {
-  if (value === 'claude' || value === 'cursor' || value === 'codex' || value === 'all') return value;
+  if (value === 'claude' || value === 'cursor' || value === 'codex' || value === 'all')
+    return value;
   if (value === 'both') return 'all';
   return undefined;
 }

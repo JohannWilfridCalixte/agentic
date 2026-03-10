@@ -8,27 +8,27 @@ describe('LANGUAGE_PROFILES', () => {
   });
 
   it('typescript profile has correct detect keywords', () => {
-    const ts = LANGUAGE_PROFILES.find((p) => p.name === 'typescript')!;
+    const ts = LANGUAGE_PROFILES.find((p) => p.name === 'typescript');
 
-    expect(ts.detect).toEqual(['typescript', 'ts', 'node', 'bun', 'deno']);
+    expect(ts?.detect).toEqual(['typescript', 'ts', 'node', 'bun', 'deno']);
   });
 
   it('typescript profile has correct skills', () => {
-    const ts = LANGUAGE_PROFILES.find((p) => p.name === 'typescript')!;
+    const ts = LANGUAGE_PROFILES.find((p) => p.name === 'typescript');
 
-    expect(ts.skills).toEqual(['typescript-engineer', 'typescript-imports']);
+    expect(ts?.skills).toEqual(['typescript-engineer', 'typescript-imports']);
   });
 
   it('python profile has correct detect keywords', () => {
-    const py = LANGUAGE_PROFILES.find((p) => p.name === 'python')!;
+    const py = LANGUAGE_PROFILES.find((p) => p.name === 'python');
 
-    expect(py.detect).toEqual(['python', 'py', 'pip', 'uv', 'poetry', 'conda']);
+    expect(py?.detect).toEqual(['python', 'py', 'pip', 'uv', 'poetry', 'conda']);
   });
 
   it('python profile has correct skills', () => {
-    const py = LANGUAGE_PROFILES.find((p) => p.name === 'python')!;
+    const py = LANGUAGE_PROFILES.find((p) => p.name === 'python');
 
-    expect(py.skills).toEqual(['python-engineer']);
+    expect(py?.skills).toEqual(['python-engineer']);
   });
 });
 
