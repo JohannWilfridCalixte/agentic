@@ -26,7 +26,7 @@ bunx @JohannWilfridCalixte/agentic@alpha init \
 |------|--------|-------|
 | `-w` | Comma-separated workflow names | All eight listed above |
 | `-n` | Namespace prefix | Lowercase, starts with letter, 2-30 chars |
-| `--ide` | `claude`, `cursor`, `both` | IDE integration target |
+| `--ide` | `claude`, `cursor`, `codex`, `all` (`both` still works) | IDE integration target |
 
 Also works with `npx` and `pnpx` instead of `bunx`.
 

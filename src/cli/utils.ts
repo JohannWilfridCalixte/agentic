@@ -34,7 +34,7 @@ interface CopyDirError {
   readonly cause: unknown;
 }
 
-type TargetIDE = Exclude<IDE, 'both'>;
+type TargetIDE = Exclude<IDE, 'all' | 'both'>;
 
 const IDE_TEMPLATE_VARS = {
   claude: {
@@ -44,6 +44,11 @@ const IDE_TEMPLATE_VARS = {
   },
   cursor: {
     'ide-folder': '.cursor',
+    'ide-invoke-prefix': '@',
+    subagentTypeGeneralPurpose: 'generalPurpose',
+  },
+  codex: {
+    'ide-folder': '.agents',
     'ide-invoke-prefix': '@',
     subagentTypeGeneralPurpose: 'generalPurpose',
   },
@@ -59,6 +64,11 @@ const IDE_SETTINGS_DEFAULTS = {
     highThinkingModelName: 'claude-4.6-opus-high-thinking',
     codeWritingModelName: 'claude-4.6-opus-high-thinking',
     qaModelName: 'claude-4.6-opus-high-thinking',
+  },
+  codex: {
+    highThinkingModelName: 'gpt-5.4',
+    codeWritingModelName: 'gpt-5.4',
+    qaModelName: 'gpt-5.4',
   },
 } as const satisfies Record<TargetIDE, Record<string, string>>;
 

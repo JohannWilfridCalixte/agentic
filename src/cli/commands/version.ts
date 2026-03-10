@@ -2,6 +2,7 @@ import { join } from 'node:path';
 
 import type { Result } from '../../lib/monads';
 import { Err, isErr, Ok } from '../../lib/monads';
+import { getIdeDir } from '../constants';
 import { readSettings } from '../settings';
 import type { TargetIDE } from './init';
 import { detectIdes } from './update';
@@ -15,6 +16,7 @@ interface VersionError {
 const IDE_DISPLAY_NAMES: Record<TargetIDE, string> = {
   claude: 'Claude Code',
   cursor: 'Cursor',
+  codex: 'Codex',
 };
 
 function formatDate(isoString: string) {
@@ -42,7 +44,7 @@ export async function version(): Promise<Result<void, VersionError>> {
   }
 
   for (const ide of detectedIdes) {
-    const ideDir = join(projectRoot, `.${ide}`);
+    const ideDir = join(projectRoot, getIdeDir(ide));
     const result = await readSettings(ideDir);
 
     if (isErr(result)) {

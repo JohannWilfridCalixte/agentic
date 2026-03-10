@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 
-import { parseProfileOption, parseSkillOverrideOption } from './index';
+import { normalizeIde, parseProfileOption, parseSkillOverrideOption } from './index';
 
 describe('parseProfileOption', () => {
   it('parses single profile with --profile flag', () => {
@@ -43,6 +43,36 @@ describe('parseProfileOption', () => {
     const result = parseProfileOption(['--profile', 'ruby,,react']);
 
     expect(result).toEqual(['ruby', 'react']);
+  });
+});
+
+describe('normalizeIde', () => {
+  it('returns claude for claude', () => {
+    expect(normalizeIde('claude')).toBe('claude');
+  });
+
+  it('returns cursor for cursor', () => {
+    expect(normalizeIde('cursor')).toBe('cursor');
+  });
+
+  it('returns codex for codex', () => {
+    expect(normalizeIde('codex')).toBe('codex');
+  });
+
+  it('returns all for all', () => {
+    expect(normalizeIde('all')).toBe('all');
+  });
+
+  it('maps deprecated both to all', () => {
+    expect(normalizeIde('both')).toBe('all');
+  });
+
+  it('returns undefined for unknown IDE value', () => {
+    expect(normalizeIde('vscode')).toBeUndefined();
+  });
+
+  it('returns undefined for empty string', () => {
+    expect(normalizeIde('')).toBeUndefined();
   });
 });
 

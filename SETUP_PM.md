@@ -1,6 +1,6 @@
 # Setup Guide for Product Managers
 
-Agentic is a multi-agent framework that works inside Claude Code and Cursor (AI-powered code editors). It lets you run **workflows** -- structured, multi-step processes that leverage AI to accomplish tasks like answering questions about your codebase or writing product specifications.
+Agentic is a multi-agent framework that works inside Claude Code, Cursor, and Codex (AI-powered code editors). It lets you run **workflows** -- structured, multi-step processes that leverage AI to accomplish tasks like answering questions about your codebase or writing product specifications.
 
 You do not need to write code. You will type commands into a terminal inside Claude Code or Cursor, interact with AI agents that ask you questions, and review the outputs they produce (mostly Markdown documents).
 
@@ -16,7 +16,7 @@ This guide covers three workflows relevant to PMs:
 
 Before installing agentic, you need two things:
 
-1. A code editor: **Claude Code** or **Cursor** (or both)
+1. A code editor: **Claude Code**, **Cursor**, or **Codex** (or all)
 2. A GitHub Personal Access Token to download the package from GitHub's npm registry
 
 ### Step 1: Get a GitHub Personal Access Token (PAT)
@@ -91,7 +91,7 @@ bunx @JohannWilfridCalixte/agentic@alpha init -w ask-codebase,product-spec,produ
 | `init` | Tells agentic to set itself up in the current project. |
 | `-w ask-codebase,product-spec,product-vision` | Install only these three workflows. No spaces around the comma. |
 | `-n YOUR_TEAM_NAME` | A namespace prefix for your team. Must be lowercase, start with a letter, and be 2-30 characters long. Example: `myteam`, `acme`, `productx`. |
-| `--ide YOUR_IDE` | Which editor you use. Possible values: `claude`, `cursor`, or `both`. |
+| `--ide YOUR_IDE` | Which editor you use. Possible values: `claude`, `cursor`, `codex`, or `all` (`both` still works as alias). |
 
 ### Example
 
@@ -119,6 +119,7 @@ The namespace you chose with `-n` determines how you call workflows. If you used
 |--------|---------------|---------|
 | Claude Code | `/acme:workflow:WORKFLOW_NAME` | `/acme:workflow:ask-codebase` |
 | Cursor | `/acme-workflow-WORKFLOW_NAME` | `/acme-workflow-product-spec` |
+| Codex | `/<namespace>-workflow-WORKFLOW_NAME` | `/acme-workflow-ask-codebase` |
 
 If you did not provide `-n`, the default namespace is `agentic`.
 
@@ -150,6 +151,12 @@ Answers questions about your product's existing behavior by exploring the codeba
 ```
 
 **Cursor:**
+
+```
+/acme-workflow-ask-codebase
+```
+
+**Codex:**
 
 ```
 /acme-workflow-ask-codebase
@@ -235,6 +242,12 @@ Transforms a rough product idea into a precise, structured product specification
 ```
 
 **Cursor:**
+
+```
+/acme-workflow-product-spec
+```
+
+**Codex:**
 
 ```
 /acme-workflow-product-spec
@@ -339,6 +352,12 @@ Transforms a rough product idea into a comprehensive product vision document thr
 ```
 
 **Cursor:**
+
+```
+/acme-workflow-product-vision
+```
+
+**Codex:**
 
 ```
 /acme-workflow-product-vision

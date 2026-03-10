@@ -39,6 +39,33 @@ describe('processTemplate', () => {
     expect(result).toBe('Use @agents/agentic-agent-cpo.md');
   });
 
+  it('replaces {ide-folder} for codex', () => {
+    const content = 'path/{ide-folder}/agents';
+    const result = processTemplate(content, 'codex', defaultOptions);
+
+    expect(result).toBe('path/.agents/agents');
+  });
+
+  it('replaces {ide-invoke-prefix} for codex', () => {
+    const content = 'Use {ide-invoke-prefix}agents/agentic-agent-cpo.md';
+    const result = processTemplate(content, 'codex', defaultOptions);
+
+    expect(result).toBe('Use @agents/agentic-agent-cpo.md');
+  });
+
+  it('replaces multiple variables for codex', () => {
+    const content = `
+# Agent: {ide-folder}
+Load with: {ide-invoke-prefix}{ide-folder}/agents/agentic-agent-cpo.md
+Output: {ide-folder}/{output-folder}/task
+`;
+    const result = processTemplate(content, 'codex', defaultOptions);
+
+    expect(result).toContain('# Agent: .agents');
+    expect(result).toContain('Load with: @.agents/agents/agentic-agent-cpo.md');
+    expect(result).toContain('Output: .agents/_agentic_output/task');
+  });
+
   it('replaces {output-folder} variable', () => {
     const content = 'Output: {ide-folder}/{output-folder}/task/epic';
     const result = processTemplate(content, 'claude', {

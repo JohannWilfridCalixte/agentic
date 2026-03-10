@@ -1,4 +1,23 @@
-export type IDE = 'claude' | 'cursor' | 'both';
+import type { TargetIDE } from './commands/init/types';
+
+export type IDE = 'claude' | 'cursor' | 'codex' | 'all' | 'both';
+
+const IDE_DIR_MAP: Record<TargetIDE, string> = {
+  claude: '.claude',
+  cursor: '.cursor',
+  codex: '.agents',
+};
+
+export function getIdeDir(ide: TargetIDE) {
+  return IDE_DIR_MAP[ide];
+}
+
+const ALL_TARGET_IDES: readonly TargetIDE[] = ['claude', 'cursor', 'codex'];
+
+export function resolveIdes(ide: IDE): readonly TargetIDE[] {
+  if (ide === 'all' || ide === 'both') return ALL_TARGET_IDES;
+  return [ide];
+}
 
 export type Command = 'init' | 'list' | 'help' | 'update' | 'migrate' | 'version' | 'settings';
 

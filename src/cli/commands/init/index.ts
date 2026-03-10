@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import type { Result } from '../../../lib/monads';
 import { Err, isErr, Ok } from '../../../lib/monads';
 import type { IDE } from '../../constants';
+import { getIdeDir, resolveIdes } from '../../constants';
 import {
   getWorkflowUsageLines,
   resolveWorkflowDependencies,
@@ -135,7 +136,7 @@ async function selectiveCopy(
     if (isErr(result)) {
       return Err({
         code: 'COPY_FAILED' as const,
-        message: `Failed to copy agent ${agentFile} to .${targetIde}/`,
+        message: `Failed to copy agent ${agentFile} to ${getIdeDir(targetIde)}/`,
         cause: result.data,
       });
     }
@@ -150,7 +151,7 @@ async function selectiveCopy(
     if (isErr(result)) {
       return Err({
         code: 'COPY_FAILED' as const,
-        message: `Failed to copy ${skillName} to .${targetIde}/`,
+        message: `Failed to copy ${skillName} to ${getIdeDir(targetIde)}/`,
         cause: result.data,
       });
     }
@@ -171,7 +172,7 @@ async function selectiveCopy(
     if (isErr(result)) {
       return Err({
         code: 'COPY_FAILED' as const,
-        message: `Failed to copy ${workflowName} to .${targetIde}/`,
+        message: `Failed to copy ${workflowName} to ${getIdeDir(targetIde)}/`,
         cause: result.data,
       });
     }
@@ -195,7 +196,7 @@ export async function setupIde(
   projectRoot: string,
   options: SetupOptions = {},
 ): Promise<Result<void, InitError>> {
-  const ideDir = join(projectRoot, `.${targetIde}`);
+  const ideDir = join(projectRoot, getIdeDir(targetIde));
   const namespace = options.namespace ?? 'agentic';
   const outputFolder = options.outputFolder ?? getDefaultOutputFolder(namespace);
 
@@ -224,7 +225,7 @@ export async function setupIde(
     if (isErr(copyResult)) return copyResult;
   }
 
-  console.log(`  Copied to .${targetIde}/agents/, skills/`);
+  console.log(`  Copied to ${getIdeDir(targetIde)}/agents/, skills/`);
 
   await makeScriptsExecutableRecursive(join(ideDir, 'skills'));
 
@@ -242,7 +243,7 @@ export async function setupIde(
 
   if (isErr(result)) return result;
 
-  await appendToGitignore(projectRoot, `.${targetIde}/${outputFolder}`);
+  await appendToGitignore(projectRoot, `${getIdeDir(targetIde)}/${outputFolder}`);
 
   const settingsResult = await writeSettings(
     ideDir,
@@ -259,7 +260,7 @@ export async function setupIde(
   if (isErr(settingsResult)) {
     return Err({
       code: 'COPY_FAILED' as const,
-      message: `Failed to write settings to .${targetIde}/`,
+      message: `Failed to write settings to ${getIdeDir(targetIde)}/`,
       cause: settingsResult.data,
     });
   }
@@ -278,10 +279,10 @@ export interface InitOptions {
 
 export async function init(options: InitOptions = {}): Promise<Result<void, InitError>> {
   const projectRoot = process.cwd();
-  const ide = options.ide ?? 'both';
+  const ide = options.ide ?? 'all';
   const namespace = options.namespace ?? 'agentic';
   const outputFolder = options.outputFolder ?? getDefaultOutputFolder(namespace);
-  const ides: readonly TargetIDE[] = ide === 'both' ? ['claude', 'cursor'] : [ide];
+  const ides = resolveIdes(ide);
 
   let validatedWorkflows: readonly string[] | undefined;
   if (options.workflows) {
@@ -316,7 +317,7 @@ export async function init(options: InitOptions = {}): Promise<Result<void, Init
   console.log('\nDone!');
 
   for (const targetIde of ides) {
-    console.log(`  .${targetIde}/: agents/, skills/`);
+    console.log(`  ${getIdeDir(targetIde)}/: agents/, skills/`);
   }
 
   console.log('\nUsage:');

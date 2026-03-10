@@ -52,12 +52,64 @@ describe('init', () => {
     expect(await exists(join(TEST_DIR, 'AGENTS.md'))).toBe(true);
   });
 
-  it('initializes both IDEs by default', async () => {
+  it('initializes codex IDE only', async () => {
+    const result = await init({ ide: 'codex' });
+
+    expect(isOk(result)).toBe(true);
+    expect(await exists(join(TEST_DIR, '.agents'))).toBe(true);
+    expect(await exists(join(TEST_DIR, '.claude'))).toBe(false);
+    expect(await exists(join(TEST_DIR, '.cursor'))).toBe(false);
+    expect(await exists(join(TEST_DIR, 'AGENTS.md'))).toBe(true);
+  });
+
+  it('creates expected directory structure for codex', async () => {
+    await init({ ide: 'codex' });
+
+    const agentsDir = join(TEST_DIR, '.agents');
+
+    expect(await exists(join(agentsDir, 'agents'))).toBe(true);
+    expect(await exists(join(agentsDir, 'skills'))).toBe(true);
+    expect(await exists(join(agentsDir, 'skills', 'agentic-skill-github', 'scripts'))).toBe(true);
+  });
+
+  it('initializes all three IDEs with ide=all', async () => {
+    const result = await init({ ide: 'all' });
+
+    expect(isOk(result)).toBe(true);
+    expect(await exists(join(TEST_DIR, '.claude'))).toBe(true);
+    expect(await exists(join(TEST_DIR, '.cursor'))).toBe(true);
+    expect(await exists(join(TEST_DIR, '.agents'))).toBe(true);
+  });
+
+  it('initializes all three IDEs by default (no ide option)', async () => {
+    const result = await init({});
+
+    expect(isOk(result)).toBe(true);
+    expect(await exists(join(TEST_DIR, '.claude'))).toBe(true);
+    expect(await exists(join(TEST_DIR, '.cursor'))).toBe(true);
+    expect(await exists(join(TEST_DIR, '.agents'))).toBe(true);
+  });
+
+  it('both still works as alias for all', async () => {
     const result = await init({ ide: 'both' });
 
     expect(isOk(result)).toBe(true);
     expect(await exists(join(TEST_DIR, '.claude'))).toBe(true);
     expect(await exists(join(TEST_DIR, '.cursor'))).toBe(true);
+    expect(await exists(join(TEST_DIR, '.agents'))).toBe(true);
+  });
+
+  it('shared AGENTS.md between cursor and codex is not duplicated', async () => {
+    const result = await init({ ide: 'all' });
+
+    expect(isOk(result)).toBe(true);
+
+    const agentsMdPath = join(TEST_DIR, 'AGENTS.md');
+    expect(await exists(agentsMdPath)).toBe(true);
+
+    const content = await Bun.file(agentsMdPath).text();
+    const sectionMarkerCount = content.split('# Agentic Framework').length - 1;
+    expect(sectionMarkerCount).toBe(1);
   });
 
   it('creates expected directory structure for claude', async () => {

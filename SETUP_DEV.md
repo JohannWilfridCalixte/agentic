@@ -1,6 +1,6 @@
 # Setup Guide for Developers
 
-Multi-agent framework for Claude Code and Cursor. This guide covers four workflows: `technical-planning`, `implement`, `debug`, and `auto-implement`.
+Multi-agent framework for Claude Code, Cursor, and Codex. This guide covers four workflows: `technical-planning`, `implement`, `debug`, and `auto-implement`.
 
 ## Prerequisites
 
@@ -26,7 +26,7 @@ Also works with `npx` and `pnpx`.
 |------|-------------|
 | `-w` | Comma-separated list of workflows to install |
 | `-n` | Namespace prefix (lowercase, starts with letter, 2-30 chars) |
-| `--ide` | Target IDE: `claude`, `cursor`, or `both` |
+| `--ide` | Target IDE: `claude`, `cursor`, `codex`, or `all` (`both` still works as alias) |
 
 ### Namespace and invocation
 
@@ -36,6 +36,7 @@ The namespace (`-n`) prefixes all workflow commands and output paths.
 |-----|-------------------|---------|
 | Claude Code | `/<namespace>:workflow:<name>` | `/myteam:workflow:implement` |
 | Cursor | `/<namespace>-workflow-<name>` | `/myteam-workflow-implement` |
+| Codex | `/<namespace>-workflow-<name>` | `/myteam-workflow-implement` |
 
 Artifacts go to `_<namespace>_output/`.
 
@@ -300,5 +301,5 @@ All product and technical decisions are made autonomously. Review `decision-log.
 - **Plan quality matters:** `implement` is only as good as the technical plan. Invest time in `technical-planning` to answer questions thoroughly.
 - **Escalation files:** If `debug` generates `escalation.md`, the bug needs human attention -- review the hypothesis log to see what was tried.
 - **Namespace consistency:** Use the same namespace across your team so artifact paths are predictable.
-- **IDE choice:** Use `--ide both` if your team uses a mix of Claude Code and Cursor.
+- **IDE choice:** Use `--ide all` if your team uses a mix of Claude Code, Cursor, and Codex.
 - **Use `auto-implement` for well-understood features.** It skips interactive planning. Best for features where the scope is clear enough that autonomous decisions are acceptable. Review `decision-log.md` for all assumptions made.

@@ -1,6 +1,6 @@
 # @JohannWilfridCalixte/agentic
 
-Multi-agent framework for **Claude Code** + **Cursor**. Distributes agent prompts, skills, and orchestrated workflows for spec-driven development.
+Multi-agent framework for **Claude Code** + **Cursor** + **Codex**. Distributes agent prompts, skills, and orchestrated workflows for spec-driven development.
 
 > ⚠️ **Experimental** — personal project to explore AI-driven development. No guarantees, no support. Use at your own risk.
 
@@ -56,10 +56,10 @@ bunx @JohannWilfridCalixte/agentic@alpha init -w technical-planning,implement,de
 bunx @JohannWilfridCalixte/agentic@alpha init -w ask-codebase,product-spec,product-vision,technical-planning,implement,debug,frontend-development,auto-implement -n YOUR_TEAM_NAME --ide YOUR_IDE
 ```
 
-> Replace `YOUR_TEAM_NAME` with a lowercase namespace (e.g. `myteam`) and `YOUR_IDE` with `claude`, `cursor`, or `both`.
+> Replace `YOUR_TEAM_NAME` with a lowercase namespace (e.g. `myteam`) and `YOUR_IDE` with `claude`, `cursor`, `codex`, or `all` (`both` still works as alias).
 > Also works with `npx` or `pnpx` instead of `bunx`.
 
-Full install (all workflows, both IDEs):
+Full install (all workflows, all IDEs):
 
 ```bash
 bunx @JohannWilfridCalixte/agentic@alpha init
@@ -93,7 +93,20 @@ In **Cursor**, invoke workflows with dash syntax:
 /agentic-workflow-auto-implement
 ```
 
-> With a custom namespace (e.g., `-n myteam`), replace `agentic` with your namespace: `/myteam:workflow:implement` (Claude Code) or `/myteam-workflow-implement` (Cursor).
+In **Codex**, invoke workflows with dash syntax (same as Cursor):
+
+```
+/agentic-workflow-ask-codebase
+/agentic-workflow-product-spec
+/agentic-workflow-product-vision
+/agentic-workflow-technical-planning
+/agentic-workflow-implement
+/agentic-workflow-debug
+/agentic-workflow-frontend-development
+/agentic-workflow-auto-implement
+```
+
+> With a custom namespace (e.g., `-n myteam`), replace `agentic` with your namespace: `/myteam:workflow:implement` (Claude Code) or `/myteam-workflow-implement` (Cursor/Codex).
 
 ## Setup Guides
 
@@ -107,9 +120,9 @@ Detailed guides with workflow explanations, step-by-step usage, and examples:
 
 ## What It Does
 
-1. Copies agents, subagents, skills, and workflows to `.claude/` and/or `.cursor/`
+1. Copies agents, subagents, skills, and workflows to `.claude/`, `.cursor/`, and/or `.agents/` (Codex)
 2. Template-processes all files with IDE-specific paths, model names, and output folder
-3. Sets up `CLAUDE.md` (Claude Code) and/or `AGENTS.md` (Cursor)
+3. Sets up `CLAUDE.md` (Claude Code) and/or `AGENTS.md` (Cursor/Codex)
 4. Adds the output folder to `.gitignore`
 5. Persists configuration in `.agentic.settings.json` for updates
 
@@ -200,7 +213,7 @@ Shows installed agentic version per IDE, read from `.agentic.settings.json`.
 
 | Flag | Short | Description | Default |
 |------|-------|-------------|---------|
-| `--ide <type>` | | Target IDE: `claude`, `cursor`, or `both` | `both` (init), auto-detect (update) |
+| `--ide <type>` | | Target IDE: `claude`, `cursor`, `codex`, or `all` | `all` (init), auto-detect (update) |
 | `--namespace <name>` | `-n` | Namespace prefix for all files and references | `agentic` |
 | `--workflows <list>` | `-w` | Comma-separated workflows to install selectively | all (full install) |
 | `--output <folder>` | | Output folder for workflow artifacts | `_<namespace>_output` |
@@ -228,7 +241,7 @@ bunx @JohannWilfridCalixte/agentic@alpha update --workflows debug
 | `ask-codebase` | architect | gather-technical-context, context7 |
 | `product-spec` | (none) | product-discovery, brainstorming |
 | `product-vision` | cpo | product-vision, product-discovery, brainstorming |
-| `technical-planning` | architect | gather-technical-context, technical-planning, code, typescript-* |
+| `technical-planning` | architect | gather-technical-context, technical-planning, code, language profile skills |
 | `implement` | software-engineer, test-engineer, qa, test-qa, security-qa | all code skills |
 | `debug` | investigator, analyst, test-engineer, software-engineer, qa, test-qa | code + diagnostic skills |
 | `frontend-development` | ui-ux-designer, frontend-developer, qa | frontend-design, ux-patterns, refactoring-ui |
@@ -378,11 +391,15 @@ Located in the `github` skill directory:
 
 ```
 your-project/
-├── .claude/                      # Claude Code (if --ide claude or both)
+├── .claude/                      # Claude Code (if --ide claude or all)
 │   ├── agents/                   # Agent + subagent prompts (.md)
 │   ├── skills/                   # Skill dirs + workflow dirs
 │   └── .agentic.settings.json   # Persisted configuration
-├── .cursor/                      # Cursor (if --ide cursor or both)
+├── .cursor/                      # Cursor (if --ide cursor or all)
+│   ├── agents/                   # Agent + subagent prompts (.md)
+│   ├── skills/                   # Skill dirs + workflow dirs
+│   └── .agentic.settings.json   # Persisted configuration
+├── .agents/                      # Codex (if --ide codex or all)
 │   ├── agents/                   # Agent + subagent prompts (.md)
 │   ├── skills/                   # Skill dirs + workflow dirs
 │   └── .agentic.settings.json   # Persisted configuration
@@ -391,7 +408,7 @@ your-project/
 │   ├── task/                     # Technical plans, impl logs, QA reports
 │   └── tech/                     # Vision docs, DX docs
 ├── CLAUDE.md                     # Claude Code instructions (if claude)
-└── AGENTS.md                     # Cursor agents instructions (if cursor)
+└── AGENTS.md                     # Cursor/Codex instructions (if cursor or codex)
 ```
 
 With `--workflows`, only the agents, skills, and workflow directories needed by the selected workflows are installed.
@@ -418,7 +435,7 @@ Configuration is persisted in `.agentic.settings.json` (inside each IDE director
 - Created on `init`, read on `update` and `settings apply`
 - CLI flags override saved settings
 - `workflows` is omitted when doing a full install (no `-w`)
-- Model defaults differ by IDE: Claude Code uses `opus`, Cursor uses `claude-4.6-opus-high-thinking`
+- Model defaults differ by IDE: Claude Code uses `opus`, Cursor uses `claude-4.6-opus-high-thinking`, Codex uses `gpt-5.4`
 
 ## Development
 

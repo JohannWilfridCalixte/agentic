@@ -1,6 +1,6 @@
 export function help() {
   console.log(`
-agentic - Agent prompts and scripts for Claude Code + Cursor
+agentic - Agent prompts and scripts for Claude Code, Cursor & Codex
 
 Usage:
   agentic init|install [options]    Setup in current project
@@ -20,8 +20,8 @@ Options:
                               Available: product-spec, product-vision, ask-codebase,
                               technical-planning, implement, debug, frontend-development,
                               auto-implement
-  --ide <type>                Target IDE: claude, cursor, or both
-                              init: defaults to both
+  --ide <type>                Target IDE: claude, cursor, codex, or all
+                              init: defaults to all
                               update/settings: defaults to auto-detect
   --output <folder>           Output folder (default: _<namespace>_output)
   --high-thinking-model <id>  Model for high-thinking agents

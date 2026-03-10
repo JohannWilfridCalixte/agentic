@@ -7,7 +7,7 @@ export interface InitError {
   readonly cause?: unknown;
 }
 
-export type TargetIDE = 'claude' | 'cursor';
+export type TargetIDE = 'claude' | 'cursor' | 'codex';
 
 export type SetupMode = 'init' | 'update';
 

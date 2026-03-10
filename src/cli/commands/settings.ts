@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import type { Result } from '../../lib/monads';
 import { Err, isErr, Ok } from '../../lib/monads';
 import type { IDE } from '../constants';
-import { NAMESPACE_PATTERN } from '../constants';
+import { getIdeDir, NAMESPACE_PATTERN, resolveIdes } from '../constants';
 import { cleanupStaleFiles, resolveWorkflowDependencies, validateWorkflows } from '../dependencies';
 import { AGENTS_DIR, SKILLS_DIR, SUBAGENTS_DIR, WORKFLOWS_DIR } from '../paths';
 import type { LanguageProfile } from '../profiles';
@@ -101,7 +101,7 @@ async function reinstallAgents(
   profiles?: readonly LanguageProfile[],
   selectedProfiles?: readonly string[],
 ): Promise<Result<void, InitError>> {
-  const ideDir = join(projectRoot, `.${targetIde}`);
+  const ideDir = join(projectRoot, getIdeDir(targetIde));
 
   if (workflows && workflows.length > 0) {
     const deps = resolveWorkflowDependencies(workflows, profiles, selectedProfiles);
@@ -231,9 +231,7 @@ export async function settingsUpdate(
   }
 
   const ides: readonly TargetIDE[] = options.ide
-    ? options.ide === 'both'
-      ? ['claude', 'cursor']
-      : [options.ide]
+    ? resolveIdes(options.ide)
     : await detectIdes(projectRoot);
 
   if (ides.length === 0) {
@@ -244,13 +242,13 @@ export async function settingsUpdate(
   }
 
   for (const targetIde of ides) {
-    const ideDir = join(projectRoot, `.${targetIde}`);
+    const ideDir = join(projectRoot, getIdeDir(targetIde));
     const currentSettings = await readSettings(ideDir);
 
     if (isErr(currentSettings)) {
       return Err({
         code: 'SETTINGS_UPDATE_FAILED' as const,
-        message: `No settings found for .${targetIde}/. Run \`agentic init\` first.`,
+        message: `No settings found for ${getIdeDir(targetIde)}/. Run \`agentic init\` first.`,
         cause: currentSettings.data,
       });
     }
@@ -286,7 +284,7 @@ export async function settingsUpdate(
     if (isErr(copyResult)) {
       return Err({
         code: 'SETTINGS_UPDATE_FAILED' as const,
-        message: `Failed to reinstall agents for .${targetIde}/`,
+        message: `Failed to reinstall agents for ${getIdeDir(targetIde)}/`,
         cause: copyResult.data,
       });
     }
@@ -311,12 +309,12 @@ export async function settingsUpdate(
     if (isErr(writeResult)) {
       return Err({
         code: 'SETTINGS_UPDATE_FAILED' as const,
-        message: `Failed to write settings for .${targetIde}/`,
+        message: `Failed to write settings for ${getIdeDir(targetIde)}/`,
         cause: writeResult.data,
       });
     }
 
-    console.log(`  .${targetIde}/: agents/, skills/ reinstalled`);
+    console.log(`  ${getIdeDir(targetIde)}/: agents/, skills/ reinstalled`);
   }
 
   return Ok(undefined);

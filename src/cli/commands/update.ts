@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import type { Result } from '../../lib/monads';
 import { Err, isErr, Ok } from '../../lib/monads';
 import type { IDE } from '../constants';
+import { getIdeDir, resolveIdes } from '../constants';
 import { cleanupStaleFiles, resolveWorkflowDependencies, validateWorkflows } from '../dependencies';
 import { LANGUAGE_PROFILES, mergeProfiles } from '../profiles';
 import { readSettings } from '../settings';
@@ -39,6 +40,7 @@ export async function detectIdes(projectRoot: string) {
 
   if (await directoryExists(join(projectRoot, '.claude'))) detected.push('claude');
   if (await directoryExists(join(projectRoot, '.cursor'))) detected.push('cursor');
+  if (await directoryExists(join(projectRoot, '.agents'))) detected.push('codex');
 
   return detected;
 }
@@ -56,7 +58,7 @@ async function readDefaultsFromSettings(
   ides: readonly TargetIDE[],
 ): Promise<SettingsDefaults> {
   for (const ide of ides) {
-    const ideDir = join(projectRoot, `.${ide}`);
+    const ideDir = join(projectRoot, getIdeDir(ide));
     const result = await readSettings(ideDir);
     if (result._type === 'Ok') {
       return {
@@ -77,9 +79,7 @@ export async function update(
   const projectRoot = process.cwd();
 
   const ides: readonly TargetIDE[] = options.ide
-    ? options.ide === 'both'
-      ? ['claude', 'cursor']
-      : [options.ide]
+    ? resolveIdes(options.ide)
     : await detectIdes(projectRoot);
 
   if (ides.length === 0) {
@@ -129,26 +129,27 @@ export async function update(
     if (isErr(result)) {
       return Err({
         code: 'UPDATE_FAILED' as const,
-        message: `Failed to update .${targetIde}/`,
+        message: `Failed to update ${getIdeDir(targetIde)}/`,
         cause: result.data,
       });
     }
 
     if (workflows) {
       const newDeps = resolveWorkflowDependencies(workflows, mergedProfiles, selectedProfiles);
-      const ideDir = join(projectRoot, `.${targetIde}`);
+      const ideDir = join(projectRoot, getIdeDir(targetIde));
       await cleanupStaleFiles(ideDir, newDeps, namespace);
     }
   }
 
   console.log('\nUpdated:');
   for (const targetIde of ides) {
-    console.log(`  .${targetIde}/: agents/, skills/`);
+    console.log(`  ${getIdeDir(targetIde)}/: agents/, skills/`);
   }
 
   const backupHints: string[] = [];
   if (ides.includes('claude')) backupHints.push('  diff CLAUDE.backup.md CLAUDE.md');
-  if (ides.includes('cursor')) backupHints.push('  diff AGENTS.backup.md AGENTS.md');
+  if (ides.includes('cursor') || ides.includes('codex'))
+    backupHints.push('  diff AGENTS.backup.md AGENTS.md');
 
   if (backupHints.length > 0) {
     console.log('\nBackups created. Check for changes:');

@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import type { Result } from '../../lib/monads';
 import { Err, isErr, Ok } from '../../lib/monads';
 import type { IDE } from '../constants';
+import { getIdeDir, resolveIdes } from '../constants';
 import type { InitError, TargetIDE } from './init';
 import { init } from './init';
 import { detectIdes } from './update';
@@ -89,8 +90,9 @@ async function exists(path: string) {
 }
 
 async function backupOldArtifacts(projectRoot: string, targetIde: TargetIDE, timestamp: string) {
-  const ideDir = join(projectRoot, `.${targetIde}`);
-  const backupDir = join(projectRoot, `.${targetIde}_backup_${timestamp}`);
+  const ideDirName = getIdeDir(targetIde);
+  const ideDir = join(projectRoot, ideDirName);
+  const backupDir = join(projectRoot, `${ideDirName}_backup_${timestamp}`);
   const moved: string[] = [];
 
   for (const file of OLD_AGENT_FILES) {
@@ -99,7 +101,7 @@ async function backupOldArtifacts(projectRoot: string, targetIde: TargetIDE, tim
       const dest = join(backupDir, 'agents', file);
       await mkdir(join(backupDir, 'agents'), { recursive: true });
       await rename(source, dest);
-      moved.push(`.${targetIde}/agents/${file}`);
+      moved.push(`${ideDirName}/agents/${file}`);
     }
   }
 
@@ -109,7 +111,7 @@ async function backupOldArtifacts(projectRoot: string, targetIde: TargetIDE, tim
       const dest = join(backupDir, 'skills', dir);
       await mkdir(join(backupDir, 'skills'), { recursive: true });
       await rename(source, dest);
-      moved.push(`.${targetIde}/skills/${dir}/`);
+      moved.push(`${ideDirName}/skills/${dir}/`);
     }
   }
 
@@ -120,12 +122,12 @@ async function backupOldArtifacts(projectRoot: string, targetIde: TargetIDE, tim
         const dest = join(backupDir, 'rules', file);
         await mkdir(join(backupDir, 'rules'), { recursive: true });
         await rename(source, dest);
-        moved.push(`.${targetIde}/rules/${file}`);
+        moved.push(`${ideDirName}/rules/${file}`);
       }
     }
   }
 
-  return { moved, backupDir: `.${targetIde}_backup_${timestamp}` };
+  return { moved, backupDir: `${ideDirName}_backup_${timestamp}` };
 }
 
 function generateTimestamp() {
@@ -142,9 +144,7 @@ export async function migrate(
   const backupDirs: string[] = [];
 
   const ides: readonly TargetIDE[] = options.ide
-    ? options.ide === 'both'
-      ? ['claude', 'cursor']
-      : [options.ide]
+    ? resolveIdes(options.ide)
     : await detectIdes(projectRoot);
 
   if (ides.length === 0) {
@@ -157,7 +157,7 @@ export async function migrate(
         const { moved, backupDir } = await backupOldArtifacts(projectRoot, targetIde, timestamp);
 
         if (moved.length === 0) {
-          console.log(`  No old artifacts found in .${targetIde}/`);
+          console.log(`  No old artifacts found in ${getIdeDir(targetIde)}/`);
         } else {
           backupDirs.push(backupDir);
           for (const path of moved) {
@@ -169,7 +169,7 @@ export async function migrate(
       } catch (error) {
         return Err({
           code: 'BACKUP_FAILED' as const,
-          message: `Failed to backup old artifacts in .${targetIde}/`,
+          message: `Failed to backup old artifacts in ${getIdeDir(targetIde)}/`,
           cause: error,
         });
       }

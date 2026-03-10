@@ -16,17 +16,20 @@ function parseCommand(arg: string | undefined, args: readonly string[]) {
   return 'help' as const;
 }
 
+export function normalizeIde(value: string): IDE | undefined {
+  if (value === 'claude' || value === 'cursor' || value === 'codex' || value === 'all') return value;
+  if (value === 'both') return 'all';
+  return undefined;
+}
+
 function parseIdeOption(args: readonly string[]): IDE {
   const ideIndex = args.indexOf('--ide');
-  if (ideIndex === -1 || !args[ideIndex + 1]) return 'both';
+  if (ideIndex === -1 || !args[ideIndex + 1]) return 'all';
 
-  const ideArg = args[ideIndex + 1];
+  const result = normalizeIde(args[ideIndex + 1]);
+  if (result) return result;
 
-  if (ideArg === 'claude' || ideArg === 'cursor' || ideArg === 'both') {
-    return ideArg;
-  }
-
-  console.error(`Invalid --ide value: ${ideArg}. Use claude, cursor, or both.`);
+  console.error(`Invalid --ide value: ${args[ideIndex + 1]}. Use claude, cursor, codex, or all.`);
   process.exit(1);
 }
 
@@ -34,13 +37,10 @@ function parseIdeOptionOptional(args: readonly string[]): IDE | undefined {
   const ideIndex = args.indexOf('--ide');
   if (ideIndex === -1 || !args[ideIndex + 1]) return undefined;
 
-  const ideArg = args[ideIndex + 1];
+  const result = normalizeIde(args[ideIndex + 1]);
+  if (result) return result;
 
-  if (ideArg === 'claude' || ideArg === 'cursor' || ideArg === 'both') {
-    return ideArg;
-  }
-
-  console.error(`Invalid --ide value: ${ideArg}. Use claude, cursor, or both.`);
+  console.error(`Invalid --ide value: ${args[ideIndex + 1]}. Use claude, cursor, codex, or all.`);
   process.exit(1);
 }
 
