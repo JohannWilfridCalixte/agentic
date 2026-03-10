@@ -11,6 +11,11 @@ export const LANGUAGE_PROFILES: readonly LanguageProfile[] = [
     detect: ['typescript', 'ts', 'node', 'bun', 'deno'],
     skills: ['typescript-engineer', 'typescript-imports'],
   },
+  {
+    name: 'python',
+    detect: ['python', 'py', 'pip', 'uv', 'poetry', 'conda'],
+    skills: ['python-engineer'],
+  },
 ] as const satisfies readonly LanguageProfile[];
 
 const REMOVE_SENTINEL = '_remove_';

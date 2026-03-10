@@ -3,21 +3,32 @@ import type { LanguageProfile } from './profiles';
 import { collectAllProfileSkills, LANGUAGE_PROFILES, mergeProfiles } from './profiles';
 
 describe('LANGUAGE_PROFILES', () => {
-  it('contains exactly 1 bundled profile (typescript only)', () => {
-    expect(LANGUAGE_PROFILES).toHaveLength(1);
+  it('contains exactly 2 bundled profiles', () => {
+    expect(LANGUAGE_PROFILES).toHaveLength(2);
   });
 
   it('typescript profile has correct detect keywords', () => {
-    const ts = LANGUAGE_PROFILES[0];
+    const ts = LANGUAGE_PROFILES.find((p) => p.name === 'typescript')!;
 
-    expect(ts.name).toBe('typescript');
     expect(ts.detect).toEqual(['typescript', 'ts', 'node', 'bun', 'deno']);
   });
 
   it('typescript profile has correct skills', () => {
-    const ts = LANGUAGE_PROFILES[0];
+    const ts = LANGUAGE_PROFILES.find((p) => p.name === 'typescript')!;
 
     expect(ts.skills).toEqual(['typescript-engineer', 'typescript-imports']);
+  });
+
+  it('python profile has correct detect keywords', () => {
+    const py = LANGUAGE_PROFILES.find((p) => p.name === 'python')!;
+
+    expect(py.detect).toEqual(['python', 'py', 'pip', 'uv', 'poetry', 'conda']);
+  });
+
+  it('python profile has correct skills', () => {
+    const py = LANGUAGE_PROFILES.find((p) => p.name === 'python')!;
+
+    expect(py.skills).toEqual(['python-engineer']);
   });
 });
 

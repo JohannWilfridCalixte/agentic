@@ -176,7 +176,7 @@ describe('resolveWorkflowDependencies', () => {
     expect(result.skills).toContain('ruby-engineer');
   });
 
-  it('no workflow contains hardcoded typescript-engineer or typescript-imports', () => {
+  it('no workflow contains hardcoded language profile skills', () => {
     const allWorkflows = [
       'product-spec',
       'product-vision',
@@ -192,6 +192,7 @@ describe('resolveWorkflowDependencies', () => {
 
       expect(result.skills).not.toContain('typescript-engineer');
       expect(result.skills).not.toContain('typescript-imports');
+      expect(result.skills).not.toContain('python-engineer');
     }
   });
 

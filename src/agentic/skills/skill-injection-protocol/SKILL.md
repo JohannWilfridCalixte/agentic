@@ -22,7 +22,8 @@ Read `.agentic.settings.json` from the IDE directory. Extract the `profiles` arr
 ```json
 {
   "profiles": [
-    { "name": "typescript", "detect": ["typescript", "ts", "node", "bun", "deno"], "skills": ["typescript-engineer", "typescript-imports"] }
+    { "name": "typescript", "detect": ["typescript", "ts", "node", "bun", "deno"], "skills": ["typescript-engineer", "typescript-imports"] },
+    { "name": "python", "detect": ["python", "py", "pip", "uv", "poetry", "conda"], "skills": ["python-engineer"] }
   ]
 }
 ```

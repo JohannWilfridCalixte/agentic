@@ -320,6 +320,7 @@ Skills are focused instruction sets that agents load for domain-specific experti
 |-------|---------|
 | `typescript-engineer` | TypeScript patterns, types, error handling, style |
 | `typescript-imports` | Import ordering, grouping, type imports |
+| `python-engineer` | Python typing, error handling, style, imports, patterns |
 | `code` | Code implementation patterns per technical plan |
 | `code-testing` | Test strategy, pyramid, mocking, flaky test debugging |
 | `clean-architecture` | Decoupling business logic from frameworks/DB |
