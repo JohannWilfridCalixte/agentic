@@ -26,6 +26,11 @@ jobs:
         with:
           bun-version: latest
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+
       - name: Detect dist-tag from git tag
         id: dist-tag
         run: |
@@ -36,4 +41,4 @@ jobs:
             echo "flag=" >> "$GITHUB_OUTPUT"
           fi
 
-      - run: bun publish ${{ steps.dist-tag.outputs.flag }}
+      - run: npm publish --provenance --access public ${{ steps.dist-tag.outputs.flag }}
