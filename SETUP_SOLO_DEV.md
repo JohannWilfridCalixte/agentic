@@ -2,21 +2,10 @@
 
 All-in-one setup covering product discovery through implementation. You handle both product and engineering -- this guide gives you eight workflows that chain together into a complete development lifecycle.
 
-## Prerequisites
-
-Configure GitHub Packages access in `~/.npmrc`:
-
-```
-//npm.pkg.github.com/:_authToken=YOUR_GITHUB_PAT
-@JohannWilfridCalixte:registry=https://npm.pkg.github.com
-```
-
-Your GitHub PAT needs `read:packages` scope.
-
 ## Installation
 
 ```bash
-bunx @JohannWilfridCalixte/agentic@alpha init \
+bunx @johannwilfridcalixte/agentic@beta init \
   -w ask-codebase,product-spec,product-vision,technical-planning,implement,debug,frontend-development,auto-implement \
   -n YOUR_TEAM_NAME \
   --ide YOUR_IDE

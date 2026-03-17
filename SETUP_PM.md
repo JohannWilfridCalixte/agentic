@@ -14,63 +14,7 @@ This guide covers three workflows relevant to PMs:
 
 ## Prerequisites
 
-Before installing agentic, you need two things:
-
-1. A code editor: **Claude Code**, **Cursor**, or **Codex** (or all)
-2. A GitHub Personal Access Token to download the package from GitHub's npm registry
-
-### Step 1: Get a GitHub Personal Access Token (PAT)
-
-Agentic is open-source and published on GitHub's npm package registry. GitHub requires a Personal Access Token to download packages from this registry, even for public packages.
-
-1. Go to [https://github.com/settings/tokens](https://github.com/settings/tokens)
-2. Click **"Generate new token (classic)"**
-3. Give it a descriptive name like `agentic-registry-access`
-4. Under **"Select scopes"**, check only **`read:packages`**
-5. Click **"Generate token"**
-6. **Copy the token immediately** -- you will not be able to see it again after leaving the page
-
-### Step 2: Configure your npm registry
-
-Your computer needs to know where to find the agentic package and how to authenticate. This is done through a file called `.npmrc`.
-
-#### What is `.npmrc`?
-
-It is a small configuration file that tells npm (the package manager) where to download packages from and what credentials to use. The file lives in your **home directory**:
-
-- **macOS / Linux**: `~/.npmrc` which means `/Users/YOUR_USERNAME/.npmrc`
-- **Windows**: `C:\Users\YOUR_USERNAME\.npmrc`
-
-#### How to create or edit `.npmrc`
-
-Open your terminal (the built-in terminal in Claude Code or Cursor, or the Terminal app on macOS) and paste the following command. Replace `YOUR_TOKEN_HERE` with the token you copied in Step 1:
-
-```bash
-echo "@JohannWilfridCalixte:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=YOUR_TOKEN_HERE" >> ~/.npmrc
-```
-
-This command appends two lines to your `.npmrc` file (creating the file if it does not exist):
-
-- Line 1 tells npm: "For any package starting with `@JohannWilfridCalixte`, use GitHub's registry"
-- Line 2 tells npm: "When talking to GitHub's registry, use this token to authenticate"
-
-#### Verify it worked
-
-Run this command to see the contents of your `.npmrc` file:
-
-```bash
-cat ~/.npmrc
-```
-
-You should see at least these two lines (among possibly others):
-
-```
-@JohannWilfridCalixte:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=ghp_xxxxxxxxxxxx
-```
-
-If the file is empty or missing, repeat the step above.
+A code editor: **Claude Code**, **Cursor**, or **Codex** (or all).
 
 ---
 
@@ -79,7 +23,7 @@ If the file is empty or missing, repeat the step above.
 With your registry configured, you can now install agentic. Open your terminal **inside your project's root directory** (the top-level folder of the codebase you want to work with) and run:
 
 ```bash
-bunx @JohannWilfridCalixte/agentic@alpha init -w ask-codebase,product-spec,product-vision -n YOUR_TEAM_NAME --ide YOUR_IDE
+bunx @johannwilfridcalixte/agentic@beta init -w ask-codebase,product-spec,product-vision -n YOUR_TEAM_NAME --ide YOUR_IDE
 ```
 
 ### Breaking down the command
@@ -87,7 +31,7 @@ bunx @JohannWilfridCalixte/agentic@alpha init -w ask-codebase,product-spec,produ
 | Part | Meaning |
 |------|---------|
 | `bunx` | Runs a package without permanently installing it. You can also use `npx` or `pnpx` instead -- they all do the same thing. |
-| `@JohannWilfridCalixte/agentic@alpha` | The agentic package, using the alpha release channel. |
+| `@johannwilfridcalixte/agentic@beta` | The agentic package, using the alpha release channel. |
 | `init` | Tells agentic to set itself up in the current project. |
 | `-w ask-codebase,product-spec,product-vision` | Install only these three workflows. No spaces around the comma. |
 | `-n YOUR_TEAM_NAME` | A namespace prefix for your team. Must be lowercase, start with a letter, and be 2-30 characters long. Example: `myteam`, `acme`, `productx`. |
@@ -98,13 +42,13 @@ bunx @JohannWilfridCalixte/agentic@alpha init -w ask-codebase,product-spec,produ
 If your team name is `acme` and you use Claude Code:
 
 ```bash
-bunx @JohannWilfridCalixte/agentic@alpha init -w ask-codebase,product-spec,product-vision -n acme --ide claude
+bunx @johannwilfridcalixte/agentic@beta init -w ask-codebase,product-spec,product-vision -n acme --ide claude
 ```
 
 Or with npx instead of bunx:
 
 ```bash
-npx @JohannWilfridCalixte/agentic@alpha init -w ask-codebase,product-spec,product-vision -n acme --ide claude
+npx @johannwilfridcalixte/agentic@beta init -w ask-codebase,product-spec,product-vision -n acme --ide claude
 ```
 
 ### What happens after installation
@@ -436,25 +380,11 @@ Vision documents: `_<namespace>_output/product/vision/{topic}/{instance_id}/visi
 
 After installing, close and reopen your terminal, then try again.
 
-### "401 Unauthorized" or "403 Forbidden" during installation
-
-**Problem:** Your GitHub token is missing, expired, or does not have the right scope.
-
-**Solution:**
-1. Open `~/.npmrc` and check the token is there: `cat ~/.npmrc`
-2. Make sure the token line looks like: `//npm.pkg.github.com/:_authToken=ghp_...`
-3. Go to [https://github.com/settings/tokens](https://github.com/settings/tokens) and verify the token has `read:packages` scope and is not expired
-4. If in doubt, generate a new token and update `~/.npmrc`
-
 ### "Package not found" during installation
 
-**Problem:** The registry line in `.npmrc` is missing or has a typo.
+**Problem:** npm cannot find the package.
 
-**Solution:** Run `cat ~/.npmrc` and verify you see this exact line:
-```
-@JohannWilfridCalixte:registry=https://npm.pkg.github.com
-```
-Note the capital letters in `JohannWilfridCalixte` must match exactly.
+**Solution:** The package is published on npm as `@johannwilfridcalixte/agentic` (lowercase). Make sure you use the correct package name and tag (e.g., `@beta`).
 
 ### The slash command does not appear in Claude Code or Cursor
 

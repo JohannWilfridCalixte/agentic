@@ -2,19 +2,10 @@
 
 Multi-agent framework for Claude Code, Cursor, and Codex. This guide covers four workflows: `technical-planning`, `implement`, `debug`, and `auto-implement`.
 
-## Prerequisites
-
-A GitHub Personal Access Token (PAT) with `read:packages` scope configured in `~/.npmrc`:
-
-```
-//npm.pkg.github.com/:_authToken=ghp_YOUR_TOKEN_HERE
-@JohannWilfridCalixte:registry=https://npm.pkg.github.com
-```
-
 ## Installation
 
 ```bash
-bunx @JohannWilfridCalixte/agentic@alpha init \
+bunx @johannwilfridcalixte/agentic@beta init \
   -w technical-planning,implement,debug,auto-implement \
   -n YOUR_TEAM_NAME \
   --ide YOUR_IDE

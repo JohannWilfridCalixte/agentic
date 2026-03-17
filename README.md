@@ -25,35 +25,24 @@ Multi-agent framework for **Claude Code** + **Cursor** + **Codex**. Distributes 
 
 ## Quick Start
 
-### 1. Configure npm registry
-
-Add to `~/.npmrc` (a [GitHub Personal Access Token](https://github.com/settings/tokens) with `read:packages` scope is required):
-
-```
-@JohannWilfridCalixte:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=YOUR_GITHUB_PAT
-```
-
-### 2. Install for your role
-
 Pick the setup that matches your role. Detailed guides explain each workflow, how to use them, and provide examples.
 
 **Product Manager** — ask questions about the codebase, write product specs ([detailed guide](SETUP_PM.md)):
 
 ```bash
-bunx @JohannWilfridCalixte/agentic@alpha init -w ask-codebase,product-spec -n YOUR_TEAM_NAME --ide YOUR_IDE
+bunx @johannwilfridcalixte/agentic@beta init -w ask-codebase,product-spec -n YOUR_TEAM_NAME --ide YOUR_IDE
 ```
 
 **Developer** — technical planning, implementation, debugging ([detailed guide](SETUP_DEV.md)):
 
 ```bash
-bunx @JohannWilfridCalixte/agentic@alpha init -w technical-planning,implement,debug -n YOUR_TEAM_NAME --ide YOUR_IDE
+bunx @johannwilfridcalixte/agentic@beta init -w technical-planning,implement,debug -n YOUR_TEAM_NAME --ide YOUR_IDE
 ```
 
 **Solo Developer** — full product-to-code pipeline + frontend ([detailed guide](SETUP_SOLO_DEV.md)):
 
 ```bash
-bunx @JohannWilfridCalixte/agentic@alpha init -w ask-codebase,product-spec,product-vision,technical-planning,implement,debug,frontend-development,auto-implement -n YOUR_TEAM_NAME --ide YOUR_IDE
+bunx @johannwilfridcalixte/agentic@beta init -w ask-codebase,product-spec,product-vision,technical-planning,implement,debug,frontend-development,auto-implement -n YOUR_TEAM_NAME --ide YOUR_IDE
 ```
 
 > Replace `YOUR_TEAM_NAME` with a lowercase namespace (e.g. `myteam`) and `YOUR_IDE` with `claude`, `cursor`, `codex`, or `all` (`both` still works as alias).
@@ -62,10 +51,10 @@ bunx @JohannWilfridCalixte/agentic@alpha init -w ask-codebase,product-spec,produ
 Full install (all workflows, all IDEs):
 
 ```bash
-bunx @JohannWilfridCalixte/agentic@alpha init
+bunx @johannwilfridcalixte/agentic@beta init
 ```
 
-### 3. Use workflows
+### Use workflows
 
 In **Claude Code**, invoke workflows with colon syntax:
 
@@ -145,11 +134,11 @@ agentic help                      # Show help
 Sets up agentic in the current project. Creates IDE directories, copies all content, generates `CLAUDE.md`/`AGENTS.md`.
 
 ```bash
-bunx @JohannWilfridCalixte/agentic@alpha init
-bunx @JohannWilfridCalixte/agentic@alpha init --ide claude
-bunx @JohannWilfridCalixte/agentic@alpha init --namespace myteam
-bunx @JohannWilfridCalixte/agentic@alpha init --workflows implement,debug
-bunx @JohannWilfridCalixte/agentic@alpha init --output docs
+bunx @johannwilfridcalixte/agentic@beta init
+bunx @johannwilfridcalixte/agentic@beta init --ide claude
+bunx @johannwilfridcalixte/agentic@beta init --namespace myteam
+bunx @johannwilfridcalixte/agentic@beta init --workflows implement,debug
+bunx @johannwilfridcalixte/agentic@beta init --output docs
 ```
 
 ### `migrate`
@@ -157,9 +146,9 @@ bunx @JohannWilfridCalixte/agentic@alpha init --output docs
 Migrates from older versions that used unprefixed artifact names (e.g., `agents/software-engineer.md` instead of `agentic-agent-software-engineer.md`, `skills/code/` instead of `agentic-skill-code/`). Backs up old artifacts to timestamped directories, then runs `init`.
 
 ```bash
-bunx @JohannWilfridCalixte/agentic@alpha migrate
-bunx @JohannWilfridCalixte/agentic@alpha migrate --ide cursor
-bunx @JohannWilfridCalixte/agentic@alpha migrate --namespace myteam --workflows implement,debug
+bunx @johannwilfridcalixte/agentic@beta migrate
+bunx @johannwilfridcalixte/agentic@beta migrate --ide cursor
+bunx @johannwilfridcalixte/agentic@beta migrate --namespace myteam --workflows implement,debug
 ```
 
 **What it does:**
@@ -184,9 +173,9 @@ Accepts all `init` flags (`--ide`, `--namespace`, `--output`, `--workflows`).
 Auto-detects existing IDE setups and updates them. Backs up `CLAUDE.md` → `CLAUDE.backup.md` (and `AGENTS.md` → `AGENTS.backup.md`) before overwriting. Restores namespace, output folder, and workflow selection from saved settings unless overridden by CLI flags.
 
 ```bash
-bunx @JohannWilfridCalixte/agentic@alpha update
-bunx @JohannWilfridCalixte/agentic@alpha update --workflows implement    # change workflow set
-bunx @JohannWilfridCalixte/agentic@alpha update --namespace newname      # change namespace
+bunx @johannwilfridcalixte/agentic@beta update
+bunx @johannwilfridcalixte/agentic@beta update --workflows implement    # change workflow set
+bunx @johannwilfridcalixte/agentic@beta update --namespace newname      # change namespace
 ```
 
 When `--workflows` changes on update, stale files from the previous workflow set are automatically cleaned up.
@@ -196,9 +185,9 @@ When `--workflows` changes on update, stale files from the previous workflow set
 Updates settings (model names, namespace, workflows) and reinstalls agents without re-running full init. Useful for changing configuration after initial setup.
 
 ```bash
-bunx @JohannWilfridCalixte/agentic@alpha settings apply --high-thinking-model sonnet
-bunx @JohannWilfridCalixte/agentic@alpha settings apply --workflows debug,implement
-bunx @JohannWilfridCalixte/agentic@alpha settings apply --namespace myteam
+bunx @johannwilfridcalixte/agentic@beta settings apply --high-thinking-model sonnet
+bunx @johannwilfridcalixte/agentic@beta settings apply --workflows debug,implement
+bunx @johannwilfridcalixte/agentic@beta settings apply --namespace myteam
 ```
 
 ### `list`
@@ -228,10 +217,10 @@ Instead of installing everything, install only the workflows you need and their 
 
 ```bash
 # Install only debug and implement workflows
-bunx @JohannWilfridCalixte/agentic@alpha init --workflows implement,debug
+bunx @johannwilfridcalixte/agentic@beta init --workflows implement,debug
 
 # Change workflow set later (stale files auto-cleaned)
-bunx @JohannWilfridCalixte/agentic@alpha update --workflows debug
+bunx @johannwilfridcalixte/agentic@beta update --workflows debug
 ```
 
 ### Available workflows
@@ -260,7 +249,7 @@ bunx @JohannWilfridCalixte/agentic@alpha update --workflows debug
 Rename all files and internal references from `agentic` to your custom prefix.
 
 ```bash
-bunx @JohannWilfridCalixte/agentic@alpha init --namespace myteam
+bunx @johannwilfridcalixte/agentic@beta init --namespace myteam
 ```
 
 **What changes:**
@@ -480,10 +469,10 @@ src/
 
 ## Publishing
 
-Published to GitHub Packages. Push a `v*` tag to auto-publish:
+Published to npm. Push a `v*` tag to auto-publish:
 
 ```bash
 bun run bump <version>     # bumps version, commits, tags, pushes
 ```
 
-The tag name determines the dist-tag: `v0.1.1-alpha.29` publishes as `@alpha`.
+The tag name determines the dist-tag: `v0.1.0-beta.1` publishes as `@beta`.
