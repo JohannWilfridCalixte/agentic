@@ -1,5 +1,5 @@
 {
-  "name": "@JohannWilfridCalixte/agentic",
+  "name": "@johannwilfridcalixte/agentic",
   "version": "0.3.0-alpha.1",
   "description": "Agent prompts and scripts for Claude Code + Cursor",
   "type": "module",
@@ -11,7 +11,8 @@
     "src/"
   ],
   "publishConfig": {
-    "@JohannWilfridCalixte:registry": "https://npm.pkg.github.com"
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
   },
   "keywords": [
     "agents",

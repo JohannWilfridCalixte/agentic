@@ -1,4 +1,4 @@
-name: Publish to GitHub Packages
+name: Publish to npm
 
 on:
   push:
@@ -17,7 +17,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write
 
     steps:
       - uses: actions/checkout@v4
@@ -37,7 +36,7 @@ jobs:
           fi
 
       - run: |
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> .npmrc
-          bun publish --access public ${{ steps.dist-tag.outputs.flag }}
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
+          bun publish ${{ steps.dist-tag.outputs.flag }}
         env:
-          BUN_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
