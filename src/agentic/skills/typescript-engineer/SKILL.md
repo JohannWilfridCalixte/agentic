@@ -182,12 +182,38 @@ function getUser(role: 'user' | 'admin') {
 // Type: { role: 'admin' } | { role: 'user' } - truth visible
 ```
 
-**When return types ARE acceptable:**
-- Public API contracts where you WANT the abstraction
-- Generic functions where inference fails
-- Recursive functions (required by TS)
+**Use `satisfies` for API boundary validation:**
 
-Default: let TypeScript infer. Use `as const` to narrow.
+```typescript
+// ❌ Explicit return type - can lie, widens inference
+async function collectOptions(): Promise<InteractiveResult> {
+  return { name, template };
+}
+
+// ✅ satisfies validates shape, inference stays truthful
+async function collectOptions() {
+  return { name, template } satisfies InteractiveResult;
+}
+// Callers see the narrow inferred type
+// Compile error if shape doesn't match InteractiveResult
+```
+
+**When explicit return types ARE required (not just preferred):**
+- Recursive functions (TS compiler requires it)
+- Assertion functions (`asserts value is T`)
+- Generic functions where inference genuinely fails (not "might be unclear")
+
+**Rationalization table:**
+
+| Excuse | Reality |
+|--------|---------|
+| "Public API needs explicit types" | Use `satisfies` — validates shape without lying |
+| "Consumers need to know the return type" | Hover inference + exported type via `satisfies` |
+| "It documents the function contract" | It documents what you HOPE it returns, not what it DOES |
+| "It's clearer with the return type" | Clarity that can lie is worse than inference that can't |
+| `: never \| undefined` documents control flow" | TS infers this already — the annotation adds nothing |
+
+Default: let TypeScript infer. Use `as const` to narrow. Use `satisfies` to validate.
 
 ## Error Handling
 
@@ -322,7 +348,7 @@ function getStrategy(type: ItemType): ItemStrategy<ItemData> {
 - Missing `readonly` on interface properties
 - `readonly` inside `z.object({})` (that's runtime JS, not type syntax)
 - `any` or `as` casts
-- Explicit return types (prefer inference + `as const`)
+- Explicit return types (use inference + `as const` / `satisfies`)
 - Function overloads (they can lie; use union returns instead)
 - Throwing in domain logic
 - Switch without `satisfies never`
