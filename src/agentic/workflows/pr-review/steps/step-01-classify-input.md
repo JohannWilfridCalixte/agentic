@@ -150,6 +150,7 @@ current_step: 1
 steps_completed: []
 
 output_mode: null
+verbosity_level: null
 
 artifacts:
   pr_metadata: "{output_path}/pr-metadata.md"

@@ -52,11 +52,14 @@ Technical context: {output_path}/technical-context.md
 
 Review ONLY implementation code (NOT tests - Test QA handles that).
 
-For each finding, include:
-- Severity: blocker | major | minor | nit
-- File and line reference (from the diff)
-- Description of the issue
-- Suggested fix or improvement
+## Finding Format (Verbosity Level: {verbosity_level})
+
+Format each finding based on verbosity level:
+- **Level 1 (Concise):** Severity + short description (1-2 sentences)
+- **Level 2 (Detailed):** Severity + issue title + detailed description
+- **Level 3 (Comprehensive):** Severity + issue title + detailed description + file:line pointers + explanation of how to fix
+
+Always include severity: blocker | major | minor | nit
 
 If the PR has no issues, state an explicit clean verdict with 0 findings.
 
@@ -96,11 +99,14 @@ Technical context: {output_path}/technical-context.md
 
 If the PR contains no test changes, evaluate whether tests SHOULD have been included. Report missing test coverage as findings. If no tests are expected (e.g., docs-only change, config change), report 0 findings with explanation.
 
-For each finding, include:
-- Severity: blocker | major | minor | nit
-- File and line reference (from the diff)
-- Description of the issue
-- Suggested fix or improvement
+## Finding Format (Verbosity Level: {verbosity_level})
+
+Format each finding based on verbosity level:
+- **Level 1 (Concise):** Severity + short description (1-2 sentences)
+- **Level 2 (Detailed):** Severity + issue title + detailed description
+- **Level 3 (Comprehensive):** Severity + issue title + detailed description + file:line pointers + explanation of how to fix
+
+Always include severity: blocker | major | minor | nit
 
 If the PR has no issues, state an explicit clean verdict with 0 findings.
 
@@ -139,11 +145,14 @@ PR diff: {output_path}/pr-diff.patch
 PR metadata: {output_path}/pr-metadata.md
 Technical context: {output_path}/technical-context.md
 
-For each finding, include:
-- Severity: blocker | major | minor | nit
-- File and line reference (from the diff)
-- Description of the issue
-- Suggested fix or improvement
+## Finding Format (Verbosity Level: {verbosity_level})
+
+Format each finding based on verbosity level:
+- **Level 1 (Concise):** Severity + short description (1-2 sentences)
+- **Level 2 (Detailed):** Severity + issue title + detailed description
+- **Level 3 (Comprehensive):** Severity + issue title + detailed description + file:line pointers + explanation of how to fix
+
+Always include severity: blocker | major | minor | nit
 
 If the PR has no issues, state an explicit clean verdict with 0 findings.
 

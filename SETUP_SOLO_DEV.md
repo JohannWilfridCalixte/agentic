@@ -403,12 +403,12 @@ Skip all manual steps. Give it an idea and get working code with tests and revie
 **Steps:**
 
 1. Classify Input — parse and verify PR(s)
-2. Choose Output Mode — local markdown or PR comments
-3. Gather Context — Architect analyzes PR diff
-4. Dispatch Reviews — QA + Test QA + Security QA in parallel
+2. Choose Preferences — output mode (local/PR comments) + verbosity level (1=concise, 2=detailed, 3=comprehensive with file:line + fix guidance)
+3. Gather Context — Architect analyzes PR diff, detects tech stack, resolves language skills
+4. Dispatch Reviews — QA + Test QA + Security QA in parallel (with language skills injected)
 5. Output — aggregate and deliver in chosen mode
 
-**Batch mode:** Multiple PR refs → output mode asked once → parallel subagents review each PR → summary table.
+**Batch mode:** Multiple PR refs → preferences asked once → parallel subagents review each PR → summary table.
 
 **Key rules:** Steps 1-2 interactive, 3-4 autonomous. Retry on agent failure. Clean PRs get explicit APPROVE verdict.
 

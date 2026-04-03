@@ -37,10 +37,21 @@ Analyze the PR changes and the surrounding codebase to produce technical context
 - What are the relevant types, interfaces, and contracts?
 - What tests exist for the affected code?
 - What are the dependencies between affected files?
+- What technologies, languages, and frameworks are used in the affected code?
 
 If the codebase is not locally available (cross-repo PR), derive context solely from the diff and metadata.
 
 Output to: {output_path}/technical-context.md
+
+IMPORTANT: Include a `tech_stack` field in the YAML frontmatter listing all detected technologies as lowercase identifiers.
+Example frontmatter:
+```yaml
+---
+Document: Technical Context
+Status: Ready
+tech_stack: [typescript, react, node]
+---
+```
 ")
 ```
 

@@ -30,9 +30,9 @@ Arguments (one or more):
 
 You are the **main agent** orchestrating this workflow. You:
 1. Classify and verify the PR input
-2. Ask user for output mode (local or PR comments)
-3. Delegate technical context gathering
-4. Delegate reviews to QA agents
+2. Ask user for output mode + verbosity level
+3. Delegate technical context gathering (incl. tech stack detection for skill injection)
+4. Delegate reviews to QA agents (with language skills + verbosity level)
 5. Aggregate findings and produce output
 
 **You do NOT:**
@@ -85,7 +85,7 @@ Execute steps in order. Read step file before executing each step.
 | Step | File | Description |
 |------|------|-------------|
 | 1 | `steps/step-01-classify-input.md` | Parse PR reference, verify it exists, extract metadata |
-| 2 | `steps/step-02-choose-output-mode.md` | Ask user: local markdown or PR comments |
+| 2 | `steps/step-02-choose-output-mode.md` | Ask user: output mode + verbosity level |
 | 3 | `steps/step-03-gather-context.md` | Architect gathers technical context from PR diff |
 | 4 | `steps/step-04-dispatch-reviews.md` | QA + Test QA + Security QA review the PR |
 | 5 | `steps/step-05-output.md` | Aggregate findings, produce output in chosen mode |
@@ -105,7 +105,7 @@ Execute steps in order. Read step file before executing each step.
 - ONE STEP AT A TIME: complete each step before proceeding
 - NO SKIPPING: execute all steps in order
 - TRACK STATE: update `workflow-state.yaml` after each step
-- INTERACTIVE for steps 1-2: parse input, ask user
+- INTERACTIVE for steps 1-2: parse input, ask user (output mode + verbosity)
 - AUTONOMOUS for steps 3-4: delegate without asking user
 - DEPENDS ON MODE for step 5: local = write file + summarize in chat, PR = post comments
 
@@ -167,8 +167,8 @@ All outputs: `{ide-folder}/{outputFolder}/task/pr-review/{pr-identifier}/{instan
                        |
                        v
                 +-------------------------------+
-                |  STEP 2: Choose Output Mode   |
-                |  Ask user: local or PR        |
+                |  STEP 2: Output Mode &        |
+                |  Verbosity Level              |
                 +-------------------------------+
                                 |
                                 v
@@ -208,8 +208,8 @@ All outputs: `{ide-folder}/{outputFolder}/task/pr-review/{pr-identifier}/{instan
                                 |
                                 v
                 +-------------------------------+
-                |  STEP 2: Choose Output Mode   |
-                |  Ask user ONCE                |
+                |  STEP 2: Output Mode &        |
+                |  Verbosity Level (ask ONCE)   |
                 +-------------------------------+
                                 |
                                 v
@@ -244,7 +244,7 @@ When multiple PR refs are provided, the orchestrator parallelizes entire reviews
 
 1. **Classify all inputs (Step 1 for each PR):** Run `step-01-classify-input.md` for each PR ref. These are independent — run in parallel. If any PR fails validation, report the error and continue with the valid ones.
 
-2. **Choose output mode once (Step 2):** Run `step-02-choose-output-mode.md` once. The chosen mode applies to all PRs.
+2. **Choose output mode + verbosity once (Step 2):** Run `step-02-choose-output-mode.md` once. The chosen mode and verbosity apply to all PRs.
 
 3. **Dispatch parallel review subagents:** For each validated PR, launch one subagent that runs steps 3–5 autonomously:
 
@@ -253,6 +253,7 @@ Task(subagent_type="{subagentTypeGeneralPurpose}", prompt="
 You are reviewing PR #{pr_number}: {pr_title}
 
 Output mode: {output_mode}
+Verbosity level: {verbosity_level}
 Output path: {output_path}
 PR diff: {output_path}/pr-diff.patch
 PR metadata: {output_path}/pr-metadata.md

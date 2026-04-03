@@ -12,7 +12,9 @@ Aggregate findings from all review agents and deliver in the chosen output mode.
 
 ### 5.1 Build Review Summary
 
-Read all review files and compose `{output_path}/review-summary.md`:
+Read `verbosity_level` from workflow-state.yaml. Read all review files and compose `{output_path}/review-summary.md`.
+
+Findings are already formatted by QA agents per the requested verbosity level — include them as-is.
 
 ```markdown
 # PR Review: #{pr_number} — {pr_title}

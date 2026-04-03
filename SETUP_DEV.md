@@ -260,12 +260,20 @@ Output path: `_<namespace>_output/task/auto-implement/{topic}/{instance_id}/`
 | Step | Mode | What happens |
 |------|------|-------------|
 | 1. Classify Input | -- | Parses PR ref, verifies via `gh pr view`, extracts diff |
-| 2. Choose Output Mode | Interactive | Ask: local markdown or PR comments |
-| 3. Gather Context | Autonomous | Architect subagent analyzes PR diff and surrounding codebase |
-| 4. Dispatch Reviews | Autonomous | QA + Test QA + Security QA review in parallel |
+| 2. Choose Preferences | Interactive | Ask: output mode (local/PR comments) + verbosity level (1-3) |
+| 3. Gather Context | Autonomous | Architect analyzes PR diff, detects tech stack, resolves language skills |
+| 4. Dispatch Reviews | Autonomous | QA + Test QA + Security QA review in parallel (with language skills injected) |
 | 5. Output | Depends on mode | Aggregates findings, delivers as local report or `gh pr review` comments |
 
-**Batch mode:** When multiple PR refs are given, output mode is asked once, then each PR is reviewed by a parallel subagent running steps 3-5. Results are collected into a summary table.
+**Verbosity levels:**
+
+| Level | Output per finding |
+|-------|--------------------|
+| 1 (Concise) | Short description |
+| 2 (Detailed) | Title + detailed description |
+| 3 (Comprehensive) | Title + detailed description + file:line pointers + how to fix |
+
+**Batch mode:** When multiple PR refs are given, preferences are asked once, then each PR is reviewed by a parallel subagent running steps 3-5. Results are collected into a summary table.
 
 ### Subagents
 
