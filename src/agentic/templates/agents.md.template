@@ -74,6 +74,7 @@ Load skill: `{ide-invoke-prefix}{ide-folder}/skills/{name}/SKILL.md`
 | **agentic:workflow:product-spec** | Product discovery → PRD |
 | **agentic:workflow:product-vision** | Creative brainstorming → comprehensive product vision document |
 | **agentic:workflow:frontend-development** | Frontend features - design decisions → UX → implementation |
+| **agentic:workflow:pr-review** | PR → QA + Test QA + Security review, local report or PR comments |
 
 ## Agents / Subagents
 

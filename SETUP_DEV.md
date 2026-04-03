@@ -1,12 +1,12 @@
 # Setup Guide for Developers
 
-Multi-agent framework for Claude Code, Cursor, and Codex. This guide covers four workflows: `technical-planning`, `implement`, `debug`, and `auto-implement`.
+Multi-agent framework for Claude Code, Cursor, and Codex. This guide covers five workflows: `technical-planning`, `implement`, `debug`, `auto-implement`, and `pr-review`.
 
 ## Installation
 
 ```bash
 bunx @johannwilfridcalixte/agentic@beta init \
-  -w technical-planning,implement,debug,auto-implement \
+  -w technical-planning,implement,debug,auto-implement,pr-review \
   -n YOUR_TEAM_NAME \
   --ide YOUR_IDE
 ```
@@ -239,6 +239,55 @@ Output path: `_<namespace>_output/task/auto-implement/{topic}/{instance_id}/`
 
 ---
 
+## Workflow: pr-review
+
+**Purpose:** Review a pull request using QA, Test QA, and Security QA agents. Output as local markdown or GitHub PR comments. Supports batch review of multiple PRs in parallel.
+
+**Invocation:**
+```
+/agentic:workflow:pr-review <PR ref> [<PR ref> ...]
+```
+
+### Input
+
+- PR number: `123` or `#123`
+- Full URL: `https://github.com/owner/repo/pull/123`
+- Cross-repo: `owner/repo#123`
+- Multiple PRs: `123 456 789` (batch mode)
+
+### Flow
+
+| Step | Mode | What happens |
+|------|------|-------------|
+| 1. Classify Input | -- | Parses PR ref, verifies via `gh pr view`, extracts diff |
+| 2. Choose Output Mode | Interactive | Ask: local markdown or PR comments |
+| 3. Gather Context | Autonomous | Architect subagent analyzes PR diff and surrounding codebase |
+| 4. Dispatch Reviews | Autonomous | QA + Test QA + Security QA review in parallel |
+| 5. Output | Depends on mode | Aggregates findings, delivers as local report or `gh pr review` comments |
+
+**Batch mode:** When multiple PR refs are given, output mode is asked once, then each PR is reviewed by a parallel subagent running steps 3-5. Results are collected into a summary table.
+
+### Subagents
+
+`architect`, `qa`, `test-qa`, `security-qa`
+
+### Artifacts
+
+Output path: `_<namespace>_output/task/pr-review/pr-{number}/{instance_id}/`
+
+| File | Description |
+|------|-------------|
+| `workflow-state.yaml` | Workflow state |
+| `pr-metadata.md` | PR title, author, files changed |
+| `pr-diff.patch` | Full PR diff |
+| `technical-context.md` | Codebase context for affected areas |
+| `qa-review.md` | Code quality review |
+| `test-qa-review.md` | Test quality review |
+| `security-review.md` | Security review |
+| `review-summary.md` | Aggregated review with verdict |
+
+---
+
 ## Typical Workflow Chains
 
 ### Full feature lifecycle
@@ -283,6 +332,18 @@ When you want to skip manual planning and go straight from idea to code:
 
 All product and technical decisions are made autonomously. Review `decision-log.md` after completion.
 
+### PR review
+
+```bash
+/agentic:workflow:pr-review 42
+```
+
+Or review multiple PRs in parallel:
+
+```bash
+/agentic:workflow:pr-review 42 43 44
+```
+
 ---
 
 ## Tips
@@ -294,3 +355,4 @@ All product and technical decisions are made autonomously. Review `decision-log.
 - **Namespace consistency:** Use the same namespace across your team so artifact paths are predictable.
 - **IDE choice:** Use `--ide all` if your team uses a mix of Claude Code, Cursor, and Codex.
 - **Use `auto-implement` for well-understood features.** It skips interactive planning. Best for features where the scope is clear enough that autonomous decisions are acceptable. Review `decision-log.md` for all assumptions made.
+- **Use `pr-review` for structured code reviews.** Three specialized reviewers (code quality, tests, security) catch different classes of issues. Use batch mode to review multiple PRs at once.

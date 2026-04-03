@@ -10,8 +10,8 @@ import {
 } from './dependencies';
 
 describe('KNOWN_WORKFLOWS', () => {
-  it('contains exactly 8 workflow names', () => {
-    expect(KNOWN_WORKFLOWS).toHaveLength(8);
+  it('contains exactly 9 workflow names', () => {
+    expect(KNOWN_WORKFLOWS).toHaveLength(9);
   });
 
   it('includes all expected workflow names', () => {
@@ -24,6 +24,7 @@ describe('KNOWN_WORKFLOWS', () => {
       'debug',
       'frontend-development',
       'auto-implement',
+      'pr-review',
     ] as const;
 
     for (const name of expected) {
@@ -185,6 +186,7 @@ describe('resolveWorkflowDependencies', () => {
       'implement',
       'debug',
       'frontend-development',
+      'pr-review',
     ];
 
     for (const workflow of allWorkflows) {
@@ -203,6 +205,7 @@ describe('resolveWorkflowDependencies', () => {
       'implement',
       'debug',
       'frontend-development',
+      'pr-review',
     ];
 
     for (const workflow of workflowsWithProtocol) {

@@ -1,19 +1,19 @@
 # Setup Guide for Solo Developers
 
-All-in-one setup covering product discovery through implementation. You handle both product and engineering -- this guide gives you eight workflows that chain together into a complete development lifecycle.
+All-in-one setup covering product discovery through implementation. You handle both product and engineering -- this guide gives you nine workflows that chain together into a complete development lifecycle.
 
 ## Installation
 
 ```bash
 bunx @johannwilfridcalixte/agentic@beta init \
-  -w ask-codebase,product-spec,product-vision,technical-planning,implement,debug,frontend-development,auto-implement \
+  -w ask-codebase,product-spec,product-vision,technical-planning,implement,debug,frontend-development,auto-implement,pr-review \
   -n YOUR_TEAM_NAME \
   --ide YOUR_IDE
 ```
 
 | Flag | Values | Notes |
 |------|--------|-------|
-| `-w` | Comma-separated workflow names | All eight listed above |
+| `-w` | Comma-separated workflow names | All nine listed above |
 | `-n` | Namespace prefix | Lowercase, starts with letter, 2-30 chars |
 | `--ide` | `claude`, `cursor`, `codex`, `all` (`both` still works) | IDE integration target |
 
@@ -66,6 +66,7 @@ Skip all manual steps. Give it an idea and get working code with tests and revie
 
 - **ask-codebase** -- understand existing behavior before changing it
 - **debug** -- systematic root-cause analysis for bugs
+- **pr-review** -- structured QA + security review of PRs (single or batch)
 
 ---
 
@@ -387,6 +388,46 @@ Skip all manual steps. Give it an idea and get working code with tests and revie
 
 ---
 
+### pr-review
+
+**Purpose:** Structured code review using QA, Test QA, and Security QA agents. Outputs locally or as GitHub PR comments. Supports batch review.
+
+**Invocation:**
+
+```
+/agentic:workflow:pr-review <PR ref> [<PR ref> ...]
+```
+
+**Inputs:** PR number (`123`, `#123`), full URL, cross-repo ref (`owner/repo#123`), or multiple refs for batch mode.
+
+**Steps:**
+
+1. Classify Input — parse and verify PR(s)
+2. Choose Output Mode — local markdown or PR comments
+3. Gather Context — Architect analyzes PR diff
+4. Dispatch Reviews — QA + Test QA + Security QA in parallel
+5. Output — aggregate and deliver in chosen mode
+
+**Batch mode:** Multiple PR refs → output mode asked once → parallel subagents review each PR → summary table.
+
+**Key rules:** Steps 1-2 interactive, 3-4 autonomous. Retry on agent failure. Clean PRs get explicit APPROVE verdict.
+
+**Artifacts:** `_<namespace>_output/task/pr-review/pr-{number}/{instance_id}/`
+
+- `workflow-state.yaml`, `pr-metadata.md`, `pr-diff.patch`, `technical-context.md`, `qa-review.md`, `test-qa-review.md`, `security-review.md`, `review-summary.md`
+
+**Example:**
+
+```
+/agentic:workflow:pr-review 42
+```
+
+```
+/agentic:workflow:pr-review 42 43 44
+```
+
+---
+
 ## Typical Workflow Chain
 
 The most powerful pattern chains three workflows end-to-end:
@@ -436,3 +477,5 @@ For UI-heavy features, replace `implement` with `frontend-development` in step 3
 **Keep `technical-planning` interactive.** Even solo, the questioning phase surfaces edge cases. Answer honestly -- "I don't know" is valid and leads to better plans.
 
 **Use `auto-implement` when scope is clear.** Skips interactive planning entirely. All product and technical decisions are autonomous. Review `decision-log.md` for assumptions. Best for well-understood features where you trust the AI's judgment.
+
+**Use `pr-review` as your second pair of eyes.** Solo devs miss things. Three specialized reviewers (code quality, test quality, security) catch different classes of issues. Use batch mode when you have multiple PRs to review.

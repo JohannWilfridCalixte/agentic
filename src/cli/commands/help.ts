@@ -19,7 +19,7 @@ Options:
                               Comma-separated: -w product-spec,implement
                               Available: product-spec, product-vision, ask-codebase,
                               technical-planning, implement, debug, frontend-development,
-                              auto-implement
+                              auto-implement, pr-review
   --ide <type>                Target IDE: claude, cursor, codex, or all
                               init: defaults to all
                               update/settings: defaults to auto-detect
