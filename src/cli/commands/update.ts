@@ -18,7 +18,7 @@ interface UpdateError {
 }
 
 export interface UpdateOptions {
-  readonly ide?: IDE;
+  readonly ide?: IDE | readonly IDE[];
   readonly namespace?: string;
   readonly outputFolder?: string;
   readonly workflows?: readonly string[];

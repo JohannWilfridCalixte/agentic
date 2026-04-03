@@ -1,7 +1,13 @@
-import { isErr } from '../lib/monads';
+import { join } from 'node:path';
+
+import { isErr, isOk } from '../lib/monads';
 import { help, init, list, migrate, settings, update, version } from './commands';
+import { detectIdes } from './commands/update';
 import type { IDE } from './constants';
-import { NAMESPACE_PATTERN } from './constants';
+import { getIdeDir, NAMESPACE_PATTERN } from './constants';
+import { collectInteractiveOptions } from './interactive';
+import type { PromptDefaults } from './prompt-helpers';
+import { readSettings } from './settings';
 
 function parseCommand(arg: string | undefined, args: readonly string[]) {
   if (arg === '--version' || arg === '-V' || args.includes('--version')) return 'version' as const;
@@ -112,6 +118,45 @@ export function parseSkillOverrideOption(
   return found ? overrides : undefined;
 }
 
+const OPTION_FLAGS = [
+  '--ide',
+  '--namespace',
+  '-n',
+  '--workflows',
+  '-w',
+  '--profile',
+  '-p',
+  '--output',
+  '--skill-override',
+] as const;
+
+export function hasOptionFlags(args: readonly string[]) {
+  return args.some((arg) => OPTION_FLAGS.includes(arg as (typeof OPTION_FLAGS)[number]));
+}
+
+function shouldPrompt(args: readonly string[]) {
+  return !hasOptionFlags(args) && process.stdin.isTTY;
+}
+
+async function readExistingDefaults(): Promise<PromptDefaults> {
+  const projectRoot = process.cwd();
+  const ides = await detectIdes(projectRoot);
+
+  for (const ide of ides) {
+    const result = await readSettings(join(projectRoot, getIdeDir(ide)));
+    if (isOk(result)) {
+      return {
+        ides,
+        namespace: result.data.namespace,
+        workflows: result.data.workflows ? [...result.data.workflows] : undefined,
+        profiles: result.data.selectedProfiles ? [...result.data.selectedProfiles] : undefined,
+      };
+    }
+  }
+
+  return {};
+}
+
 export async function run(args: readonly string[]) {
   const command = parseCommand(args[0], args);
 
@@ -125,6 +170,23 @@ export async function run(args: readonly string[]) {
       return process.exit(0);
 
     case 'init': {
+      if (shouldPrompt(args)) {
+        const interactive = await collectInteractiveOptions();
+        const result = await init({
+          ide: interactive.ides.length > 0 ? interactive.ides : undefined,
+          namespace: interactive.namespace,
+          workflows: interactive.workflows ?? undefined,
+          profiles: interactive.profiles ?? undefined,
+        });
+
+        if (isErr(result)) {
+          console.error(`Error: ${result.data.message}`);
+          process.exit(1);
+        }
+
+        return process.exit(0);
+      }
+
       const ide = parseIdeOption(args);
       const outputFolder = parseOutputOption(args);
       const namespace = parseNamespaceOption(args);
@@ -149,6 +211,24 @@ export async function run(args: readonly string[]) {
     }
 
     case 'update': {
+      if (shouldPrompt(args)) {
+        const defaults = await readExistingDefaults();
+        const interactive = await collectInteractiveOptions(defaults);
+        const result = await update({
+          ide: interactive.ides.length > 0 ? interactive.ides : undefined,
+          namespace: interactive.namespace,
+          workflows: interactive.workflows ?? undefined,
+          profiles: interactive.profiles ?? undefined,
+        });
+
+        if (isErr(result)) {
+          console.error(`Error: ${result.data.message}`);
+          process.exit(1);
+        }
+
+        return process.exit(0);
+      }
+
       const ide = parseIdeOptionOptional(args);
       const outputFolder = parseOutputOption(args);
       const namespace = parseNamespaceOption(args);

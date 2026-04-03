@@ -96,4 +96,30 @@ describe('resolveIdes', () => {
   it('returns single IDE for codex', () => {
     expect(resolveIdes('codex')).toEqual(['codex']);
   });
+
+  it('returns all IDEs for empty array', () => {
+    const result = resolveIdes([]);
+
+    expect(result).toContain('claude');
+    expect(result).toContain('cursor');
+    expect(result).toContain('codex');
+    expect(result).toHaveLength(3);
+  });
+
+  it('returns resolved IDEs for array input', () => {
+    expect(resolveIdes(['claude', 'cursor'])).toEqual(['claude', 'cursor']);
+  });
+
+  it('deduplicates array input', () => {
+    expect(resolveIdes(['claude', 'claude'])).toEqual(['claude']);
+  });
+
+  it('expands all in array input', () => {
+    const result = resolveIdes(['all']);
+
+    expect(result).toContain('claude');
+    expect(result).toContain('cursor');
+    expect(result).toContain('codex');
+    expect(result).toHaveLength(3);
+  });
 });

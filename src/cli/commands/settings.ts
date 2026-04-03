@@ -2,13 +2,15 @@ import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 
 import type { Result } from '../../lib/monads';
-import { Err, isErr, Ok } from '../../lib/monads';
+import { Err, isErr, isOk, Ok } from '../../lib/monads';
 import type { IDE } from '../constants';
 import { getIdeDir, NAMESPACE_PATTERN, resolveIdes } from '../constants';
 import { cleanupStaleFiles, resolveWorkflowDependencies, validateWorkflows } from '../dependencies';
+import { collectInteractiveOptions } from '../interactive';
 import { AGENTS_DIR, SKILLS_DIR, SUBAGENTS_DIR, WORKFLOWS_DIR } from '../paths';
 import type { LanguageProfile } from '../profiles';
 import { LANGUAGE_PROFILES, mergeProfiles } from '../profiles';
+import type { PromptDefaults } from '../prompt-helpers';
 import { readSettings, writeSettings } from '../settings';
 import type { TemplateOptions } from '../utils';
 import { addNamePrefix, copyAndProcess, copyFileAndProcess } from '../utils';
@@ -26,7 +28,7 @@ interface SettingsError {
 }
 
 export interface SettingsUpdateOptions {
-  ide?: IDE;
+  ide?: IDE | readonly IDE[];
   namespace?: string;
   highThinkingModelName?: string;
   codeWritingModelName?: string;
@@ -320,6 +322,43 @@ export async function settingsUpdate(
   return Ok(undefined);
 }
 
+async function readSettingsDefaults(): Promise<PromptDefaults> {
+  const projectRoot = process.cwd();
+  const ides = await detectIdes(projectRoot);
+
+  for (const ide of ides) {
+    const result = await readSettings(join(projectRoot, getIdeDir(ide)));
+    if (isOk(result)) {
+      return {
+        ides,
+        namespace: result.data.namespace,
+        workflows: result.data.workflows ? [...result.data.workflows] : undefined,
+        profiles: result.data.selectedProfiles ? [...result.data.selectedProfiles] : undefined,
+      };
+    }
+  }
+
+  return {};
+}
+
+function hasSettingsFlags(args: readonly string[]) {
+  const flags = [
+    '--ide',
+    '--namespace',
+    '-n',
+    '--workflows',
+    '-w',
+    '--profile',
+    '-p',
+    '--output',
+    '--skill-override',
+    '--high-thinking-model',
+    '--code-writing-model',
+    '--qa-model',
+  ] as const;
+  return args.some((arg) => flags.includes(arg as (typeof flags)[number]));
+}
+
 export async function settings(
   subcommand: string | undefined,
   args: readonly string[],
@@ -336,6 +375,25 @@ export async function settings(
       code: 'UNKNOWN_SUBCOMMAND' as const,
       message: `Unknown subcommand: ${subcommand}. Available: apply`,
     });
+  }
+
+  if (!hasSettingsFlags(args) && process.stdin.isTTY) {
+    const defaults = await readSettingsDefaults();
+    const interactive = await collectInteractiveOptions(defaults);
+
+    console.log('Applying settings...\n');
+
+    const result = await settingsUpdate({
+      ide: interactive.ides.length > 0 ? interactive.ides : undefined,
+      namespace: interactive.namespace,
+      workflows: interactive.workflows ?? undefined,
+      profiles: interactive.profiles ?? undefined,
+    });
+    if (isErr(result)) return result;
+
+    console.log('\nSettings applied.');
+
+    return Ok(undefined);
   }
 
   const options = parseSettingsArgs(args);

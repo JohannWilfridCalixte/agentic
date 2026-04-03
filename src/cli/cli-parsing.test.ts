@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'bun:test';
 
-import { normalizeIde, parseProfileOption, parseSkillOverrideOption } from './index';
+import {
+  hasOptionFlags,
+  normalizeIde,
+  parseProfileOption,
+  parseSkillOverrideOption,
+} from './index';
 
 describe('parseProfileOption', () => {
   it('parses single profile with --profile flag', () => {
@@ -73,6 +78,55 @@ describe('normalizeIde', () => {
 
   it('returns undefined for empty string', () => {
     expect(normalizeIde('')).toBeUndefined();
+  });
+});
+
+describe('hasOptionFlags', () => {
+  it('returns false when no option flags present', () => {
+    expect(hasOptionFlags(['init'])).toBe(false);
+    expect(hasOptionFlags([])).toBe(false);
+    expect(hasOptionFlags(['update'])).toBe(false);
+  });
+
+  it('detects --ide flag', () => {
+    expect(hasOptionFlags(['init', '--ide', 'claude'])).toBe(true);
+  });
+
+  it('detects --namespace flag', () => {
+    expect(hasOptionFlags(['init', '--namespace', 'myproj'])).toBe(true);
+  });
+
+  it('detects -n short flag', () => {
+    expect(hasOptionFlags(['init', '-n', 'myproj'])).toBe(true);
+  });
+
+  it('detects --workflows flag', () => {
+    expect(hasOptionFlags(['init', '--workflows', 'implement'])).toBe(true);
+  });
+
+  it('detects -w short flag', () => {
+    expect(hasOptionFlags(['init', '-w', 'debug'])).toBe(true);
+  });
+
+  it('detects --profile flag', () => {
+    expect(hasOptionFlags(['init', '--profile', 'typescript'])).toBe(true);
+  });
+
+  it('detects -p short flag', () => {
+    expect(hasOptionFlags(['init', '-p', 'python'])).toBe(true);
+  });
+
+  it('detects --output flag', () => {
+    expect(hasOptionFlags(['init', '--output', 'out'])).toBe(true);
+  });
+
+  it('detects --skill-override flag', () => {
+    expect(hasOptionFlags(['init', '--skill-override', 'a=b'])).toBe(true);
+  });
+
+  it('returns false for unrelated flags like --help', () => {
+    expect(hasOptionFlags(['init', '--help'])).toBe(false);
+    expect(hasOptionFlags(['--version'])).toBe(false);
   });
 });
 

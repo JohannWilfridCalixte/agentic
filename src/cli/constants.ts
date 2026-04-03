@@ -14,7 +14,13 @@ export function getIdeDir(ide: TargetIDE) {
 
 const ALL_TARGET_IDES: readonly TargetIDE[] = ['claude', 'cursor', 'codex'];
 
-export function resolveIdes(ide: IDE): readonly TargetIDE[] {
+export function resolveIdes(ide: IDE | readonly IDE[]): readonly TargetIDE[] {
+  if (Array.isArray(ide)) {
+    if (ide.length === 0) return ALL_TARGET_IDES;
+    const result = (ide as readonly IDE[]).flatMap((i: IDE) => resolveIdes(i));
+    return [...new Set(result)];
+  }
+  if (typeof ide !== 'string') return ALL_TARGET_IDES;
   if (ide === 'all' || ide === 'both') return ALL_TARGET_IDES;
   return [ide];
 }
