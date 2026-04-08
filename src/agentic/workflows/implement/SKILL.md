@@ -105,7 +105,7 @@ Execute steps in order. Read step file before executing each step.
 | Step | File | Description |
 |------|------|-------------|
 | 1 | `steps/step-01-validate-plan.md` | Validate technical plan input, initialize state |
-| 2 | `steps/step-02-software-engineer-implement.md` | Implement code changes (Software Engineer) |
+| 2 | `steps/step-02-software-engineer-implement.md` | Implement code changes (parallel Software Engineers) |
 | 3 | `steps/step-03-test-engineer.md` | Write tests (Test Engineer) |
 | 4 | `steps/step-04-review-loop.md` | QA + Test QA + Security review loop |
 | 5 | `steps/step-05-pr.md` | **Optional** — ask developer, create branch/commit/PR |
@@ -224,8 +224,9 @@ All outputs: `{ide-folder}/{outputFolder}/task/implement/{topic}/{instance_id}/`
                        |           technical plan
                        v
                 +-------------------------------+
-                |  STEP 2: Software Engineer    |
-                |  Code changes (autonomous)    |
+                |  STEP 2: Software Engineers   |
+                |  Extract tasks → detect deps  |
+                |  → parallel lanes dispatch    |
                 +-------------------------------+
                                 |
                                 v
