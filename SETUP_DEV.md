@@ -1,12 +1,12 @@
 # Setup Guide for Developers
 
-Multi-agent framework for Claude Code, Cursor, and Codex. This guide covers five workflows: `technical-planning`, `implement`, `debug`, `auto-implement`, and `pr-review`.
+Multi-agent framework for Claude Code, Cursor, and Codex. This guide covers six workflows: `technical-planning`, `implement`, `debug`, `auto-implement`, `pr-review`, and `create-workflow`.
 
 ## Installation
 
 ```bash
 bunx @johannwilfridcalixte/agentic@beta init \
-  -w technical-planning,implement,debug,auto-implement,pr-review \
+  -w technical-planning,implement,debug,auto-implement,pr-review,create-workflow \
   -n YOUR_TEAM_NAME \
   --ide YOUR_IDE
 ```
@@ -364,3 +364,49 @@ Or review multiple PRs in parallel:
 - **IDE choice:** Use `--ide all` if your team uses a mix of Claude Code, Cursor, and Codex.
 - **Use `auto-implement` for well-understood features.** It skips interactive planning. Best for features where the scope is clear enough that autonomous decisions are acceptable. Review `decision-log.md` for all assumptions made.
 - **Use `pr-review` for structured code reviews.** Three specialized reviewers (code quality, tests, security) catch different classes of issues. Use batch mode to review multiple PRs at once.
+- **Use `create-workflow` to build custom workflows.** When your team has a repeatable process (e.g., migration review, API contract validation), create a workflow to codify it.
+
+---
+
+## Workflow: create-workflow
+
+**Purpose:** Create new agentic workflow skills through structured qualification, configuration, and generation.
+
+**Invocation:**
+```
+/agentic:workflow:create-workflow <workflow description or idea>
+```
+
+### Input
+
+- No arguments -- prompts for idea
+- Inline text describing the workflow
+
+### Flow
+
+| Step | Mode | What happens |
+|------|------|-------------|
+| 1. Input Qualification | -- | Analyzes description, extracts assumptions and open questions |
+| 2. Assumption Confirmation | Interactive | Confirms each assumption, resolves open questions one at a time |
+| 3. Context Confirmation | Interactive | Presents full design for review (loops if rejected) |
+| 4. Output Config | Interactive | Detects IDE dirs, asks where to place workflow files |
+| 5. Storage Config | Interactive | Asks where created workflow stores progress and artifacts |
+| 6. Workflow Generation | -- | Generates SKILL.md, step files, templates; registers in dependencies.ts |
+
+### Key rules
+
+- **Interactive only** -- every assumption and design choice is confirmed with you.
+- **No subagents** -- orchestrator handles everything through structured questioning and file generation.
+- **Invokes /writing-skills** -- step 6 follows TDD discipline for skill creation.
+- **Auto-registers** -- if run inside the agentic source tree, adds the workflow to `dependencies.ts`.
+
+### Artifacts
+
+Output path: `_<namespace>_output/task/create-workflow/{topic}/{instance_id}/`
+
+| File | Description |
+|------|-------------|
+| `workflow-state.yaml` | Workflow state machine |
+| `qualified-input.md` | Analyzed input with assumptions and open questions |
+| `workflow-design.md` | Full workflow design document |
+| Generated workflow dir | SKILL.md + step files + templates (location from step 4) |

@@ -16,7 +16,8 @@ type WorkflowName =
   | 'debug'
   | 'frontend-development'
   | 'auto-implement'
-  | 'pr-review';
+  | 'pr-review'
+  | 'create-workflow';
 
 interface WorkflowDependencies {
   readonly agents: readonly string[];
@@ -155,6 +156,11 @@ const WORKFLOW_DEPENDENCY_MAP: Record<WorkflowName, WorkflowDependencies> = {
       'security-qa',
     ],
     argumentHint: '<PR number | PR URL>',
+  },
+  'create-workflow': {
+    agents: [],
+    skills: [],
+    argumentHint: '<workflow description or idea>',
   },
 };
 

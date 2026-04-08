@@ -37,13 +37,13 @@ bunx @johannwilfridcalixte/agentic@beta init -w ask-codebase,product-spec -n YOU
 **Developer** — technical planning, implementation, debugging, PR review ([detailed guide](SETUP_DEV.md)):
 
 ```bash
-bunx @johannwilfridcalixte/agentic@beta init -w technical-planning,implement,debug,pr-review -n YOUR_TEAM_NAME --ide YOUR_IDE
+bunx @johannwilfridcalixte/agentic@beta init -w technical-planning,implement,debug,pr-review,create-workflow -n YOUR_TEAM_NAME --ide YOUR_IDE
 ```
 
 **Solo Developer** — full product-to-code pipeline + frontend ([detailed guide](SETUP_SOLO_DEV.md)):
 
 ```bash
-bunx @johannwilfridcalixte/agentic@beta init -w ask-codebase,product-spec,product-vision,technical-planning,implement,debug,frontend-development,auto-implement,pr-review -n YOUR_TEAM_NAME --ide YOUR_IDE
+bunx @johannwilfridcalixte/agentic@beta init -w ask-codebase,product-spec,product-vision,technical-planning,implement,debug,frontend-development,auto-implement,pr-review,create-workflow -n YOUR_TEAM_NAME --ide YOUR_IDE
 ```
 
 > Replace `YOUR_TEAM_NAME` with a lowercase namespace (e.g. `myteam`) and `YOUR_IDE` with `claude`, `cursor`, `codex`, or `all` (`both` still works as alias).
@@ -69,6 +69,7 @@ In **Claude Code**, invoke workflows with colon syntax:
 /agentic:workflow:frontend-development    # idea → design → frontend code
 /agentic:workflow:auto-implement              # idea → autonomous code
 /agentic:workflow:pr-review                   # PR → QA + security review
+/agentic:workflow:create-workflow              # idea → workflow files + templates
 ```
 
 In **Cursor**, invoke workflows with dash syntax:
@@ -83,6 +84,7 @@ In **Cursor**, invoke workflows with dash syntax:
 /agentic-workflow-frontend-development
 /agentic-workflow-auto-implement
 /agentic-workflow-pr-review
+/agentic-workflow-create-workflow
 ```
 
 In **Codex**, invoke workflows with dash syntax (same as Cursor):
@@ -97,6 +99,7 @@ In **Codex**, invoke workflows with dash syntax (same as Cursor):
 /agentic-workflow-frontend-development
 /agentic-workflow-auto-implement
 /agentic-workflow-pr-review
+/agentic-workflow-create-workflow
 ```
 
 > With a custom namespace (e.g., `-n myteam`), replace `agentic` with your namespace: `/myteam:workflow:implement` (Claude Code) or `/myteam-workflow-implement` (Cursor/Codex).
@@ -108,7 +111,7 @@ Detailed guides with workflow explanations, step-by-step usage, and examples:
 | Role | Guide | Workflows |
 |------|-------|-----------|
 | Product Manager | [SETUP_PM.md](SETUP_PM.md) | ask-codebase, product-spec, product-vision |
-| Developer | [SETUP_DEV.md](SETUP_DEV.md) | technical-planning, implement, debug, pr-review |
+| Developer | [SETUP_DEV.md](SETUP_DEV.md) | technical-planning, implement, debug, pr-review, create-workflow |
 | Solo Developer | [SETUP_SOLO_DEV.md](SETUP_SOLO_DEV.md) | All workflows |
 
 ## What It Does
@@ -242,6 +245,7 @@ bunx @johannwilfridcalixte/agentic@beta update --workflows debug
 | `frontend-development` | ui-ux-designer, frontend-developer, qa | frontend-design, ux-patterns, refactoring-ui |
 | `auto-implement` | architect, pm, software-engineer, test-engineer, qa, test-qa, security-qa | all code skills + product-manager |
 | `pr-review` | architect, qa, test-qa, security-qa | gather-technical-context, code, qa, security-qa |
+| `create-workflow` | (none) | (none) |
 
 ### Behavior
 
@@ -289,6 +293,7 @@ Workflows are orchestrated multi-step processes that coordinate agents to comple
 | `frontend-development` | UI feature | UI/UX design → visual decisions → frontend implementation |
 | `auto-implement` | rough idea | Input detection → Architect context → PM decisions → Technical plan → Launch implement workflow |
 | `pr-review` | PR number or URL | Classify PR → Choose output mode → Architect context → QA + Test QA + Security review → local report or PR comments |
+| `create-workflow` | workflow description | Qualify input → confirm assumptions → configure output + storage → generate workflow files |
 
 ## Agents
 

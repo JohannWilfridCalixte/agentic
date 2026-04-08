@@ -1,19 +1,19 @@
 # Setup Guide for Solo Developers
 
-All-in-one setup covering product discovery through implementation. You handle both product and engineering -- this guide gives you nine workflows that chain together into a complete development lifecycle.
+All-in-one setup covering product discovery through implementation. You handle both product and engineering -- this guide gives you ten workflows that chain together into a complete development lifecycle.
 
 ## Installation
 
 ```bash
 bunx @johannwilfridcalixte/agentic@beta init \
-  -w ask-codebase,product-spec,product-vision,technical-planning,implement,debug,frontend-development,auto-implement,pr-review \
+  -w ask-codebase,product-spec,product-vision,technical-planning,implement,debug,frontend-development,auto-implement,pr-review,create-workflow \
   -n YOUR_TEAM_NAME \
   --ide YOUR_IDE
 ```
 
 | Flag | Values | Notes |
 |------|--------|-------|
-| `-w` | Comma-separated workflow names | All nine listed above |
+| `-w` | Comma-separated workflow names | All ten listed above |
 | `-n` | Namespace prefix | Lowercase, starts with letter, 2-30 chars |
 | `--ide` | `claude`, `cursor`, `codex`, `all` (`both` still works) | IDE integration target |
 
@@ -67,6 +67,7 @@ Skip all manual steps. Give it an idea and get working code with tests and revie
 - **ask-codebase** -- understand existing behavior before changing it
 - **debug** -- systematic root-cause analysis for bugs
 - **pr-review** -- structured QA + security review of PRs (single or batch)
+- **create-workflow** -- create custom workflows for repeatable processes
 
 ---
 
@@ -428,6 +429,41 @@ Skip all manual steps. Give it an idea and get working code with tests and revie
 
 ---
 
+### create-workflow
+
+**Purpose:** Create new agentic workflow skills through structured qualification, configuration, and generation.
+
+**Invocation:**
+
+```
+/agentic:workflow:create-workflow <workflow description or idea>
+```
+
+**Inputs:** No args (prompts you) or inline text describing the workflow.
+
+**Steps:**
+
+1. Input Qualification -- analyzes description, extracts assumptions and open questions
+2. Assumption Confirmation -- confirms each assumption one at a time
+3. Context Confirmation -- presents full design, loops until confirmed
+4. Output Config -- detects IDE dirs, asks where to place files
+5. Storage Config -- asks where created workflow stores progress/artifacts
+6. Workflow Generation -- generates SKILL.md, step files, templates
+
+**Key rules:** Interactive. No subagents. Invokes /writing-skills for TDD discipline. Auto-registers in dependencies.ts if in agentic source tree.
+
+**Artifacts:** `_<namespace>_output/task/create-workflow/{topic}/{instance_id}/`
+
+- `workflow-state.yaml`, `qualified-input.md`, `workflow-design.md`, generated workflow directory
+
+**Example:**
+
+```
+/agentic:workflow:create-workflow A workflow to review database migrations before deployment
+```
+
+---
+
 ## Typical Workflow Chain
 
 The most powerful pattern chains three workflows end-to-end:
@@ -479,3 +515,5 @@ For UI-heavy features, replace `implement` with `frontend-development` in step 3
 **Use `auto-implement` when scope is clear.** Skips interactive planning entirely. All product and technical decisions are autonomous. Review `decision-log.md` for assumptions. Best for well-understood features where you trust the AI's judgment.
 
 **Use `pr-review` as your second pair of eyes.** Solo devs miss things. Three specialized reviewers (code quality, test quality, security) catch different classes of issues. Use batch mode when you have multiple PRs to review.
+
+**Use `create-workflow` to codify repeatable processes.** When you find yourself doing the same multi-step task repeatedly (e.g., API contract review, migration planning, release validation), create a workflow to automate the orchestration.
