@@ -18,6 +18,7 @@ Multi-agent framework for **Claude Code** + **Cursor** + **Codex**. Distributes 
 - [Agents](#agents)
 - [Subagents](#subagents)
 - [Skills](#skills)
+- [Bring Your Own Skills (BYOS)](#bring-your-own-skills-byos)
 - [Project Structure After Init](#project-structure-after-init)
 - [Settings](#settings)
 - [Development](#development-1)
@@ -212,6 +213,8 @@ Shows installed agentic version per IDE, read from `.agentic.settings.json`.
 | `--high-thinking-model <id>` | | Model for high-thinking agents | `opus` (Claude), `claude-4.6-opus-high-thinking` (Cursor) |
 | `--code-writing-model <id>` | | Model for code-writing agents | same |
 | `--qa-model <id>` | | Model for QA agents | same |
+| `--skill-override <key=value>` | | Replace or remove a bundled skill | none |
+| `--profile <list>` | `-p` | Language profiles to activate | auto-detected |
 | `--version` | | Show installed version | |
 
 ## Selective Install (`--workflows`)
@@ -380,6 +383,64 @@ Located in the `github` skill directory:
 | `sync-all.sh` | Sync all documentation files |
 | `create-pr.sh` | Create pull request |
 | `resolve-parent.sh` | Resolve parent issue |
+
+## Bring Your Own Skills (BYOS)
+
+Replace, remove, or extend bundled skills to match your team's standards.
+
+### Skill Overrides
+
+Override bundled skills via `--skill-override`:
+
+```bash
+# Replace a built-in skill with your own
+bunx @johannwilfridcalixte/agentic@beta init --skill-override typescript-imports=my-custom-imports
+
+# Remove a skill entirely
+bunx @johannwilfridcalixte/agentic@beta init --skill-override typescript-imports=_remove_
+
+# Multiple overrides
+bunx @johannwilfridcalixte/agentic@beta init \
+  --skill-override typescript-imports=my-imports \
+  --skill-override code=my-code-standards
+```
+
+Overrides are persisted in `.agentic.settings.json` and survive `update`.
+
+### Language Profiles
+
+Control which language-specific skills load based on your tech stack:
+
+```bash
+bunx @johannwilfridcalixte/agentic@beta init --profile typescript,python
+```
+
+| Profile | Skills loaded |
+|---------|--------------|
+| `typescript` | typescript-engineer, typescript-imports |
+| `python` | python-engineer |
+
+Profiles are matched against `tech_stack` detected in your codebase during workflows. The [skill injection protocol](src/agentic/skills/skill-injection-protocol/SKILL.md) resolves which language skills to load at runtime.
+
+### Creating Custom Skills
+
+1. Create a directory in your IDE's skills folder (e.g., `.claude/skills/my-custom-skill/`)
+2. Add a `SKILL.md` with YAML frontmatter:
+
+```yaml
+---
+name: my-custom-skill
+description: Use when [trigger description]
+---
+
+[Your skill instructions here]
+```
+
+3. Reference it in `--skill-override` to replace a bundled skill, or add it manually to agent files.
+
+### Update Without Overwriting
+
+`agentic update` preserves skill overrides from `.agentic.settings.json` -- custom skills are not lost on updates.
 
 ## Project Structure After Init
 
