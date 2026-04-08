@@ -16,7 +16,7 @@ describe('LANGUAGE_PROFILES', () => {
   it('typescript profile has correct skills', () => {
     const ts = LANGUAGE_PROFILES.find((p) => p.name === 'typescript');
 
-    expect(ts?.skills).toEqual(['typescript-engineer', 'typescript-imports']);
+    expect(ts?.skills).toEqual(['typescript-engineer']);
   });
 
   it('python profile has correct detect keywords', () => {

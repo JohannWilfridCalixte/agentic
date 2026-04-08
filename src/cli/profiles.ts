@@ -9,7 +9,7 @@ export const LANGUAGE_PROFILES: readonly LanguageProfile[] = [
   {
     name: 'typescript',
     detect: ['typescript', 'ts', 'node', 'bun', 'deno'],
-    skills: ['typescript-engineer', 'typescript-imports'],
+    skills: ['typescript-engineer'],
   },
   {
     name: 'python',

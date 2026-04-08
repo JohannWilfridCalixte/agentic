@@ -1,19 +1,22 @@
 ---
-name: agentic:skill:typescript-imports
-description: Use when writing TypeScript imports - covers ordering, grouping, and type imports
+title: Imports
+impact: MEDIUM
+tags: imports, ordering, grouping, type-imports, organization
 ---
 
-# TypeScript Imports
+## Imports
 
-## Rules
+**Impact: MEDIUM**
+
+### Rules
 
 1. **Type imports first**: `import type` before value imports
 2. **Separate type imports**: Never mix types and values in one import
-3. **Group ordering**: builtin → external → internal → relative
+3. **Group ordering**: builtin > external > internal > relative
 4. **Blank lines between groups**
 5. **Alphabetical within groups**
 
-## Example
+### Example
 
 ```typescript
 // 1. Type imports (by group)
@@ -38,7 +41,7 @@ import { calculateCost } from '../calculation';
 import { validateInput } from './validator';
 ```
 
-## Group Order
+### Group Order
 
 | Priority | Group | Examples |
 |----------|-------|----------|
@@ -47,7 +50,7 @@ import { validateInput } from './validator';
 | 3 | Internal | `@company/*` |
 | 4 | Relative | `../`, `./` |
 
-## Auto-fix
+### Auto-fix
 
 Most violations auto-fix with `bun run lint --fix` or `eslint --fix`.
 

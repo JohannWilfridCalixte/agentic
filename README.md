@@ -334,7 +334,6 @@ Skills are focused instruction sets that agents load for domain-specific experti
 | Skill | Purpose |
 |-------|---------|
 | `typescript-engineer` | TypeScript patterns, types, error handling, style |
-| `typescript-imports` | Import ordering, grouping, type imports |
 | `python-engineer` | Python typing, error handling, style, imports, patterns |
 | `code` | Code implementation patterns per technical plan |
 | `code-testing` | Test strategy, pyramid, mocking, flaky test debugging |
@@ -399,14 +398,14 @@ Override bundled skills via `--skill-override`:
 
 ```bash
 # Replace a built-in skill with your own
-bunx @johannwilfridcalixte/agentic@beta init --skill-override typescript-imports=my-custom-imports
+bunx @johannwilfridcalixte/agentic@beta init --skill-override typescript-engineer=my-custom-ts
 
 # Remove a skill entirely
-bunx @johannwilfridcalixte/agentic@beta init --skill-override typescript-imports=_remove_
+bunx @johannwilfridcalixte/agentic@beta init --skill-override typescript-engineer=_remove_
 
 # Multiple overrides
 bunx @johannwilfridcalixte/agentic@beta init \
-  --skill-override typescript-imports=my-imports \
+  --skill-override typescript-engineer=my-ts-standards \
   --skill-override code=my-code-standards
 ```
 
@@ -422,7 +421,7 @@ bunx @johannwilfridcalixte/agentic@beta init --profile typescript,python
 
 | Profile | Skills loaded |
 |---------|--------------|
-| `typescript` | typescript-engineer, typescript-imports |
+| `typescript` | typescript-engineer |
 | `python` | python-engineer |
 
 Profiles are matched against `tech_stack` detected in your codebase during workflows. The [skill injection protocol](src/agentic/skills/skill-injection-protocol/SKILL.md) resolves which language skills to load at runtime.

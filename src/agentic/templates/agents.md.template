@@ -34,7 +34,6 @@ Language-specific skills are injected at runtime by the skill-injection-protocol
 | Skill | Use When |
 |-------|----------|
 | **agentic:skill:typescript-engineer** | Writing TypeScript code - types, error handling, patterns |
-| **agentic:skill:typescript-imports** | Writing imports - ordering, grouping, type imports |
 | **agentic:skill:python-engineer** | Writing Python code - typing, error handling, style, imports, patterns |
 
 ## Skill Index (always available)

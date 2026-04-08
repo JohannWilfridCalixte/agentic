@@ -22,7 +22,7 @@ Read `.agentic.settings.json` from the IDE directory. Extract the `profiles` arr
 ```json
 {
   "profiles": [
-    { "name": "typescript", "detect": ["typescript", "ts", "node", "bun", "deno"], "skills": ["typescript-engineer", "typescript-imports"] },
+    { "name": "typescript", "detect": ["typescript", "ts", "node", "bun", "deno"], "skills": ["typescript-engineer"] },
     { "name": "python", "detect": ["python", "py", "pip", "uv", "poetry", "conda"], "skills": ["python-engineer"] }
   ]
 }
@@ -46,7 +46,7 @@ If `technical-context.md` doesn't exist or `tech_stack` is missing → `language
 
 For each `tech_stack` entry, search all profiles' `detect` arrays (case-insensitive). Collect matched profiles' `skills`. Deduplicate.
 
-**Example:** tech_stack `[typescript, react, node]` → all match `typescript` profile → skills: `["typescript-engineer", "typescript-imports"]`
+**Example:** tech_stack `[typescript, react, node]` → all match `typescript` profile → skills: `["typescript-engineer"]`
 
 ### 4. Apply Overrides
 
@@ -54,8 +54,8 @@ Check `skillOverrides` in settings:
 
 | Override | Example | Effect |
 |----------|---------|--------|
-| Replace | `{"typescript-imports": "custom-imports"}` | Load custom-imports instead |
-| Remove | `{"typescript-imports": "_remove_"}` | Don't load that skill |
+| Replace | `{"typescript-engineer": "custom-ts"}` | Load custom-ts instead |
+| Remove | `{"typescript-engineer": "_remove_"}` | Don't load that skill |
 
 ### 5. Handle Unmatched
 

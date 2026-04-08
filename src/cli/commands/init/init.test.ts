@@ -338,13 +338,12 @@ describe('init', () => {
       expect(entries).toContain('agentic-skill-brainstorming');
       expect(entries).toContain('agentic-workflow-product-spec');
       expect(entries).toContain('agentic-skill-typescript-engineer');
-      expect(entries).toContain('agentic-skill-typescript-imports');
       expect(entries).toContain('agentic-skill-python-engineer');
 
       // Should NOT have other workflows or skills
       expect(entries).not.toContain('agentic-skill-code');
       expect(entries).not.toContain('agentic-workflow-implement');
-      expect(entries).toHaveLength(6);
+      expect(entries).toHaveLength(5);
     });
 
     it('installs no top-level agents when -w is used', async () => {
