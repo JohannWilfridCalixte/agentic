@@ -334,8 +334,6 @@ describe('IDE strategies', () => {
 
       // Uninstalled skills should be stripped
       expect(content).not.toContain('agentic:skill:code');
-      expect(content).not.toContain('agentic:skill:github');
-
       // Uninstalled workflows should be stripped
       expect(content).not.toContain('agentic:workflow:implement');
       expect(content).not.toContain('agentic:workflow:debug');
@@ -384,7 +382,6 @@ describe('IDE strategies', () => {
       // All skills/workflows/agents should be present
       expect(content).toContain('agentic:skill:code');
       expect(content).toContain('agentic:skill:brainstorming');
-      expect(content).toContain('agentic:skill:github');
       expect(content).toContain('agentic:workflow:implement');
       expect(content).toContain('agentic:workflow:product-spec');
       expect(content).toContain('agentic:agent:cpo');

@@ -374,20 +374,6 @@ Skills are focused instruction sets that agents load for domain-specific experti
 |-------|---------|
 | `tech-vision` | CTO-level technical vision and architecture |
 | `dx` | Developer experience tooling, CI, repo ergonomics |
-| `github` | GitHub integration (issues, PRs, sync scripts) |
-
-### GitHub Scripts
-
-Located in the `github` skill directory:
-
-| Script | Purpose |
-|--------|---------|
-| `sync-to-github.sh` | Push markdown to GitHub issue |
-| `sync-from-github.sh` | Pull GitHub issue to markdown |
-| `sync-all.sh` | Sync all documentation files |
-| `create-pr.sh` | Create pull request |
-| `resolve-parent.sh` | Resolve parent issue |
-
 ## Bring Your Own Skills (BYOS)
 
 Replace, remove, or extend bundled skills to match your team's standards.

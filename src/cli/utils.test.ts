@@ -220,7 +220,6 @@ describe('stripUninstalledRows', () => {
     '|-------|----------|',
     '| **agentic:skill:code** | Implementing code |',
     '| **agentic:skill:brainstorming** | Turning ideas into designs |',
-    '| **agentic:skill:github** | GitHub operations |',
     '',
     '## Workflows',
     '',
@@ -256,14 +255,6 @@ describe('stripUninstalledRows', () => {
     const result = stripUninstalledRows(templateContent, deps, 'agentic');
 
     expect(result).not.toContain('**agentic:skill:brainstorming**');
-  });
-
-  it('strips github skill row when not in resolvedDeps', () => {
-    const deps = { agents: [], skills: ['code'], workflows: [] };
-
-    const result = stripUninstalledRows(templateContent, deps, 'agentic');
-
-    expect(result).not.toContain('**agentic:skill:github**');
   });
 
   it('strips rows for uninstalled workflows', () => {

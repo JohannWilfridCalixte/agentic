@@ -37,7 +37,7 @@ describe('mergeProfiles', () => {
     {
       name: 'typescript',
       detect: ['typescript', 'ts'],
-      skills: ['typescript-engineer', 'typescript-imports'],
+      skills: ['typescript-engineer'],
     },
   ];
 
@@ -46,7 +46,7 @@ describe('mergeProfiles', () => {
 
     expect(result).toHaveLength(1);
     expect(result[0].name).toBe('typescript');
-    expect(result[0].skills).toEqual(['typescript-engineer', 'typescript-imports']);
+    expect(result[0].skills).toEqual(['typescript-engineer']);
   });
 
   it('user profile with same name overrides bundled entirely', () => {
@@ -79,20 +79,20 @@ describe('mergeProfiles', () => {
 
   it('skillOverrides replaces a skill across profiles', () => {
     const result = mergeProfiles(bundled, [], {
-      'typescript-imports': 'ts-imports-v2',
+      'typescript-engineer': 'custom-ts',
     });
 
     expect(result).toHaveLength(1);
-    expect(result[0].skills).toEqual(['typescript-engineer', 'ts-imports-v2']);
+    expect(result[0].skills).toEqual(['custom-ts']);
   });
 
   it('skillOverrides with _remove_ removes a skill', () => {
     const result = mergeProfiles(bundled, [], {
-      'typescript-imports': '_remove_',
+      'typescript-engineer': '_remove_',
     });
 
     expect(result).toHaveLength(1);
-    expect(result[0].skills).toEqual(['typescript-engineer']);
+    expect(result[0].skills).toEqual([]);
   });
 
   it('skillOverrides ignores skills not present in profiles', () => {
@@ -101,7 +101,7 @@ describe('mergeProfiles', () => {
     });
 
     expect(result).toHaveLength(1);
-    expect(result[0].skills).toEqual(['typescript-engineer', 'typescript-imports']);
+    expect(result[0].skills).toEqual(['typescript-engineer']);
   });
 
   it('applies overrides across multiple profiles', () => {
@@ -120,7 +120,7 @@ describe('mergeProfiles', () => {
 
   it('preserves other profile fields when applying skill overrides', () => {
     const result = mergeProfiles(bundled, [], {
-      'typescript-imports': '_remove_',
+      'typescript-engineer': '_remove_',
     });
 
     expect(result[0].name).toBe('typescript');
@@ -130,17 +130,15 @@ describe('mergeProfiles', () => {
 
 describe('collectAllProfileSkills', () => {
   const profiles: readonly LanguageProfile[] = [
-    { name: 'typescript', detect: ['ts'], skills: ['typescript-engineer', 'typescript-imports'] },
+    { name: 'typescript', detect: ['ts'], skills: ['typescript-engineer'] },
     { name: 'ruby', detect: ['ruby'], skills: ['ruby-engineer'] },
   ];
 
   it('returns all skills from all profiles when no selection', () => {
     const result = collectAllProfileSkills(profiles);
 
-    expect(result).toEqual(
-      expect.arrayContaining(['typescript-engineer', 'typescript-imports', 'ruby-engineer']),
-    );
-    expect(result).toHaveLength(3);
+    expect(result).toEqual(expect.arrayContaining(['typescript-engineer', 'ruby-engineer']));
+    expect(result).toHaveLength(2);
   });
 
   it('returns only selected profile skills when selection provided', () => {

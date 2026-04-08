@@ -69,7 +69,6 @@ describe('init', () => {
 
     expect(await exists(join(agentsDir, 'agents'))).toBe(true);
     expect(await exists(join(agentsDir, 'skills'))).toBe(true);
-    expect(await exists(join(agentsDir, 'skills', 'agentic-skill-github', 'scripts'))).toBe(true);
   });
 
   it('initializes all three IDEs with ide=all', async () => {
@@ -119,7 +118,6 @@ describe('init', () => {
 
     expect(await exists(join(claudeDir, 'agents'))).toBe(true);
     expect(await exists(join(claudeDir, 'skills'))).toBe(true);
-    expect(await exists(join(claudeDir, 'skills', 'agentic-skill-github', 'scripts'))).toBe(true);
   });
 
   it('creates expected directory structure for cursor', async () => {
@@ -129,7 +127,6 @@ describe('init', () => {
 
     expect(await exists(join(cursorDir, 'agents'))).toBe(true);
     expect(await exists(join(cursorDir, 'skills'))).toBe(true);
-    expect(await exists(join(cursorDir, 'skills', 'agentic-skill-github', 'scripts'))).toBe(true);
   });
 
   it('uses custom output folder', async () => {

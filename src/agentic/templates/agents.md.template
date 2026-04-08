@@ -60,7 +60,6 @@ Load skill: `{ide-invoke-prefix}{ide-folder}/skills/{name}/SKILL.md`
 | **agentic:skill:dx** | Tooling, linting, CI, repo ergonomics |
 | **agentic:skill:ux-patterns** | Forms, inputs, modals, loading states |
 | **agentic:skill:context7** | Fetching up-to-date library docs before coding |
-| **agentic:skill:github** | GitHub operations - syncing docs, PRs, issues, gh CLI |
 
 ## Agentic Skills (workflow orchestration)
 

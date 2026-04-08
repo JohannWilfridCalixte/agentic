@@ -132,18 +132,15 @@ describe('hasOptionFlags', () => {
 
 describe('parseSkillOverrideOption', () => {
   it('parses single override', () => {
-    const result = parseSkillOverrideOption([
-      '--skill-override',
-      'typescript-imports=ts-imports-v2',
-    ]);
+    const result = parseSkillOverrideOption(['--skill-override', 'typescript-engineer=custom-ts']);
 
-    expect(result).toEqual({ 'typescript-imports': 'ts-imports-v2' });
+    expect(result).toEqual({ 'typescript-engineer': 'custom-ts' });
   });
 
   it('parses _remove_ sentinel value', () => {
-    const result = parseSkillOverrideOption(['--skill-override', 'typescript-imports=_remove_']);
+    const result = parseSkillOverrideOption(['--skill-override', 'typescript-engineer=_remove_']);
 
-    expect(result).toEqual({ 'typescript-imports': '_remove_' });
+    expect(result).toEqual({ 'typescript-engineer': '_remove_' });
   });
 
   it('parses multiple overrides from repeated flags', () => {

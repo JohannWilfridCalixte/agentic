@@ -126,13 +126,12 @@ describe('resolveWorkflowDependencies', () => {
 
   it('includes profile skills when profiles are provided', () => {
     const profiles = [
-      { name: 'typescript', detect: ['ts'], skills: ['typescript-engineer', 'typescript-imports'] },
+      { name: 'typescript', detect: ['ts'], skills: ['typescript-engineer'] },
     ] as const;
 
     const result = resolveWorkflowDependencies(['product-spec'], profiles);
 
     expect(result.skills).toContain('typescript-engineer');
-    expect(result.skills).toContain('typescript-imports');
     expect(result.skills).toContain('product-discovery');
     expect(result.skills).toContain('brainstorming');
   });
@@ -195,7 +194,6 @@ describe('resolveWorkflowDependencies', () => {
       const result = resolveWorkflowDependencies([workflow]);
 
       expect(result.skills).not.toContain('typescript-engineer');
-      expect(result.skills).not.toContain('typescript-imports');
       expect(result.skills).not.toContain('python-engineer');
     }
   });
