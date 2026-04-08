@@ -102,9 +102,10 @@ output_path: "{ide-folder}/{outputFolder}/task/implement/{topic}/{instance_id}"
 mkdir -p {output_path}
 ```
 
-### 1.6 Store Plan as Artifact
+### 1.6 Store Plan & Context as Artifacts
 
 Save input plan as `{output_path}/technical-plan.md`.
+Save technical context (co-located with the technical-plan in its original folder) as `{output_path}/technical-context.md`.
 
 ### 1.7 Initialize Workflow State
 
