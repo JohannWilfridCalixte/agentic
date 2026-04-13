@@ -35,17 +35,10 @@ jobs:
         id: dist-tag
         run: |
           TAG="${GITHUB_REF#refs/tags/v}"
-          echo "version=$TAG" >> "$GITHUB_OUTPUT"
           if [[ "$TAG" =~ -([a-zA-Z]+) ]]; then
             echo "flag=--tag ${BASH_REMATCH[1]}" >> "$GITHUB_OUTPUT"
-            echo "prerelease=true" >> "$GITHUB_OUTPUT"
           else
             echo "flag=" >> "$GITHUB_OUTPUT"
-            echo "prerelease=false" >> "$GITHUB_OUTPUT"
           fi
 
       - run: npm publish --provenance --access public ${{ steps.dist-tag.outputs.flag }}
-
-      - name: Also tag prerelease as latest
-        if: steps.dist-tag.outputs.prerelease == 'true'
-        run: npm dist-tag add "$(node -p "require('./package.json').name")@${{ steps.dist-tag.outputs.version }}" latest
