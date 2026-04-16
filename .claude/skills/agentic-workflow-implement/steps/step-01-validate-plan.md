@@ -102,9 +102,10 @@ output_path: ".claude/_agentic_output/task/implement/{topic}/{instance_id}"
 mkdir -p {output_path}
 ```
 
-### 1.6 Store Plan as Artifact
+### 1.6 Store Plan & Context as Artifacts
 
 Save input plan as `{output_path}/technical-plan.md`.
+Save technical context (co-located with the technical-plan in its original folder) as `{output_path}/technical-context.md`.
 
 ### 1.7 Initialize Workflow State
 
@@ -167,7 +168,7 @@ language_skills_prompt: ""
 | Metric | Count |
 |--------|-------|
 | Total Decisions | 0 |
-| Editor Decisions | 0 |
+| Software Engineer Decisions | 0 |
 | Orchestrator Decisions | 0 |
 | Low Confidence (<90%) | 0 |
 
@@ -205,7 +206,7 @@ Path: {output_path}
 Tasks: {task_count}
 Decision log: {output_path}/decision-log.md
 
-Proceeding to Editor implementation...
+Proceeding to Software Engineer implementation...
 ```
 
 ### Resolve Language Skills
@@ -222,4 +223,4 @@ Cache result in workflow-state.yaml as `language_skills_prompt`.
 
 ## NEXT STEP
 
-Load `step-02-editor-implement.md`
+Load `step-02-software-engineer-implement.md`

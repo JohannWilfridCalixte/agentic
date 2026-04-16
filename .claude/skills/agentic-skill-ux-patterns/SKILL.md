@@ -1,6 +1,6 @@
 ---
 name: agentic:skill:ux-patterns
-description: Use when implementing forms, inputs, modals, loading states, or user feedback. Covers OTP verification, credit card inputs, dropdowns, toast vs inline feedback, skeleton loading.
+description: Use when implementing forms, inputs, modals, loading states, or user feedback patterns.
 ---
 
 # UX Good Patterns

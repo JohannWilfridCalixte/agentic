@@ -1,16 +1,18 @@
 {
   "namespace": "agentic",
-  "version": "0.2.0-alpha.5",
+  "version": "0.2.0-beta.3",
   "outputFolder": "_agentic_output",
   "highThinkingModelName": "opus",
   "codeWritingModelName": "opus",
   "qaModelName": "opus",
-  "lastUpdate": "2026-03-07T21:45:43.731Z",
+  "lastUpdate": "2026-04-15T21:18:39.814Z",
   "workflows": [
     "product-spec",
     "technical-planning",
     "implement",
-    "debug"
+    "debug",
+    "pr-review",
+    "create-workflow"
   ],
   "profiles": [
     {
@@ -25,6 +27,23 @@
       "skills": [
         "typescript-engineer"
       ]
+    },
+    {
+      "name": "python",
+      "detect": [
+        "python",
+        "py",
+        "pip",
+        "uv",
+        "poetry",
+        "conda"
+      ],
+      "skills": [
+        "python-engineer"
+      ]
     }
+  ],
+  "selectedProfiles": [
+    "typescript"
   ]
 }

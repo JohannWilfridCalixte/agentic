@@ -1,6 +1,6 @@
 ---
 name: agentic:workflow:implement
-description: Use when implementing from a technical plan (from agentic:technical-planning or planning mode). Requires valid technical plan as input. Interactive PR step. Triggers - "implement this plan", "implement technical plan", technical plan file provided.
+description: Use when implementing from a technical plan (from agentic:technical-planning or planning mode). Triggers - "implement this plan", "implement technical plan", technical plan file provided.
 argument-hint: "<path/to/technical-plan.md | technical plan in context>"
 ---
 
@@ -48,7 +48,7 @@ You are the **main agent** orchestrating this workflow. You:
 6. Ask developer about optional PR creation
 
 **You do NOT:**
-- Write implementation code (that's Editor)
+- Write implementation code (that's Software Engineer)
 - Write tests (that's Test Engineer)
 - Review code quality (that's QA)
 - Review test quality (that's Test QA)
@@ -65,7 +65,7 @@ When a step says "invoke subagent", you:
 5. Update workflow state
 
 **You NEVER:**
-- Write or edit code (delegate to Editor)
+- Write or edit code (delegate to Software Engineer)
 - Write tests (delegate to Test Engineer)
 - Review code (delegate to QA/Security QA)
 - Review tests (delegate to Test QA)
@@ -77,14 +77,14 @@ If you catch yourself doing agent work, STOP and use Task tool.
 Always use `general-purpose` subagent type:
 
 ```
-Task(subagent_type="general-purpose", prompt="You are the Editor agent. Read .claude/agents/agentic-agent-editor.md for your full instructions. Implement the technical plan. ...")
+Task(subagent_type="general-purpose", prompt="You are the Software Engineer agent. Read .claude/agents/agentic-agent-software-engineer.md for your full instructions. Implement the technical plan. ...")
 Task(subagent_type="general-purpose", prompt="You are the Test Engineer agent. Read .claude/agents/agentic-agent-test-engineer.md for your full instructions. Write tests. ...")
 Task(subagent_type="general-purpose", prompt="You are the QA agent. Read .claude/agents/agentic-agent-qa.md for your full instructions. Review implementation. ...")
 Task(subagent_type="general-purpose", prompt="You are the Test QA agent. Read .claude/agents/agentic-agent-test-qa.md for your full instructions. Review tests. ...")
 Task(subagent_type="general-purpose", prompt="You are the Security QA agent. Read .claude/agents/agentic-agent-security-qa.md for your full instructions. Security review. ...")
 ```
 
-Available agents: `agentic:agent:editor`, `agentic:agent:test-engineer`, `agentic:agent:qa`, `agentic:agent:test-qa`, `agentic:agent:security-qa`
+Available agents: `agentic:agent:software-engineer`, `agentic:agent:test-engineer`, `agentic:agent:qa`, `agentic:agent:test-qa`, `agentic:agent:security-qa`
 
 ---
 
@@ -93,7 +93,7 @@ Available agents: `agentic:agent:editor`, `agentic:agent:test-engineer`, `agenti
 Single route — no classification needed:
 
 ```
-Validate Plan → Editor → Test → Review → (optional) PR
+Validate Plan → Software Engineer → Test → Review → (optional) PR
 ```
 
 ---
@@ -105,7 +105,7 @@ Execute steps in order. Read step file before executing each step.
 | Step | File | Description |
 |------|------|-------------|
 | 1 | `steps/step-01-validate-plan.md` | Validate technical plan input, initialize state |
-| 2 | `steps/step-02-editor-implement.md` | Implement code changes (Editor) |
+| 2 | `steps/step-02-software-engineer-implement.md` | Implement code changes (parallel Software Engineers) |
 | 3 | `steps/step-03-test-engineer.md` | Write tests (Test Engineer) |
 | 4 | `steps/step-04-review-loop.md` | QA + Test QA + Security review loop |
 | 5 | `steps/step-05-pr.md` | **Optional** — ask developer, create branch/commit/PR |
@@ -224,8 +224,9 @@ All outputs: `.claude/_agentic_output/task/implement/{topic}/{instance_id}/`
                        |           technical plan
                        v
                 +-------------------------------+
-                |  STEP 2: Editor Implement     |
-                |  Code changes (autonomous)    |
+                |  STEP 2: Software Engineers   |
+                |  Extract tasks → detect deps  |
+                |  → parallel lanes dispatch    |
                 +-------------------------------+
                                 |
                                 v

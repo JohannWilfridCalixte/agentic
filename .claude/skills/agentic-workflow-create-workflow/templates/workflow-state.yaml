@@ -1,0 +1,60 @@
+# Workflow State Template
+# Tracks progress through create-workflow
+# Location: {output_path}/workflow-state.yaml
+
+workflow: create-workflow
+version: "1.0.0"
+
+# Input
+input_type: "" # prompt_user | file | inline
+input_source: null
+
+# Topic
+topic: ""
+instance_id: ""
+output_path: ""
+
+# Timing
+started_at: ""
+updated_at: ""
+completed_at: null
+
+# Progress
+status: "pending" # pending | in_progress | completed | failed
+current_step: 0
+steps_completed: []
+
+# Qualification (step 1)
+assumptions_count: 0
+assumptions_confirmed: 0
+open_questions_count: 0
+open_questions_resolved: 0
+
+# Configuration (steps 4-5)
+output_folder: null
+storage_strategy: null # agentic_output | github_issues | notion | custom
+in_agentic_source_tree: false
+
+# Created workflow metadata (steps 2-3)
+created_workflow:
+  name: null
+  description: null
+  mode: null # interactive | autonomous | switchable
+  steps: []
+  agents: []
+  skills: []
+
+# Artifacts
+artifacts:
+  qualified_input: null # qualified-input.md
+  workflow_design: null # workflow-design.md
+  generated_workflow_path: null # path to generated workflow directory
+
+# Validation
+validation:
+  input_qualified: false
+  assumptions_confirmed: false
+  design_confirmed: false
+  output_configured: false
+  storage_configured: false
+  generation_complete: false

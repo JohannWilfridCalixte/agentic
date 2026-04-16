@@ -4,6 +4,7 @@ BMAD*
 bmad*
 
 .claude/settings.local.json
+.claude/worktrees
 .cursor
 .claude/_agentic_output
 .cursor/_agentic_output

@@ -170,7 +170,7 @@ IF (blockers > 0 OR majors > 0) AND iteration < max_iterations:
 Task(subagent_type="general-purpose", prompt="
 # MANDATORY FIRST ACTION - DO NOT SKIP
 
-Read .claude/agents/agentic-agent-editor.md
+Read .claude/agents/agentic-agent-software-engineer.md
 
 This file contains your role, skill loading instructions (you MUST use the Skill tool for each skill listed), and output format. See the 'Fix Phase' section for fix-specific instructions. Complete ALL setup steps before proceeding.
 

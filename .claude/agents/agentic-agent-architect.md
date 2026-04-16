@@ -265,9 +265,9 @@ Created: {ISO}
 |----|------|-----------|---------------|--------------|
 | AC-01 | TASK-01 | unit | `src/...test.ts` | {method} |
 
-## Editor Brief
+## Software Engineer Brief
 
-> Summary for the Editor agent.
+> Summary for the Software Engineer agent.
 
 **Key Points:**
 1. {most important}
@@ -293,6 +293,6 @@ TASK-01 → TASK-02 → ...
 - [ ] Every AC mapped to at least one TASK
 - [ ] Every TASK has test approach
 - [ ] Verification Matrix complete
-- [ ] Editor Brief provides actionable guidance
+- [ ] Software Engineer Brief provides actionable guidance
 - [ ] Tasks are PR-sized
 - [ ] Dependencies between tasks clear

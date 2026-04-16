@@ -44,7 +44,7 @@ Inputs: (list exact paths)
 | 6 | Observability | Logging, metrics, failure modes, tracking events |
 | 7 | Task breakdown | PR-sized tasks with `TASK-*` IDs |
 | 8 | Verification Matrix | **MANDATORY** - `AC-*` → tests/checks mapping |
-| 9 | Editor Brief | Step-by-step order, DoD checklist, commands |
+| 9 | Software Engineer Brief | Step-by-step order, DoD checklist, commands |
 | 10 | Open questions | If blocking, list with defaults |
 
 ## Task Breakdown Format

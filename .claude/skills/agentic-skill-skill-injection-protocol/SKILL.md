@@ -1,6 +1,6 @@
 ---
 name: agentic:skill:skill-injection-protocol
-description: Orchestrator protocol for resolving language-specific skills. Produces a `language_skills_prompt` value cached in workflow-state.yaml.
+description: Use when resolving language-specific skills for a workflow. Triggers on multi-language projects or when language-specific conventions are needed before implementation.
 ---
 
 # Skill Injection Protocol (Orchestrator)
@@ -22,7 +22,8 @@ Read `.agentic.settings.json` from the IDE directory. Extract the `profiles` arr
 ```json
 {
   "profiles": [
-    { "name": "typescript", "detect": ["typescript", "ts", "node", "bun", "deno"], "skills": ["typescript-engineer"] }
+    { "name": "typescript", "detect": ["typescript", "ts", "node", "bun", "deno"], "skills": ["typescript-engineer"] },
+    { "name": "python", "detect": ["python", "py", "pip", "uv", "poetry", "conda"], "skills": ["python-engineer"] }
   ]
 }
 ```
