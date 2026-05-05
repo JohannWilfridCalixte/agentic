@@ -22,7 +22,7 @@ describe('processTemplate', () => {
     const content = 'path/{ide-folder}/agents';
     const result = processTemplate(content, 'cursor', defaultOptions);
 
-    expect(result).toBe('path/.cursor/agents');
+    expect(result).toBe('path/.agents/agents');
   });
 
   it('replaces {ide-invoke-prefix} for claude', () => {

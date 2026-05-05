@@ -399,7 +399,7 @@ After installing, close and reopen your terminal, then try again.
 
 If you forgot what namespace you used during installation, check the output folder in your project. Look for a folder starting with `_` and ending with `_output`. For example, `_acme_output` means your namespace is `acme`.
 
-If no such folder exists yet (workflows have not been run), look at the configuration files created by agentic in your project's `.claude/` or `.cursor/` directories.
+If no such folder exists yet (workflows have not been run), open the root `.agentic.json` configuration file created by agentic in your project and check the `namespace` field.
 
 ### The workflow seems stuck
 

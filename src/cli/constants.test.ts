@@ -57,8 +57,8 @@ describe('getIdeDir', () => {
     expect(getIdeDir('claude')).toBe('.claude');
   });
 
-  it('returns .cursor for cursor', () => {
-    expect(getIdeDir('cursor')).toBe('.cursor');
+  it('returns .agents for cursor', () => {
+    expect(getIdeDir('cursor')).toBe('.agents');
   });
 
   it('returns .agents for codex', () => {

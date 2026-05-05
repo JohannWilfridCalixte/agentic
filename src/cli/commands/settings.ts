@@ -1,5 +1,5 @@
 import { readdir } from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, resolve, sep } from 'node:path';
 
 import type { Result } from '../../lib/monads';
 import { Err, isErr, isOk, Ok } from '../../lib/monads';
@@ -11,7 +11,7 @@ import { AGENTS_DIR, SKILLS_DIR, SUBAGENTS_DIR, WORKFLOWS_DIR } from '../paths';
 import type { LanguageProfile } from '../profiles';
 import { LANGUAGE_PROFILES, mergeProfiles } from '../profiles';
 import type { PromptDefaults } from '../prompt-helpers';
-import { readSettings, writeSettings } from '../settings';
+import { readEffectiveSettings, readSettings, writeSettings } from '../settings';
 import type { TemplateOptions } from '../utils';
 import { addNamePrefix, copyAndProcess, copyFileAndProcess } from '../utils';
 import type { InitError, TargetIDE } from './init';
@@ -95,6 +95,29 @@ export function parseSettingsArgs(args: readonly string[]): SettingsUpdateOption
   return options;
 }
 
+// Containment check: destination must resolve strictly inside `ideDir`.
+// Rejects traversal payloads in names flowing from poisoned config.
+function isContainedIn(absolutePath: string, rootDir: string): boolean {
+  const resolvedPath = resolve(absolutePath);
+  const resolvedRoot = resolve(rootDir);
+  return resolvedPath.startsWith(`${resolvedRoot}${sep}`);
+}
+
+function assertContainedInIde(
+  absolutePath: string,
+  ideDir: string,
+  kind: string,
+  name: string,
+): Result<void, InitError> {
+  if (!isContainedIn(absolutePath, ideDir)) {
+    return Err({
+      code: 'COPY_FAILED' as const,
+      message: `Refusing to write ${kind} "${name}" outside ${ideDir}`,
+    });
+  }
+  return Ok(undefined);
+}
+
 async function reinstallAgents(
   targetIde: TargetIDE,
   projectRoot: string,
@@ -112,6 +135,8 @@ async function reinstallAgents(
       const sourcePath = join(SUBAGENTS_DIR, agentFile);
       const destName = addNamePrefix(agentFile, 'agent', templateOptions.namespace);
       const destPath = join(ideDir, 'agents', destName);
+      const containment = assertContainedInIde(destPath, ideDir, 'agent', agentFile);
+      if (isErr(containment)) return containment;
       const result = await copyFileAndProcess(
         sourcePath,
         destPath,
@@ -132,6 +157,8 @@ async function reinstallAgents(
       const sourcePath = join(SKILLS_DIR, skillName);
       const destName = addNamePrefix(skillName, 'skill', templateOptions.namespace);
       const destPath = join(ideDir, 'skills', destName);
+      const containment = assertContainedInIde(destPath, ideDir, 'skill', skillName);
+      if (isErr(containment)) return containment;
       const result = await copyAndProcess(
         sourcePath,
         destPath,
@@ -152,6 +179,8 @@ async function reinstallAgents(
       const sourcePath = join(WORKFLOWS_DIR, workflowName);
       const destName = addNamePrefix(workflowName, 'workflow', templateOptions.namespace);
       const destPath = join(ideDir, 'skills', destName);
+      const containment = assertContainedInIde(destPath, ideDir, 'workflow', workflowName);
+      if (isErr(containment)) return containment;
       const result = await copyAndProcess(
         sourcePath,
         destPath,
@@ -175,6 +204,8 @@ async function reinstallAgents(
       for (const entry of entries) {
         const source = join(srcDir, entry);
         const dest = join(ideDir, 'agents', addNamePrefix(entry, 'agent', ns));
+        const containment = assertContainedInIde(dest, ideDir, 'agent', entry);
+        if (isErr(containment)) return containment;
         const r = await copyFileAndProcess(source, dest, targetIde, templateOptions, 'agent');
         if (isErr(r)) {
           return Err({
@@ -190,6 +221,8 @@ async function reinstallAgents(
     for (const entry of skillEntries) {
       const source = join(SKILLS_DIR, entry);
       const dest = join(ideDir, 'skills', addNamePrefix(entry, 'skill', ns));
+      const containment = assertContainedInIde(dest, ideDir, 'skill', entry);
+      if (isErr(containment)) return containment;
       const r = await copyAndProcess(source, dest, targetIde, templateOptions, 'skill');
       if (isErr(r)) {
         return Err({
@@ -204,6 +237,8 @@ async function reinstallAgents(
     for (const entry of workflowEntries) {
       const source = join(WORKFLOWS_DIR, entry);
       const dest = join(ideDir, 'skills', addNamePrefix(entry, 'workflow', ns));
+      const containment = assertContainedInIde(dest, ideDir, 'workflow', entry);
+      if (isErr(containment)) return containment;
       const r = await copyAndProcess(source, dest, targetIde, templateOptions, 'workflow');
       if (isErr(r)) {
         return Err({
@@ -245,12 +280,12 @@ export async function settingsUpdate(
 
   for (const targetIde of ides) {
     const ideDir = join(projectRoot, getIdeDir(targetIde));
-    const currentSettings = await readSettings(ideDir);
+    const currentSettings = await readEffectiveSettings(projectRoot, targetIde);
 
     if (isErr(currentSettings)) {
       return Err({
         code: 'SETTINGS_UPDATE_FAILED' as const,
-        message: `No settings found for ${getIdeDir(targetIde)}/. Run \`agentic init\` first.`,
+        message: `No settings found for ${targetIde}. Run \`agentic init\` first.`,
         cause: currentSettings.data,
       });
     }
@@ -296,22 +331,26 @@ export async function settingsUpdate(
       await cleanupStaleFiles(ideDir, newDeps, namespace);
     }
 
-    const writeResult = await writeSettings(
-      ideDir,
-      namespace,
-      outputFolder,
-      highThinkingModelName,
-      codeWritingModelName,
-      qaModelName,
-      workflows,
-      mergedProfiles,
-      Object.keys(skillOverrides).length > 0 ? skillOverrides : undefined,
-      selectedProfiles,
-    );
+    const writeResult = await writeSettings(projectRoot, {
+      shared: {
+        namespace,
+        ...(workflows ? { workflows } : {}),
+        ...(mergedProfiles ? { profiles: mergedProfiles } : {}),
+        ...(Object.keys(skillOverrides).length > 0 ? { skillOverrides } : {}),
+        ...(selectedProfiles ? { selectedProfiles } : {}),
+      },
+      ide: targetIde,
+      ideSettings: {
+        outputFolder,
+        highThinkingModelName,
+        codeWritingModelName,
+        qaModelName,
+      },
+    });
     if (isErr(writeResult)) {
       return Err({
         code: 'SETTINGS_UPDATE_FAILED' as const,
-        message: `Failed to write settings for ${getIdeDir(targetIde)}/`,
+        message: `Failed to write settings for ${targetIde}`,
         cause: writeResult.data,
       });
     }
@@ -325,17 +364,15 @@ export async function settingsUpdate(
 async function readSettingsDefaults(): Promise<PromptDefaults> {
   const projectRoot = process.cwd();
   const ides = await detectIdes(projectRoot);
+  const result = await readSettings(projectRoot);
 
-  for (const ide of ides) {
-    const result = await readSettings(join(projectRoot, getIdeDir(ide)));
-    if (isOk(result)) {
-      return {
-        ides,
-        namespace: result.data.namespace,
-        workflows: result.data.workflows ? [...result.data.workflows] : undefined,
-        profiles: result.data.selectedProfiles ? [...result.data.selectedProfiles] : undefined,
-      };
-    }
+  if (isOk(result)) {
+    return {
+      ides,
+      namespace: result.data.namespace,
+      workflows: result.data.workflows ? [...result.data.workflows] : undefined,
+      profiles: result.data.selectedProfiles ? [...result.data.selectedProfiles] : undefined,
+    };
   }
 
   return {};

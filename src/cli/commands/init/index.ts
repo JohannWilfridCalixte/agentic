@@ -1,8 +1,9 @@
 import { chmod, mkdir, readdir, stat } from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, resolve, sep } from 'node:path';
 
 import type { Result } from '../../../lib/monads';
 import { Err, isErr, Ok } from '../../../lib/monads';
+import { cleanupLegacyCursorDir } from '../../cleanup-legacy-cursor';
 import type { IDE } from '../../constants';
 import { getIdeDir, resolveIdes } from '../../constants';
 import {
@@ -10,6 +11,7 @@ import {
   resolveWorkflowDependencies,
   validateWorkflows,
 } from '../../dependencies';
+import { migrateLegacySettings } from '../../migrate-settings';
 import { AGENTS_DIR, SKILLS_DIR, SUBAGENTS_DIR, WORKFLOWS_DIR } from '../../paths';
 import type { LanguageProfile } from '../../profiles';
 import { LANGUAGE_PROFILES, mergeProfiles } from '../../profiles';
@@ -29,6 +31,30 @@ import type { InitError, SetupMode, TargetIDE } from './types';
 
 export function getDefaultOutputFolder(namespace: string) {
   return `_${namespace}_output`;
+}
+
+// Ensures `absolutePath` resolves strictly inside `rootDir`. Rejects traversal
+// payloads in names that flow into destination paths (e.g. poisoned
+// `skillOverrides` entry like `foo/../../etc/passwd`).
+function isContainedIn(absolutePath: string, rootDir: string): boolean {
+  const resolvedPath = resolve(absolutePath);
+  const resolvedRoot = resolve(rootDir);
+  return resolvedPath.startsWith(`${resolvedRoot}${sep}`);
+}
+
+function assertContained(
+  absolutePath: string,
+  rootDir: string,
+  kind: string,
+  name: string,
+): Result<void, InitError> {
+  if (!isContainedIn(absolutePath, rootDir)) {
+    return Err({
+      code: 'COPY_FAILED' as const,
+      message: `Refusing to write ${kind} "${name}" outside ${rootDir}`,
+    });
+  }
+  return Ok(undefined);
 }
 
 async function makeScriptsExecutableRecursive(dir: string) {
@@ -67,6 +93,8 @@ async function copyAllWithPrefixes(
     for (const entry of entries) {
       const source = join(srcDir, entry);
       const dest = join(ideDir, 'agents', addNamePrefix(entry, 'agent', ns));
+      const containment = assertContained(dest, ideDir, 'agent', entry);
+      if (isErr(containment)) return containment;
       const result = await copyFileAndProcess(source, dest, targetIde, templateOptions, 'agent');
       if (isErr(result)) {
         return Err({
@@ -83,6 +111,8 @@ async function copyAllWithPrefixes(
   for (const entry of skillEntries) {
     const source = join(SKILLS_DIR, entry);
     const dest = join(ideDir, 'skills', addNamePrefix(entry, 'skill', ns));
+    const containment = assertContained(dest, ideDir, 'skill', entry);
+    if (isErr(containment)) return containment;
     const result = await copyAndProcess(source, dest, targetIde, templateOptions, 'skill');
     if (isErr(result)) {
       return Err({
@@ -98,6 +128,8 @@ async function copyAllWithPrefixes(
   for (const entry of workflowEntries) {
     const source = join(WORKFLOWS_DIR, entry);
     const dest = join(ideDir, 'skills', addNamePrefix(entry, 'workflow', ns));
+    const containment = assertContained(dest, ideDir, 'workflow', entry);
+    if (isErr(containment)) return containment;
     const result = await copyAndProcess(source, dest, targetIde, templateOptions, 'workflow');
     if (isErr(result)) {
       return Err({
@@ -125,6 +157,8 @@ async function selectiveCopy(
     const sourcePath = join(SUBAGENTS_DIR, agentFile);
     const destName = addNamePrefix(agentFile, 'agent', templateOptions.namespace);
     const destPath = join(ideDir, 'agents', destName);
+    const containment = assertContained(destPath, ideDir, 'agent', agentFile);
+    if (isErr(containment)) return containment;
     const result = await copyFileAndProcess(
       sourcePath,
       destPath,
@@ -146,6 +180,8 @@ async function selectiveCopy(
     const sourcePath = join(SKILLS_DIR, skillName);
     const destName = addNamePrefix(skillName, 'skill', templateOptions.namespace);
     const destPath = join(ideDir, 'skills', destName);
+    const containment = assertContained(destPath, ideDir, 'skill', skillName);
+    if (isErr(containment)) return containment;
     const result = await copyAndProcess(sourcePath, destPath, targetIde, templateOptions, 'skill');
 
     if (isErr(result)) {
@@ -161,6 +197,8 @@ async function selectiveCopy(
     const sourcePath = join(WORKFLOWS_DIR, workflowName);
     const destName = addNamePrefix(workflowName, 'workflow', templateOptions.namespace);
     const destPath = join(ideDir, 'skills', destName);
+    const containment = assertContained(destPath, ideDir, 'workflow', workflowName);
+    if (isErr(containment)) return containment;
     const result = await copyAndProcess(
       sourcePath,
       destPath,
@@ -245,18 +283,26 @@ export async function setupIde(
 
   await appendToGitignore(projectRoot, `${getIdeDir(targetIde)}/${outputFolder}`);
 
-  const settingsResult = await writeSettings(
-    ideDir,
-    namespace,
-    outputFolder,
-    getHighThinkingModelName(targetIde),
-    getCodeWritingModelName(targetIde),
-    getQaModelName(targetIde),
-    options.workflows,
-    options.profiles,
-    options.skillOverrides,
-    options.selectedProfiles,
-  );
+  const settingsResult = await writeSettings(projectRoot, {
+    shared: {
+      namespace,
+      ...(options.workflows ? { workflows: options.workflows } : {}),
+      ...(options.profiles ? { profiles: options.profiles } : {}),
+      ...(options.skillOverrides && Object.keys(options.skillOverrides).length > 0
+        ? { skillOverrides: options.skillOverrides }
+        : {}),
+      ...(options.selectedProfiles && options.selectedProfiles.length > 0
+        ? { selectedProfiles: options.selectedProfiles }
+        : {}),
+    },
+    ide: targetIde,
+    ideSettings: {
+      outputFolder,
+      highThinkingModelName: getHighThinkingModelName(targetIde),
+      codeWritingModelName: getCodeWritingModelName(targetIde),
+      qaModelName: getQaModelName(targetIde),
+    },
+  });
   if (isErr(settingsResult)) {
     return Err({
       code: 'COPY_FAILED' as const,
@@ -284,6 +330,11 @@ export async function init(options: InitOptions = {}): Promise<Result<void, Init
   const outputFolder = options.outputFolder ?? getDefaultOutputFolder(namespace);
   const ides = resolveIdes(ide);
 
+  const migration = await migrateLegacySettings(projectRoot);
+  if (isErr(migration)) {
+    console.warn(`Warning: ${migration.data.message}`);
+  }
+
   let validatedWorkflows: readonly string[] | undefined;
   if (options.workflows) {
     const validation = validateWorkflows(options.workflows);
@@ -294,6 +345,16 @@ export async function init(options: InitOptions = {}): Promise<Result<void, Init
   }
 
   const mergedProfiles = mergeProfiles(LANGUAGE_PROFILES, [], options.skillOverrides ?? {});
+
+  const managedDeps = resolveWorkflowDependencies(
+    validatedWorkflows ?? [],
+    mergedProfiles,
+    options.profiles,
+  );
+  const cleanup = await cleanupLegacyCursorDir(projectRoot, managedDeps, namespace);
+  if (isErr(cleanup)) {
+    console.warn(`Warning: ${cleanup.data.message}`);
+  }
 
   if (options.profiles) {
     console.log(`  Profiles: ${options.profiles.join(', ')}`);

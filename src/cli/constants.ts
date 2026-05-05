@@ -4,7 +4,7 @@ export type IDE = 'claude' | 'cursor' | 'codex' | 'all' | 'both';
 
 const IDE_DIR_MAP: Record<TargetIDE, string> = {
   claude: '.claude',
-  cursor: '.cursor',
+  cursor: '.agents',
   codex: '.agents',
 };
 

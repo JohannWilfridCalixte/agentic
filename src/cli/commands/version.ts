@@ -1,9 +1,6 @@
-import { join } from 'node:path';
-
 import type { Result } from '../../lib/monads';
-import { Err, isErr, Ok } from '../../lib/monads';
-import { getIdeDir } from '../constants';
-import { readSettings } from '../settings';
+import { Err, isErr, isOk, Ok } from '../../lib/monads';
+import { readEffectiveSettings } from '../settings';
 import type { TargetIDE } from './init';
 import { detectIdes } from './update';
 
@@ -19,8 +16,27 @@ const IDE_DISPLAY_NAMES: Record<TargetIDE, string> = {
   codex: 'Codex',
 };
 
+interface IdeEntry {
+  readonly ide: TargetIDE;
+  readonly version: string;
+  readonly installedDate: string;
+  readonly outputFolder: string;
+  readonly highThinkingModelName: string;
+  readonly codeWritingModelName: string;
+  readonly qaModelName: string;
+}
+
 function formatDate(isoString: string) {
   return isoString.split('T')[0];
+}
+
+function dedupKey(entry: IdeEntry) {
+  return JSON.stringify({
+    outputFolder: entry.outputFolder,
+    highThinkingModelName: entry.highThinkingModelName,
+    codeWritingModelName: entry.codeWritingModelName,
+    qaModelName: entry.qaModelName,
+  });
 }
 
 export async function version(): Promise<Result<void, VersionError>> {
@@ -43,20 +59,55 @@ export async function version(): Promise<Result<void, VersionError>> {
     return Ok(undefined);
   }
 
-  for (const ide of detectedIdes) {
-    const ideDir = join(projectRoot, getIdeDir(ide));
-    const result = await readSettings(ideDir);
+  const entries: IdeEntry[] = [];
+  const missing: TargetIDE[] = [];
 
+  for (const ide of detectedIdes) {
+    const result = await readEffectiveSettings(projectRoot, ide);
     if (isErr(result)) {
-      console.log(`${IDE_DISPLAY_NAMES[ide]}: settings not found`);
+      missing.push(ide);
       continue;
     }
+    if (isOk(result)) {
+      entries.push({
+        ide,
+        version: result.data.version,
+        installedDate: formatDate(result.data.lastUpdate),
+        outputFolder: result.data.outputFolder,
+        highThinkingModelName: result.data.highThinkingModelName,
+        codeWritingModelName: result.data.codeWritingModelName,
+        qaModelName: result.data.qaModelName,
+      });
+    }
+  }
 
-    const settings = result.data;
-    const displayName = IDE_DISPLAY_NAMES[ide];
-    const installedDate = formatDate(settings.lastUpdate);
+  const groups = new Map<string, IdeEntry[]>();
+  for (const entry of entries) {
+    const key = dedupKey(entry);
+    const existing = groups.get(key) ?? [];
+    existing.push(entry);
+    groups.set(key, existing);
+  }
 
-    console.log(`${displayName}: ${settings.version} (installed ${installedDate})`);
+  for (const group of groups.values()) {
+    if (group.length === 1) {
+      const [entry] = group;
+      if (!entry) continue;
+      console.log(
+        `${IDE_DISPLAY_NAMES[entry.ide]}: ${entry.version} (installed ${entry.installedDate})`,
+      );
+      continue;
+    }
+    const head = group[0];
+    if (!head) continue;
+    const names = group.map((entry) => IDE_DISPLAY_NAMES[entry.ide]).join(', ');
+    console.log(
+      `${names}: ${head.version} (installed ${head.installedDate}) → ${head.outputFolder}/`,
+    );
+  }
+
+  for (const ide of missing) {
+    console.log(`${IDE_DISPLAY_NAMES[ide]}: settings not found`);
   }
 
   return Ok(undefined);

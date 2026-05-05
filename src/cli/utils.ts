@@ -43,7 +43,7 @@ const IDE_TEMPLATE_VARS = {
     subagentTypeGeneralPurpose: 'general-purpose',
   },
   cursor: {
-    'ide-folder': '.cursor',
+    'ide-folder': '.agents',
     'ide-invoke-prefix': '@',
     subagentTypeGeneralPurpose: 'generalPurpose',
   },

@@ -116,11 +116,11 @@ Detailed guides with workflow explanations, step-by-step usage, and examples:
 
 ## What It Does
 
-1. Copies agents, subagents, skills, and workflows to `.claude/`, `.cursor/`, and/or `.agents/` (Codex)
+1. Copies agents, subagents, skills, and workflows to `.claude/` (Claude Code) and/or `.agents/` (Cursor + Codex)
 2. Template-processes all files with IDE-specific paths, model names, and output folder
 3. Sets up `CLAUDE.md` (Claude Code) and/or `AGENTS.md` (Cursor/Codex)
 4. Adds the output folder to `.gitignore`
-5. Persists configuration in `.agentic.settings.json` for updates
+5. Persists configuration in a single root `.agentic.json` for updates
 
 Workflow artifacts (specs, plans, implementation logs, QA reports) go to the configured output folder (`_agentic_output/` by default).
 
@@ -203,7 +203,7 @@ Lists all available agents, subagents, skills, and workflows.
 
 ### `version`
 
-Shows installed agentic version per IDE, read from `.agentic.settings.json`.
+Shows installed agentic version per IDE, read from the root `.agentic.json`.
 
 ## Options
 
@@ -395,7 +395,7 @@ bunx @johannwilfridcalixte/agentic@beta init \
   --skill-override code=my-code-standards
 ```
 
-Overrides are persisted in `.agentic.settings.json` and survive `update`.
+Overrides are persisted in `.agentic.json` and survive `update`.
 
 ### Language Profiles
 
@@ -430,7 +430,7 @@ description: Use when [trigger description]
 
 ### Update Without Overwriting
 
-`agentic update` preserves skill overrides from `.agentic.settings.json` -- custom skills are not lost on updates.
+`agentic update` preserves skill overrides from `.agentic.json` -- custom skills are not lost on updates.
 
 ## Project Structure After Init
 
@@ -438,16 +438,11 @@ description: Use when [trigger description]
 your-project/
 ├── .claude/                      # Claude Code (if --ide claude or all)
 │   ├── agents/                   # Agent + subagent prompts (.md)
-│   ├── skills/                   # Skill dirs + workflow dirs
-│   └── .agentic.settings.json   # Persisted configuration
-├── .cursor/                      # Cursor (if --ide cursor or all)
+│   └── skills/                   # Skill dirs + workflow dirs
+├── .agents/                      # Cursor + Codex (if --ide cursor/codex or all)
 │   ├── agents/                   # Agent + subagent prompts (.md)
-│   ├── skills/                   # Skill dirs + workflow dirs
-│   └── .agentic.settings.json   # Persisted configuration
-├── .agents/                      # Codex (if --ide codex or all)
-│   ├── agents/                   # Agent + subagent prompts (.md)
-│   ├── skills/                   # Skill dirs + workflow dirs
-│   └── .agentic.settings.json   # Persisted configuration
+│   └── skills/                   # Skill dirs + workflow dirs
+├── .agentic.json                 # Persisted configuration (all IDEs, root-level)
 ├── _agentic_output/              # Workflow artifacts (configurable)
 │   ├── product/                  # PRDs, specs, designs
 │   ├── task/                     # Technical plans, impl logs, QA reports
@@ -462,22 +457,39 @@ With `--namespace myteam`, all `agentic-*` prefixes become `myteam-*`.
 
 ## Settings
 
-Configuration is persisted in `.agentic.settings.json` (inside each IDE directory):
+Configuration is persisted in a single root `.agentic.json` (replaces the per-IDE `.agentic.settings.json` files used by earlier versions). Shared fields live at the top level; per-IDE overrides live under `ides.{ide}`:
 
 ```json
 {
   "namespace": "agentic",
-  "version": "0.1.1-alpha.29",
-  "outputFolder": "_agentic_output",
-  "highThinkingModelName": "opus",
-  "codeWritingModelName": "opus",
-  "qaModelName": "opus",
+  "version": "0.2.0-beta.3",
   "lastUpdate": "2026-02-20T00:00:00.000Z",
-  "workflows": ["implement", "debug"]
+  "workflows": ["implement", "debug"],
+  "ides": {
+    "claude": {
+      "outputFolder": "_agentic_output",
+      "highThinkingModelName": "opus",
+      "codeWritingModelName": "opus",
+      "qaModelName": "opus"
+    },
+    "cursor": {
+      "outputFolder": "_agentic_output",
+      "highThinkingModelName": "claude-4.6-opus-high-thinking",
+      "codeWritingModelName": "claude-4.6-opus-high-thinking",
+      "qaModelName": "claude-4.6-opus-high-thinking"
+    },
+    "codex": {
+      "outputFolder": "_agentic_output",
+      "highThinkingModelName": "gpt-5.4",
+      "codeWritingModelName": "gpt-5.4",
+      "qaModelName": "gpt-5.4"
+    }
+  }
 }
 ```
 
 - Created on `init`, read on `update` and `settings apply`
+- Legacy per-IDE `.agentic.settings.json` files are auto-migrated into the root `.agentic.json` and removed on `init`/`update`
 - CLI flags override saved settings
 - `workflows` is omitted when doing a full install (no `-w`)
 - Model defaults differ by IDE: Claude Code uses `opus`, Cursor uses `claude-4.6-opus-high-thinking`, Codex uses `gpt-5.4`

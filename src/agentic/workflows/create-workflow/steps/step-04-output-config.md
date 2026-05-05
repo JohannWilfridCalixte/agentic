@@ -19,10 +19,10 @@ Scan the current working directory for IDE-specific skill directories:
 ```bash
 # Check for each IDE directory
 ls -d .claude/skills 2>/dev/null && echo "claude"
-ls -d .cursor/skills 2>/dev/null && echo "cursor"
-ls -d .codex/skills 2>/dev/null && echo "codex"
 ls -d .agents/skills 2>/dev/null && echo "agents"
 ```
+
+`.agents/skills` is the shared install target for both Cursor and Codex.
 
 **Also check if we're in the agentic source tree:**
 
@@ -44,9 +44,7 @@ Construct AskUserQuestion options based on what was detected:
 **Priority order for default:**
 1. If in agentic source tree: `src/agentic/workflows/` (Recommended)
 2. If `.claude/skills` exists: `.claude/skills/`
-3. If `.cursor/skills` exists: `.cursor/skills/`
-4. If `.codex/skills` exists: `.codex/skills/`
-5. If `.agents/skills` exists: `.agents/skills/`
+3. If `.agents/skills` exists: `.agents/skills/` (shared by Cursor + Codex)
 
 ### 4.3 Ask User
 
@@ -63,9 +61,11 @@ Options (dynamically built):
 Question: "No IDE skill directories detected. Where should the workflow files be placed?"
 Options:
   - ".claude/skills/" — Create for Claude Code
-  - ".cursor/skills/" — Create for Cursor
+  - ".agents/skills/" — Create for Cursor and/or Codex
   - "Custom path" — Specify a different location
 ```
+
+Per-IDE settings no longer live in `<ideDir>/.agentic.settings.json` -- all configuration is consolidated at the project root in `.agentic.json`.
 
 ### 4.4 Handle Custom Path
 

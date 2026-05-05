@@ -2,10 +2,13 @@ import { stat } from 'node:fs/promises';
 import { join } from 'node:path';
 
 import type { Result } from '../../lib/monads';
-import { Err, isErr, Ok } from '../../lib/monads';
+import { Err, isErr, isOk, Ok } from '../../lib/monads';
+import { cleanupLegacyCursorDir } from '../cleanup-legacy-cursor';
 import type { IDE } from '../constants';
 import { getIdeDir, resolveIdes } from '../constants';
 import { cleanupStaleFiles, resolveWorkflowDependencies, validateWorkflows } from '../dependencies';
+import { LEGACY_IDE_SOURCES } from '../legacy-paths';
+import { migrateLegacySettings } from '../migrate-settings';
 import { LANGUAGE_PROFILES, mergeProfiles } from '../profiles';
 import { readSettings } from '../settings';
 import type { InitError, TargetIDE } from './init';
@@ -35,14 +38,34 @@ export async function directoryExists(path: string): Promise<boolean> {
   }
 }
 
-export async function detectIdes(projectRoot: string) {
+async function fileExists(path: string): Promise<boolean> {
+  try {
+    const s = await stat(path);
+    return s.isFile();
+  } catch {
+    return false;
+  }
+}
+
+// Order mirrors `LEGACY_IDE_SOURCES` (migration precedence). Order is
+// irrelevant for detection (set-based) but the shared constant ensures the
+// two probe paths cannot drift.
+async function detectIdesFromLegacySettings(projectRoot: string): Promise<TargetIDE[]> {
   const detected: TargetIDE[] = [];
-
-  if (await directoryExists(join(projectRoot, '.claude'))) detected.push('claude');
-  if (await directoryExists(join(projectRoot, '.cursor'))) detected.push('cursor');
-  if (await directoryExists(join(projectRoot, '.agents'))) detected.push('codex');
-
+  for (const source of LEGACY_IDE_SOURCES) {
+    if (await fileExists(join(projectRoot, source.relativePath))) {
+      detected.push(source.ide);
+    }
+  }
   return detected;
+}
+
+export async function detectIdes(projectRoot: string): Promise<TargetIDE[]> {
+  const result = await readSettings(projectRoot);
+  if (isOk(result)) {
+    return Object.keys(result.data.ides) as TargetIDE[];
+  }
+  return detectIdesFromLegacySettings(projectRoot);
 }
 
 interface SettingsDefaults {
@@ -57,18 +80,19 @@ async function readDefaultsFromSettings(
   projectRoot: string,
   ides: readonly TargetIDE[],
 ): Promise<SettingsDefaults> {
-  for (const ide of ides) {
-    const ideDir = join(projectRoot, getIdeDir(ide));
-    const result = await readSettings(ideDir);
-    if (result._type === 'Ok') {
-      return {
-        namespace: result.data.namespace,
-        outputFolder: result.data.outputFolder,
-        workflows: result.data.workflows,
-        selectedProfiles: result.data.selectedProfiles,
-        skillOverrides: result.data.skillOverrides,
-      };
-    }
+  const result = await readSettings(projectRoot);
+  if (isOk(result)) {
+    const firstIdeWithBlock = ides.find((ide) => result.data.ides[ide]);
+    const outputFolder =
+      (firstIdeWithBlock && result.data.ides[firstIdeWithBlock]?.outputFolder) ??
+      getDefaultOutputFolder(result.data.namespace);
+    return {
+      namespace: result.data.namespace,
+      outputFolder,
+      workflows: result.data.workflows,
+      selectedProfiles: result.data.selectedProfiles,
+      skillOverrides: result.data.skillOverrides,
+    };
   }
   return { namespace: 'agentic', outputFolder: getDefaultOutputFolder('agentic') };
 }
@@ -77,6 +101,11 @@ export async function update(
   options: UpdateOptions = {},
 ): Promise<Result<void, UpdateError | InitError>> {
   const projectRoot = process.cwd();
+
+  const migration = await migrateLegacySettings(projectRoot);
+  if (isErr(migration)) {
+    console.warn(`Warning: ${migration.data.message}`);
+  }
 
   const ides: readonly TargetIDE[] = options.ide
     ? resolveIdes(options.ide)
@@ -108,6 +137,16 @@ export async function update(
     options.profiles ?? (defaults.selectedProfiles ? [...defaults.selectedProfiles] : undefined);
   const skillOverrides = options.skillOverrides ?? defaults.skillOverrides ?? {};
   const mergedProfiles = mergeProfiles(LANGUAGE_PROFILES, [], skillOverrides);
+
+  const managedDeps = resolveWorkflowDependencies(
+    workflows ?? [],
+    mergedProfiles,
+    selectedProfiles,
+  );
+  const cleanup = await cleanupLegacyCursorDir(projectRoot, managedDeps, namespace);
+  if (isErr(cleanup)) {
+    console.warn(`Warning: ${cleanup.data.message}`);
+  }
 
   if (selectedProfiles) {
     console.log(`  Profiles: ${selectedProfiles.join(', ')}`);
