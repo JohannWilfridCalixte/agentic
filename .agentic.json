@@ -1,16 +1,16 @@
 {
   "namespace": "agentic",
   "version": "0.2.0-beta.3",
-  "outputFolder": "_agentic_output",
-  "highThinkingModelName": "opus",
-  "codeWritingModelName": "opus",
-  "qaModelName": "opus",
-  "lastUpdate": "2026-04-15T21:18:39.814Z",
+  "lastUpdate": "2026-05-05T19:57:28.130Z",
   "workflows": [
     "product-spec",
+    "product-vision",
+    "ask-codebase",
     "technical-planning",
     "implement",
     "debug",
+    "frontend-development",
+    "auto-implement",
     "pr-review",
     "create-workflow"
   ],
@@ -45,5 +45,13 @@
   ],
   "selectedProfiles": [
     "typescript"
-  ]
+  ],
+  "ides": {
+    "claude": {
+      "outputFolder": "_agentic_output",
+      "highThinkingModelName": "opus",
+      "codeWritingModelName": "opus",
+      "qaModelName": "opus"
+    }
+  }
 }
